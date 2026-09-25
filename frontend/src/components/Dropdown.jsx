@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Master.css';
 
 const Dropdown = () => {
@@ -34,14 +35,25 @@ const Dropdown = () => {
         <div className="dropdown-menu">
 
           {items.map((item, index) => (
-            <a
-              key={index}
-              href="#"
-              className="dropdown-item"
-              onClick={(e) => e.preventDefault()}
-            >
-              {item}
-            </a>
+            item === 'Customer' ? (
+              <Link
+                key={index}
+                to="/customer"
+                className="dropdown-item"
+                onClick={() => setIsDropdownOpen(false)}
+              >
+                {item}
+              </Link>
+            ) : (
+              <a
+                key={index}
+                href="#"
+                className="dropdown-item"
+                onClick={(e) => e.preventDefault()}
+              >
+                {item}
+              </a>
+            )
           ))}
 
         </div>
