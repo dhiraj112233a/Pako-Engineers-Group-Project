@@ -28,7 +28,7 @@ const Navbar = () => {
           </div>
           <div className="logo-text">
             <h1>Welcome to PAKO ENGINEERS</h1>
-            <p>Addison Period Precision Shaft Manufacturing</p>
+            <p>Admin Portal · Precision Shaft Manufacturing</p>
           </div>
         </div>
 
