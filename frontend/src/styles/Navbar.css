@@ -312,3 +312,9 @@
     display: flex;
   }
 }
+
+.dropdown-menu {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
