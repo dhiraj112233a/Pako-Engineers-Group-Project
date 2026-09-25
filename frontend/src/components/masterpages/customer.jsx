@@ -1,472 +1,98 @@
-import React, { useState } from 'react';
-import {
-  Search,
-  Plus,
-  Pencil,
-  Eye,
-  Trash2,
-  Building2,
-  MapPin,
-  Users,
-  X
-} from 'lucide-react';
+import React from 'react';
 
-import '../../styles/customer.css';
+const customers = [
+  { id: 'C-101', name: 'Apex Industries', contact: 'Ravi Shah', status: 'Active', value: '₹2.4L' },
+  { id: 'C-102', name: 'Metro Tools', contact: 'Nisha Patel', status: 'Pending', value: '₹1.8L' },
+  { id: 'C-103', name: 'Prime Castings', contact: 'Anil Mehta', status: 'Active', value: '₹3.1L' },
+  { id: 'C-104', name: 'Greenline Works', contact: 'Simran Khatri', status: 'Inactive', value: '₹96K' }
+];
 
 const Customer = () => {
-  const [search, setSearch] = useState('');
-  const [showForm, setShowForm] = useState(false);
-
-  const [customers, setCustomers] = useState([]);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    pan: '',
-    gst: '',
-    location: '',
-    plant: '',
-    contacts: ''
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleSaveCustomer = (e) => {
-    e.preventDefault();
-
-    if (!formData.name.trim()) {
-      alert('Please enter customer name.');
-      return;
-    }
-
-    const newCustomer = {
-      id: Date.now(),
-      name: formData.name,
-      pan: formData.pan,
-      gst: formData.gst,
-      location: formData.location,
-      plant: formData.plant,
-      contacts: formData.contacts || 0
-    };
-
-    setCustomers([...customers, newCustomer]);
-
-    setFormData({
-      name: '',
-      pan: '',
-      gst: '',
-      location: '',
-      plant: '',
-      contacts: ''
-    });
-
-    setShowForm(false);
-  };
-
-  const handleDelete = (id) => {
-    setCustomers(
-      customers.filter((customer) => customer.id !== id)
-    );
-  };
-
-  const filteredCustomers = customers.filter((customer) =>
-    customer.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
-    <div className="customer-page">
-
-      {/* HEADER */}
-
-      <div className="customer-header">
-
-        <div className="customer-title-section">
-
-          <div className="customer-title-icon">
-            <Building2 size={22} />
-          </div>
-
+    <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1>Customers</h1>
-            <p>Manage customer accounts, contacts & plants</p>
+            <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
+            <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Customers</h2>
           </div>
 
-        </div>
-
-        <button className="help-button">
-          ? How it works?
-        </button>
-
-      </div>
-
-
-      {/* TOOLBAR */}
-
-      <div className="customer-toolbar">
-
-        <div className="customer-search">
-
-          <Search size={18} />
-
-          <input
-            type="text"
-            placeholder="Search customers..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-
-        </div>
-
-
-        <div className="customer-actions">
-
-          <button className="deleted-button">
-            <Trash2 size={15} />
-            Deleted
+          <button style={{ border: 'none', background: '#1d4ed8', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
+            + Add Customer
           </button>
-
-          <button
-            className="add-customer-button"
-            onClick={() => setShowForm(true)}
-          >
-            <Plus size={17} />
-            Add Customer
-          </button>
-
         </div>
 
-      </div>
-
-
-      {/* ADD CUSTOMER FORM */}
-
-      {showForm && (
-
-        <div className="customer-form-container">
-
-          <div className="customer-form-header">
-
-            <div>
-              <h2>Add Customer</h2>
-              <p>Enter customer details</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+          {[
+            ['Total Customers', '284'],
+            ['Active', '216'],
+            ['Pending', '38'],
+            ['Revenue', '₹18.4L']
+          ].map(([label, value]) => (
+            <div key={label} style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', padding: '1rem 1.1rem' }}>
+              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '0.5rem' }}>{label}</div>
+              <div style={{ color: '#0f172a', fontSize: '1.8rem', fontWeight: 700 }}>{value}</div>
             </div>
+          ))}
+        </div>
 
-            <button
-              className="close-form-button"
-              onClick={() => setShowForm(false)}
-            >
-              <X size={20} />
-            </button>
-
+        <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
+          <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, color: '#1f2937' }}>Customer List</h3>
+            <input
+              type="text"
+              placeholder="Search customer"
+              style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }}
+            />
           </div>
 
-
-          <form onSubmit={handleSaveCustomer}>
-
-            <div className="customer-form-grid">
-
-              <div className="form-group">
-
-                <label>
-                  Customer Name
-                </label>
-
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter customer name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  PAN
-                </label>
-
-                <input
-                  type="text"
-                  name="pan"
-                  placeholder="Enter PAN"
-                  value={formData.pan}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  GST
-                </label>
-
-                <input
-                  type="text"
-                  name="gst"
-                  placeholder="Enter GST number"
-                  value={formData.gst}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  Corporate Location
-                </label>
-
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Enter corporate location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  Plant Address
-                </label>
-
-                <input
-                  type="text"
-                  name="plant"
-                  placeholder="Enter plant address"
-                  value={formData.plant}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  Contacts
-                </label>
-
-                <input
-                  type="number"
-                  name="contacts"
-                  min="0"
-                  placeholder="Number of contacts"
-                  value={formData.contacts}
-                  onChange={handleInputChange}
-                />
-
-              </div>
-
-            </div>
-
-
-            <div className="customer-form-actions">
-
-              <button
-                type="button"
-                className="cancel-button"
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                className="save-customer-button"
-              >
-                <Plus size={17} />
-                Save Customer
-              </button>
-
-            </div>
-
-          </form>
-
-        </div>
-
-      )}
-
-
-      {/* CUSTOMER TABLE */}
-
-      <div className="customer-table-container">
-
-        <table className="customer-table">
-
-          <thead>
-
-            <tr>
-              <th>#</th>
-              <th>Customer</th>
-              <th>PAN</th>
-              <th>GST</th>
-              <th>Corp Location</th>
-              <th>Plant Address</th>
-              <th>Contacts</th>
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredCustomers.length === 0 ? (
-
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ background: '#eef2ff' }}>
               <tr>
-
-                <td
-                  colSpan="7"
-                  className="empty-customer-table"
-                >
-                  <Building2 size={32} />
-
-                  <strong>
-                    No customers found
-                  </strong>
-
-                  <span>
-                    Click "Add Customer" to create a customer.
-                  </span>
-
-                </td>
-
+                {['Customer ID', 'Customer Name', 'Contact Person', 'Status', 'Value'].map((header) => (
+                  <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
+                ))}
               </tr>
-
-            ) : (
-
-              filteredCustomers.map((customer, index) => (
-
-                <tr key={customer.id}>
-
-                  <td>
-
-                    <div className="row-number">
-                      {index + 1}
-                    </div>
-
+            </thead>
+            <tbody>
+              {customers.map((customer) => (
+                <tr key={customer.id} style={{ borderBottom: '1px solid #edf2f7' }}>
+                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{customer.id}</td>
+                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{customer.name}</td>
+                  <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{customer.contact}</td>
+                  <td style={{ padding: '0.9rem 1rem' }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '0.4rem 0.7rem',
+                        borderRadius: '999px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        background:
+                          customer.status === 'Active'
+                            ? '#dcfce7'
+                            : customer.status === 'Pending'
+                              ? '#fef3c7'
+                              : '#f3f4f6',
+                        color:
+                          customer.status === 'Active'
+                            ? '#166534'
+                            : customer.status === 'Pending'
+                              ? '#92400e'
+                              : '#374151'
+                      }}
+                    >
+                      {customer.status}
+                    </span>
                   </td>
-
-
-                  <td>
-
-                    <div className="customer-name">
-
-                      <div className="small-building-icon">
-                        <Building2 size={15} />
-                      </div>
-
-                      <div>
-
-                        <strong>
-                          {customer.name}
-                        </strong>
-
-                        <span>
-                          #{customer.id}
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </td>
-
-
-                  <td>
-                    {customer.pan || '—'}
-                  </td>
-
-
-                  <td>
-                    {customer.gst || '—'}
-                  </td>
-
-
-                  <td>
-
-                    <div className="location-cell">
-
-                      <MapPin size={14} />
-
-                      {customer.location || '—'}
-
-                    </div>
-
-                  </td>
-
-
-                  <td>
-                    {customer.plant || '—'}
-                  </td>
-
-
-                  <td>
-
-                    <div className="contact-cell">
-
-                      <div className="table-actions">
-
-                        <button title="Edit">
-                          <Pencil size={14} />
-                        </button>
-
-                        <button title="View">
-                          <Eye size={14} />
-                        </button>
-
-                        <button
-                          title="Delete"
-                          onClick={() =>
-                            handleDelete(customer.id)
-                          }
-                        >
-                          <Trash2 size={14} />
-                        </button>
-
-                      </div>
-
-
-                      <span className="contact-count">
-
-                        <Users size={13} />
-
-                        {customer.contacts}
-
-                      </span>
-
-                    </div>
-
-                  </td>
-
+                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 700 }}>{customer.value}</td>
                 </tr>
-
-              ))
-
-            )}
-
-          </tbody>
-
-        </table>
-
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-    </div>
+    </section>
   );
 };
 
