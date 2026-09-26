@@ -13,6 +13,7 @@ import Machines from './components/masterpages/machines';
 import Instruments from './components/masterpages/instruments';
 import Consumables from './components/masterpages/consumables';
 import BoughtOutItems from './components/masterpages/boughtoutitems';
+import CustomerEnquiry from './components/transactionpages/customerEnquiry';
 import './App.css';
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="/instruments" element={<Instruments />} />
             <Route path="/consumables" element={<Consumables />} />
             <Route path="/bought-out-items" element={<BoughtOutItems />} />
+            <Route path="/customer-enquiry" element={<CustomerEnquiry />} />
 
           </Routes>
 
