@@ -1,56 +1,449 @@
-import React from 'react';
+import React, { useState } from "react";
+import "../../styles/Master.css";
 
-const consumables = [
-  { id: 'CS-001', name: 'Cutting Oil', category: 'Lubricant', stock: '180 L', status: 'Available' },
-  { id: 'CS-002', name: 'Coolant Mix', category: 'Coolant', stock: '96 L', status: 'Low' },
-  { id: 'CS-003', name: 'Safety Gloves', category: 'Safety', stock: '52 pairs', status: 'Available' },
-  { id: 'CS-004', name: 'Cleaning Wipes', category: 'Maintenance', stock: '30 packs', status: 'Review' }
-];
+function Consumables() {
 
-const Consumables = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [consumables, setConsumables] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [name, setName] = useState("");
+  const [code, setCode] = useState("");
+  const [unit, setUnit] = useState("");
+  const [status, setStatus] = useState("Active");
+
+
+  const addConsumable = () => {
+
+    if (name === "") {
+      alert("Please enter consumable name");
+      return;
+    }
+
+    if (code === "") {
+      alert("Please enter consumable code");
+      return;
+    }
+
+    const newConsumable = {
+      id: consumables.length + 1,
+      name: name,
+      code: code,
+      unit: unit,
+      status: status
+    };
+
+    setConsumables([
+      ...consumables,
+      newConsumable
+    ]);
+
+    setName("");
+    setCode("");
+    setUnit("");
+    setStatus("Active");
+
+    setShowForm(false);
+  };
+
+
+  const deleteConsumable = (id) => {
+
+    const newConsumables = consumables.filter(
+      (consumable) => consumable.id !== id
+    );
+
+    setConsumables(newConsumables);
+  };
+
+
+  const filteredConsumables = consumables.filter(
+    (consumable) =>
+      consumable.name
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      consumable.code
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
+
+
+  return (
+    <div className="customer-page">
+
+      {/* Header */}
+
+      <div className="customer-header">
+
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Consumables</h2>
+
+          <p className="small-title">
+            MASTER DATA
+          </p>
+
+          <h1>
+            Consumables
+          </h1>
+
+          <p className="page-description">
+            Manage your consumables
+          </p>
+
         </div>
-        <button style={{ border: 'none', background: '#0f766e', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
+
+
+        <button
+          className="add-button"
+          onClick={() => setShowForm(true)}
+        >
           + Add Consumable
         </button>
+
       </div>
 
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Stock Register</h3>
-          <input type="text" placeholder="Search consumable" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+
+      {/* Summary */}
+
+      <div className="summary-container">
+
+        <div className="summary-box">
+
+          <p>
+            Total Consumables
+          </p>
+
+          <h2>
+            {consumables.length}
+          </h2>
+
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#ecfeff' }}>
-            <tr>
-              {['Consumable ID', 'Name', 'Category', 'Stock', 'Status'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {consumables.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{item.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{item.category}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.stock}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: item.status === 'Available' ? '#dcfce7' : item.status === 'Low' ? '#fef3c7' : '#f3f4f6', color: item.status === 'Available' ? '#166534' : item.status === 'Low' ? '#92400e' : '#374151' }}>{item.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <div className="summary-box">
+
+          <p>
+            Active
+          </p>
+
+          <h2>
+            {
+              consumables.filter(
+                (consumable) =>
+                  consumable.status === "Active"
+              ).length
+            }
+          </h2>
+
+        </div>
+
+
+        <div className="summary-box">
+
+          <p>
+            Inactive
+          </p>
+
+          <h2>
+            {
+              consumables.filter(
+                (consumable) =>
+                  consumable.status === "Inactive"
+              ).length
+            }
+          </h2>
+
+        </div>
+
       </div>
+
+
+      {/* Add Consumable Form */}
+
+      {showForm && (
+
+        <div className="customer-form">
+
+          <div className="form-header">
+
+            <div>
+
+              <h2>
+                Add Consumable
+              </h2>
+
+              <p>
+                Enter consumable details
+              </p>
+
+            </div>
+
+
+            <button
+              className="close-button"
+              onClick={() => setShowForm(false)}
+            >
+              X
+            </button>
+
+          </div>
+
+
+          {/* Consumable Name */}
+
+          <div className="form-group">
+
+            <label>
+              Consumable Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter consumable name"
+              value={name}
+              onChange={(e) =>
+                setName(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Consumable Code */}
+
+          <div className="form-group">
+
+            <label>
+              Consumable Code
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter consumable code"
+              value={code}
+              onChange={(e) =>
+                setCode(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Unit */}
+
+          <div className="form-group">
+
+            <label>
+              Unit
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter unit"
+              value={unit}
+              onChange={(e) =>
+                setUnit(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Status */}
+
+          <div className="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value)
+              }
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          {/* Buttons */}
+
+          <div className="form-buttons">
+
+            <button
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+
+
+            <button
+              className="save-button"
+              onClick={addConsumable}
+            >
+              Save Consumable
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* Consumables Table */}
+
+      <div className="customer-table-container">
+
+        <div className="table-top">
+
+          <h2>
+            Consumable List
+          </h2>
+
+
+          <input
+            type="text"
+            placeholder="Search consumable"
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            className="search-input"
+          />
+
+        </div>
+
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Consumable ID
+              </th>
+
+              <th>
+                Consumable Name
+              </th>
+
+              <th>
+                Consumable Code
+              </th>
+
+              <th>
+                Unit
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {filteredConsumables.length === 0 ? (
+
+              <tr>
+
+                <td
+                  colSpan="6"
+                  className="no-data"
+                >
+                  No consumables found
+                </td>
+
+              </tr>
+
+            ) : (
+
+              filteredConsumables.map(
+                (consumable) => (
+
+                  <tr key={consumable.id}>
+
+                    <td>
+                      C-{consumable.id}
+                    </td>
+
+                    <td>
+                      {consumable.name}
+                    </td>
+
+                    <td>
+                      {consumable.code}
+                    </td>
+
+                    <td>
+                      {consumable.unit || "—"}
+                    </td>
+
+                    <td>
+
+                      <span
+                        className={
+                          consumable.status === "Active"
+                            ? "active-status"
+                            : "inactive-status"
+                        }
+                      >
+                        {consumable.status}
+                      </span>
+
+                    </td>
+
+                    <td>
+
+                      <button
+                        className="delete-button"
+                        onClick={() =>
+                          deleteConsumable(
+                            consumable.id
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                )
+              )
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Consumables;

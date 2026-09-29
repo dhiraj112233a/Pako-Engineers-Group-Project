@@ -1,99 +1,413 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const customers = [
-  { id: 'C-101', name: 'Apex Industries', contact: 'Ravi Shah', status: 'Active', value: '₹2.4L' },
-  { id: 'C-102', name: 'Metro Tools', contact: 'Nisha Patel', status: 'Pending', value: '₹1.8L' },
-  { id: 'C-103', name: 'Prime Castings', contact: 'Anil Mehta', status: 'Active', value: '₹3.1L' },
-  { id: 'C-104', name: 'Greenline Works', contact: 'Simran Khatri', status: 'Inactive', value: '₹96K' }
-];
+function Customer() {
 
-const Customer = () => {
+  // Store customer list
+  const [customers, setCustomers] = useState([]);
+
+  // Show or hide Add Customer form
+  const [showForm, setShowForm] = useState(false);
+
+  // Search box
+  const [search, setSearch] = useState('');
+
+  // Form values
+  const [name, setName] = useState('');
+  const [contact, setContact] = useState('');
+  const [status, setStatus] = useState('Active');
+  const [value, setValue] = useState('');
+
+
+  // Add customer
+  const addCustomer = () => {
+
+    if (name === '') {
+      alert('Please enter customer name');
+      return;
+    }
+
+    const newCustomer = {
+      id: customers.length + 101,
+      name: name,
+      contact: contact,
+      status: status,
+      value: value
+    };
+
+    setCustomers([...customers, newCustomer]);
+
+    // Clear form
+    setName('');
+    setContact('');
+    setStatus('Active');
+    setValue('');
+
+    // Close form
+    setShowForm(false);
+  };
+
+
+  // Delete customer
+  const deleteCustomer = (id) => {
+
+    const newCustomers = customers.filter(
+      (customer) => customer.id !== id
+    );
+
+    setCustomers(newCustomers);
+  };
+
+
+  // Search customers
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+
   return (
-    <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-            <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Customers</h2>
+
+    <div className="customer-page">
+
+      {/* PAGE HEADER */}
+
+      <div className="customer-header">
+
+        <div>
+          <p className="small-title">
+            MASTER DATA
+          </p>
+
+          <h1>
+            Customers
+          </h1>
+
+          <p className="page-description">
+            Manage your customers
+          </p>
+        </div>
+
+
+        <button
+          className="add-button"
+          onClick={() => setShowForm(true)}
+        >
+          + Add Customer
+        </button>
+
+      </div>
+
+
+      {/* SUMMARY */}
+
+      <div className="summary-container">
+
+        <div className="summary-box">
+          <p>Total Customers</p>
+          <h2>{customers.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {
+              customers.filter(
+                (customer) => customer.status === 'Active'
+              ).length
+            }
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Pending</p>
+          <h2>
+            {
+              customers.filter(
+                (customer) => customer.status === 'Pending'
+              ).length
+            }
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Total Value</p>
+          <h2>₹0</h2>
+        </div>
+
+      </div>
+
+
+      {/* ADD CUSTOMER FORM */}
+
+      {showForm && (
+
+        <div className="customer-form">
+
+          <div className="form-header">
+
+            <div>
+              <h2>Add Customer</h2>
+              <p>Enter customer details</p>
+            </div>
+
+            <button
+              className="close-button"
+              onClick={() => setShowForm(false)}
+            >
+              X
+            </button>
+
           </div>
 
-          <button style={{ border: 'none', background: '#1d4ed8', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-            + Add Customer
-          </button>
-        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-          {[
-            ['Total Customers', '284'],
-            ['Active', '216'],
-            ['Pending', '38'],
-            ['Revenue', '₹18.4L']
-          ].map(([label, value]) => (
-            <div key={label} style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', padding: '1rem 1.1rem' }}>
-              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '0.5rem' }}>{label}</div>
-              <div style={{ color: '#0f172a', fontSize: '1.8rem', fontWeight: 700 }}>{value}</div>
-            </div>
-          ))}
-        </div>
+          {/* CUSTOMER NAME */}
 
-        <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-          <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, color: '#1f2937' }}>Customer List</h3>
+          <div className="form-group">
+
+            <label>
+              Customer Name
+            </label>
+
             <input
               type="text"
-              placeholder="Search customer"
-              style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }}
+              placeholder="Enter customer name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
+
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ background: '#eef2ff' }}>
+
+          {/* CONTACT */}
+
+          <div className="form-group">
+
+            <label>
+              Contact Person
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter contact person"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
+
+          </div>
+
+
+          {/* STATUS */}
+
+          <div className="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Pending">
+                Pending
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          {/* VALUE */}
+
+          <div className="form-group">
+
+            <label>
+              Value
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter value"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+
+          </div>
+
+
+          {/* FORM BUTTONS */}
+
+          <div className="form-buttons">
+
+            <button
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+
+            <button
+              className="save-button"
+              onClick={addCustomer}
+            >
+              Save Customer
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* CUSTOMER TABLE */}
+
+      <div className="customer-table-container">
+
+        <div className="table-top">
+
+          <h2>
+            Customer List
+          </h2>
+
+
+          {/* SEARCH */}
+
+          <input
+            type="text"
+            placeholder="Search customer"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+          />
+
+        </div>
+
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Customer ID
+              </th>
+
+              <th>
+                Customer Name
+              </th>
+
+              <th>
+                Contact Person
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Value
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {filteredCustomers.length === 0 ? (
+
               <tr>
-                {['Customer ID', 'Customer Name', 'Contact Person', 'Status', 'Value'].map((header) => (
-                  <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-                ))}
+
+                <td
+                  colSpan="6"
+                  className="no-data"
+                >
+                  No customers found
+                </td>
+
               </tr>
-            </thead>
-            <tbody>
-              {customers.map((customer) => (
-                <tr key={customer.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{customer.id}</td>
-                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{customer.name}</td>
-                  <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{customer.contact}</td>
-                  <td style={{ padding: '0.9rem 1rem' }}>
+
+            ) : (
+
+              filteredCustomers.map((customer) => (
+
+                <tr key={customer.id}>
+
+                  <td>
+                    C-{customer.id}
+                  </td>
+
+                  <td>
+                    {customer.name}
+                  </td>
+
+                  <td>
+                    {customer.contact}
+                  </td>
+
+                  <td>
                     <span
-                      style={{
-                        display: 'inline-block',
-                        padding: '0.4rem 0.7rem',
-                        borderRadius: '999px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        background:
-                          customer.status === 'Active'
-                            ? '#dcfce7'
-                            : customer.status === 'Pending'
-                              ? '#fef3c7'
-                              : '#f3f4f6',
-                        color:
-                          customer.status === 'Active'
-                            ? '#166534'
-                            : customer.status === 'Pending'
-                              ? '#92400e'
-                              : '#374151'
-                      }}
+                      className={
+                        customer.status === 'Active'
+                          ? 'active-status'
+                          : customer.status === 'Pending'
+                            ? 'pending-status'
+                            : 'inactive-status'
+                      }
                     >
                       {customer.status}
                     </span>
                   </td>
-                  <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 700 }}>{customer.value}</td>
+
+                  <td>
+                    {customer.value || '—'}
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteCustomer(customer.id)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
       </div>
-    </section>
+
+    </div>
+
   );
-};
+}
 
 export default Customer;

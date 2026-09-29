@@ -1,56 +1,445 @@
-import React from 'react';
+import React, { useState } from "react";
+import "../../styles/Master.css";
 
-const machines = [
-  { id: 'MC-01', name: 'CNC VMC-120', line: 'Line A', status: 'Running', utilization: '82%' },
-  { id: 'MC-02', name: 'Lathe LT-7', line: 'Line B', status: 'Idle', utilization: '38%' },
-  { id: 'MC-03', name: 'Grinding G-25', line: 'Line C', status: 'Running', utilization: '76%' },
-  { id: 'MC-04', name: 'Drill D-9', line: 'Line A', status: 'Maintenance', utilization: '12%' }
-];
+function Machines() {
 
-const Machines = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [machines, setMachines] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [machineName, setMachineName] = useState("");
+  const [machineCode, setMachineCode] = useState("");
+  const [machineType, setMachineType] = useState("");
+  const [status, setStatus] = useState("Active");
+
+
+  const addMachine = () => {
+
+    if (machineName === "") {
+      alert("Please enter machine name");
+      return;
+    }
+
+    if (machineCode === "") {
+      alert("Please enter machine code");
+      return;
+    }
+
+    const newMachine = {
+      id: machines.length + 1,
+      name: machineName,
+      code: machineCode,
+      type: machineType,
+      status: status
+    };
+
+    setMachines([
+      ...machines,
+      newMachine
+    ]);
+
+    setMachineName("");
+    setMachineCode("");
+    setMachineType("");
+    setStatus("Active");
+
+    setShowForm(false);
+  };
+
+
+  const deleteMachine = (id) => {
+
+    const newMachines = machines.filter(
+      (machine) => machine.id !== id
+    );
+
+    setMachines(newMachines);
+  };
+
+
+  const filteredMachines = machines.filter(
+    (machine) =>
+      machine.name
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      machine.code
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
+
+
+  return (
+    <div className="customer-page">
+
+      {/* Header */}
+
+      <div className="customer-header">
+
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Machines</h2>
+
+          <p className="small-title">
+            MASTER DATA
+          </p>
+
+          <h1>
+            Machines
+          </h1>
+
+          <p className="page-description">
+            Manage your machines
+          </p>
+
         </div>
-        <button style={{ border: 'none', background: '#f59e0b', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
+
+
+        <button
+          className="add-button"
+          onClick={() => setShowForm(true)}
+        >
           + Add Machine
         </button>
+
       </div>
 
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Machine Fleet</h3>
-          <input type="text" placeholder="Search machine" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+
+      {/* Summary */}
+
+      <div className="summary-container">
+
+        <div className="summary-box">
+
+          <p>
+            Total Machines
+          </p>
+
+          <h2>
+            {machines.length}
+          </h2>
+
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#fff7ed' }}>
-            <tr>
-              {['Machine ID', 'Machine Name', 'Line', 'Status', 'Utilization'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {machines.map((machine) => (
-              <tr key={machine.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{machine.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{machine.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{machine.line}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: machine.status === 'Running' ? '#dcfce7' : machine.status === 'Idle' ? '#f3f4f6' : '#fef3c7', color: machine.status === 'Running' ? '#166534' : machine.status === 'Idle' ? '#374151' : '#92400e' }}>{machine.status}</span>
-                </td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 700 }}>{machine.utilization}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <div className="summary-box">
+
+          <p>
+            Active
+          </p>
+
+          <h2>
+            {
+              machines.filter(
+                (machine) => machine.status === "Active"
+              ).length
+            }
+          </h2>
+
+        </div>
+
+
+        <div className="summary-box">
+
+          <p>
+            Inactive
+          </p>
+
+          <h2>
+            {
+              machines.filter(
+                (machine) => machine.status === "Inactive"
+              ).length
+            }
+          </h2>
+
+        </div>
+
       </div>
+
+
+      {/* Add Machine Form */}
+
+      {showForm && (
+
+        <div className="customer-form">
+
+          <div className="form-header">
+
+            <div>
+
+              <h2>
+                Add Machine
+              </h2>
+
+              <p>
+                Enter machine details
+              </p>
+
+            </div>
+
+
+            <button
+              className="close-button"
+              onClick={() => setShowForm(false)}
+            >
+              X
+            </button>
+
+          </div>
+
+
+          {/* Machine Name */}
+
+          <div className="form-group">
+
+            <label>
+              Machine Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter machine name"
+              value={machineName}
+              onChange={(e) =>
+                setMachineName(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Machine Code */}
+
+          <div className="form-group">
+
+            <label>
+              Machine Code
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter machine code"
+              value={machineCode}
+              onChange={(e) =>
+                setMachineCode(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Machine Type */}
+
+          <div className="form-group">
+
+            <label>
+              Machine Type
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter machine type"
+              value={machineType}
+              onChange={(e) =>
+                setMachineType(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Status */}
+
+          <div className="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value)
+              }
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          {/* Buttons */}
+
+          <div className="form-buttons">
+
+            <button
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+
+
+            <button
+              className="save-button"
+              onClick={addMachine}
+            >
+              Save Machine
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* Machine Table */}
+
+      <div className="customer-table-container">
+
+        <div className="table-top">
+
+          <h2>
+            Machine List
+          </h2>
+
+
+          <input
+            type="text"
+            placeholder="Search machine"
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            className="search-input"
+          />
+
+        </div>
+
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Machine ID
+              </th>
+
+              <th>
+                Machine Name
+              </th>
+
+              <th>
+                Machine Code
+              </th>
+
+              <th>
+                Machine Type
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {filteredMachines.length === 0 ? (
+
+              <tr>
+
+                <td
+                  colSpan="6"
+                  className="no-data"
+                >
+                  No machines found
+                </td>
+
+              </tr>
+
+            ) : (
+
+              filteredMachines.map(
+                (machine) => (
+
+                  <tr key={machine.id}>
+
+                    <td>
+                      M-{machine.id}
+                    </td>
+
+                    <td>
+                      {machine.name}
+                    </td>
+
+                    <td>
+                      {machine.code}
+                    </td>
+
+                    <td>
+                      {machine.type || "—"}
+                    </td>
+
+                    <td>
+
+                      <span
+                        className={
+                          machine.status === "Active"
+                            ? "active-status"
+                            : "inactive-status"
+                        }
+                      >
+                        {machine.status}
+                      </span>
+
+                    </td>
+
+                    <td>
+
+                      <button
+                        className="delete-button"
+                        onClick={() =>
+                          deleteMachine(machine.id)
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                )
+              )
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Machines;

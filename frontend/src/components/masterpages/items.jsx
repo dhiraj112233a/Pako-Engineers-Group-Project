@@ -1,63 +1,378 @@
-import React from 'react';
+import React, { useState } from "react";
+import "../../styles/Master.css";
 
-const items = [
-  { id: 'IT-001', name: 'Precision Shaft 220', category: 'Machinery', stock: '142 pcs', value: '₹18.6K' },
-  { id: 'IT-002', name: 'Bearing Set 310', category: 'Components', stock: '87 pcs', value: '₹9.2K' },
-  { id: 'IT-003', name: 'Tool Holder A12', category: 'Tools', stock: '66 pcs', value: '₹12.4K' },
-  { id: 'IT-004', name: 'Cutting Fluid X', category: 'Consumables', stock: '320 L', value: '₹7.8K' }
-];
+function Items() {
 
-const Items = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [items, setItems] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [itemName, setItemName] = useState("");
+  const [itemCode, setItemCode] = useState("");
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("Active");
+
+  const addItem = () => {
+
+    if (itemName === "") {
+      alert("Please enter item name");
+      return;
+    }
+
+    if (itemCode === "") {
+      alert("Please enter item code");
+      return;
+    }
+
+    const newItem = {
+      id: items.length + 1,
+      name: itemName,
+      code: itemCode,
+      category: category,
+      status: status
+    };
+
+    setItems([...items, newItem]);
+
+    setItemName("");
+    setItemCode("");
+    setCategory("");
+    setStatus("Active");
+
+    setShowForm(false);
+  };
+
+  const deleteItem = (id) => {
+
+    const newItems = items.filter(
+      (item) => item.id !== id
+    );
+
+    setItems(newItems);
+  };
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.code.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      {/* Header */}
+
+      <div className="customer-header">
+
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Items</h2>
+          <p className="small-title">MASTER DATA</p>
+
+          <h1>Items</h1>
+
+          <p className="page-description">
+            Manage your items
+          </p>
         </div>
-        <button style={{ border: 'none', background: '#2563eb', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
+
+        <button
+          className="add-button"
+          onClick={() => setShowForm(true)}
+        >
           + Add Item
         </button>
+
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        {[['Total Items', '1,248'], ['In Stock', '946'], ['Low Stock', '142'], ['Inventory Value', '₹18.4L']].map(([label, value]) => (
-          <div key={label} style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', padding: '1rem 1.1rem' }}>
-            <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '0.5rem' }}>{label}</div>
-            <div style={{ color: '#0f172a', fontSize: '1.8rem', fontWeight: 700 }}>{value}</div>
-          </div>
-        ))}
-      </div>
 
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Item Inventory</h3>
-          <input type="text" placeholder="Search item" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+      {/* Summary */}
+
+      <div className="summary-container">
+
+        <div className="summary-box">
+          <p>Total Items</p>
+          <h2>{items.length}</h2>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#eff6ff' }}>
-            <tr>
-              {['Item ID', 'Item Name', 'Category', 'Stock', 'Value'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{item.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{item.category}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.stock}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 700 }}>{item.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="summary-box">
+          <p>Active</p>
+
+          <h2>
+            {
+              items.filter(
+                (item) => item.status === "Active"
+              ).length
+            }
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+
+          <h2>
+            {
+              items.filter(
+                (item) => item.status === "Inactive"
+              ).length
+            }
+          </h2>
+        </div>
+
       </div>
+
+
+      {/* Add Item Form */}
+
+      {showForm && (
+
+        <div className="customer-form">
+
+          <div className="form-header">
+
+            <div>
+              <h2>Add Item</h2>
+
+              <p>
+                Enter item details
+              </p>
+            </div>
+
+            <button
+              className="close-button"
+              onClick={() => setShowForm(false)}
+            >
+              X
+            </button>
+
+          </div>
+
+
+          {/* Item Name */}
+
+          <div className="form-group">
+
+            <label>Item Name</label>
+
+            <input
+              type="text"
+              placeholder="Enter item name"
+              value={itemName}
+              onChange={(e) =>
+                setItemName(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Item Code */}
+
+          <div className="form-group">
+
+            <label>Item Code</label>
+
+            <input
+              type="text"
+              placeholder="Enter item code"
+              value={itemCode}
+              onChange={(e) =>
+                setItemCode(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Category */}
+
+          <div className="form-group">
+
+            <label>Category</label>
+
+            <input
+              type="text"
+              placeholder="Enter category"
+              value={category}
+              onChange={(e) =>
+                setCategory(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Status */}
+
+          <div className="form-group">
+
+            <label>Status</label>
+
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value)
+              }
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          {/* Buttons */}
+
+          <div className="form-buttons">
+
+            <button
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+
+            <button
+              className="save-button"
+              onClick={addItem}
+            >
+              Save Item
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* Item Table */}
+
+      <div className="customer-table-container">
+
+        <div className="table-top">
+
+          <h2>Item List</h2>
+
+          <input
+            type="text"
+            placeholder="Search item"
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            className="search-input"
+          />
+
+        </div>
+
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Item ID</th>
+
+              <th>Item Name</th>
+
+              <th>Item Code</th>
+
+              <th>Category</th>
+
+              <th>Status</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {filteredItems.length === 0 ? (
+
+              <tr>
+
+                <td
+                  colSpan="6"
+                  className="no-data"
+                >
+                  No items found
+                </td>
+
+              </tr>
+
+            ) : (
+
+              filteredItems.map((item) => (
+
+                <tr key={item.id}>
+
+                  <td>
+                    I-{item.id}
+                  </td>
+
+                  <td>
+                    {item.name}
+                  </td>
+
+                  <td>
+                    {item.code}
+                  </td>
+
+                  <td>
+                    {item.category || "—"}
+                  </td>
+
+                  <td>
+
+                    <span
+                      className={
+                        item.status === "Active"
+                          ? "active-status"
+                          : "inactive-status"
+                      }
+                    >
+                      {item.status}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteItem(item.id)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Items;

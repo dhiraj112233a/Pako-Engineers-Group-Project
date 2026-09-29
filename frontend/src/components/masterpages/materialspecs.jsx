@@ -1,56 +1,446 @@
-import React from 'react';
+import React, { useState } from "react";
+import "../../styles/Master.css";
 
-const specs = [
-  { id: 'SP-101', name: 'Spec-42CRMO', version: 'v1.8', status: 'Approved', lastUpdated: '2026-09-15' },
-  { id: 'SP-102', name: 'Spec-BRASS-20', version: 'v2.1', status: 'Draft', lastUpdated: '2026-09-10' },
-  { id: 'SP-103', name: 'Spec-OIL-SYN', version: 'v1.4', status: 'Approved', lastUpdated: '2026-09-08' },
-  { id: 'SP-104', name: 'Spec-CARBON-A3', version: 'v3.0', status: 'Review', lastUpdated: '2026-09-18' }
-];
+function MaterialSpecs() {
 
-const MaterialSpecs = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [materialSpecs, setMaterialSpecs] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [materialName, setMaterialName] = useState("");
+  const [specification, setSpecification] = useState("");
+  const [unit, setUnit] = useState("");
+  const [status, setStatus] = useState("Active");
+
+  const addMaterialSpec = () => {
+
+    if (materialName === "") {
+      alert("Please enter material name");
+      return;
+    }
+
+    if (specification === "") {
+      alert("Please enter specification");
+      return;
+    }
+
+    const newMaterialSpec = {
+      id: materialSpecs.length + 1,
+      materialName: materialName,
+      specification: specification,
+      unit: unit,
+      status: status
+    };
+
+    setMaterialSpecs([
+      ...materialSpecs,
+      newMaterialSpec
+    ]);
+
+    setMaterialName("");
+    setSpecification("");
+    setUnit("");
+    setStatus("Active");
+
+    setShowForm(false);
+  };
+
+
+  const deleteMaterialSpec = (id) => {
+
+    const newMaterialSpecs = materialSpecs.filter(
+      (materialSpec) => materialSpec.id !== id
+    );
+
+    setMaterialSpecs(newMaterialSpecs);
+  };
+
+
+  const filteredMaterialSpecs = materialSpecs.filter(
+    (materialSpec) =>
+      materialSpec.materialName
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      materialSpec.specification
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
+
+
+  return (
+    <div className="customer-page">
+
+      {/* Header */}
+
+      <div className="customer-header">
+
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Material Specs</h2>
+
+          <p className="small-title">
+            MASTER DATA
+          </p>
+
+          <h1>
+            Material Specs
+          </h1>
+
+          <p className="page-description">
+            Manage material specifications
+          </p>
+
         </div>
-        <button style={{ border: 'none', background: '#0ea5e9', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + New Spec
+
+
+        <button
+          className="add-button"
+          onClick={() => setShowForm(true)}
+        >
+          + Add Material Spec
         </button>
+
       </div>
 
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Specification Library</h3>
-          <input type="text" placeholder="Search spec" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+
+      {/* Summary */}
+
+      <div className="summary-container">
+
+        <div className="summary-box">
+
+          <p>
+            Total Specs
+          </p>
+
+          <h2>
+            {materialSpecs.length}
+          </h2>
+
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#f0f9ff' }}>
-            <tr>
-              {['Spec ID', 'Spec Name', 'Version', 'Status', 'Last Updated'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {specs.map((spec) => (
-              <tr key={spec.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{spec.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{spec.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{spec.version}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: spec.status === 'Approved' ? '#dcfce7' : spec.status === 'Review' ? '#fef3c7' : '#f3f4f6', color: spec.status === 'Approved' ? '#166534' : spec.status === 'Review' ? '#92400e' : '#374151' }}>{spec.status}</span>
-                </td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{spec.lastUpdated}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <div className="summary-box">
+
+          <p>
+            Active
+          </p>
+
+          <h2>
+            {
+              materialSpecs.filter(
+                (spec) => spec.status === "Active"
+              ).length
+            }
+          </h2>
+
+        </div>
+
+
+        <div className="summary-box">
+
+          <p>
+            Inactive
+          </p>
+
+          <h2>
+            {
+              materialSpecs.filter(
+                (spec) => spec.status === "Inactive"
+              ).length
+            }
+          </h2>
+
+        </div>
+
       </div>
+
+
+      {/* Add Material Specification Form */}
+
+      {showForm && (
+
+        <div className="customer-form">
+
+          <div className="form-header">
+
+            <div>
+
+              <h2>
+                Add Material Specification
+              </h2>
+
+              <p>
+                Enter material specification details
+              </p>
+
+            </div>
+
+
+            <button
+              className="close-button"
+              onClick={() => setShowForm(false)}
+            >
+              X
+            </button>
+
+          </div>
+
+
+          {/* Material Name */}
+
+          <div className="form-group">
+
+            <label>
+              Material Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter material name"
+              value={materialName}
+              onChange={(e) =>
+                setMaterialName(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Specification */}
+
+          <div className="form-group">
+
+            <label>
+              Specification
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter specification"
+              value={specification}
+              onChange={(e) =>
+                setSpecification(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Unit */}
+
+          <div className="form-group">
+
+            <label>
+              Unit
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter unit"
+              value={unit}
+              onChange={(e) =>
+                setUnit(e.target.value)
+              }
+            />
+
+          </div>
+
+
+          {/* Status */}
+
+          <div className="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value)
+              }
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          {/* Form Buttons */}
+
+          <div className="form-buttons">
+
+            <button
+              className="cancel-button"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+
+
+            <button
+              className="save-button"
+              onClick={addMaterialSpec}
+            >
+              Save Material Spec
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* Material Specs Table */}
+
+      <div className="customer-table-container">
+
+        <div className="table-top">
+
+          <h2>
+            Material Specification List
+          </h2>
+
+
+          <input
+            type="text"
+            placeholder="Search material"
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            className="search-input"
+          />
+
+        </div>
+
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Spec ID
+              </th>
+
+              <th>
+                Material Name
+              </th>
+
+              <th>
+                Specification
+              </th>
+
+              <th>
+                Unit
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {filteredMaterialSpecs.length === 0 ? (
+
+              <tr>
+
+                <td
+                  colSpan="6"
+                  className="no-data"
+                >
+                  No material specifications found
+                </td>
+
+              </tr>
+
+            ) : (
+
+              filteredMaterialSpecs.map(
+                (materialSpec) => (
+
+                  <tr key={materialSpec.id}>
+
+                    <td>
+                      MS-{materialSpec.id}
+                    </td>
+
+                    <td>
+                      {materialSpec.materialName}
+                    </td>
+
+                    <td>
+                      {materialSpec.specification}
+                    </td>
+
+                    <td>
+                      {materialSpec.unit || "—"}
+                    </td>
+
+                    <td>
+
+                      <span
+                        className={
+                          materialSpec.status === "Active"
+                            ? "active-status"
+                            : "inactive-status"
+                        }
+                      >
+                        {materialSpec.status}
+                      </span>
+
+                    </td>
+
+                    <td>
+
+                      <button
+                        className="delete-button"
+                        onClick={() =>
+                          deleteMaterialSpec(
+                            materialSpec.id
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                )
+              )
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
-  </section>
-);
+  );
+}
 
 export default MaterialSpecs;
