@@ -14,30 +14,23 @@ import Instruments from './components/masterpages/instruments';
 import Consumables from './components/masterpages/consumables';
 import BoughtOutItems from './components/masterpages/boughtoutitems';
 import CustomerEnquiry from './components/transactionpages/customerEnquiry';
+import Dashboard from './components/dashboard/Dashboard';
+import WorkOrders from './components/productionpages/WorkOrders';
+import ProductionPlan from './components/productionpages/ProductionPlan';
+import RawMaterial from './components/stockpages/Rawmaterial';
+import FinishedGoods from './components/stockpages/FinishedGoods';
+import StockManagement from './components/stockpages/StockManagement';
 import './App.css';
-
 function App() {
   return (
     <BrowserRouter>
-
       <div className="app-container">
         <div className="navbar-wrapper">
           <Navbar />
         </div>
-
         <main className="main-content">
-
           <Routes>
-
-            <Route
-              path="/"
-              element={
-                <section className="hero-section">
-                  <h1>Welcome to PAKO ENGINEERS</h1>
-                </section>
-              }
-            />
-
+            <Route path="/" element={<Dashboard />} />
             <Route path="/customer" element={<Customer />} />
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/items" element={<Items />} />
@@ -51,14 +44,15 @@ function App() {
             <Route path="/consumables" element={<Consumables />} />
             <Route path="/bought-out-items" element={<BoughtOutItems />} />
             <Route path="/customer-enquiry" element={<CustomerEnquiry />} />
-
+            <Route path="/work-orders" element={<WorkOrders />} />
+            <Route path="/production-plan" element={<ProductionPlan />} />
+            <Route path="/raw-material" element={<RawMaterial />} />
+            <Route path="/finished-goods" element={<FinishedGoods />} />
+            <Route path="/stock-management" element={<StockManagement />} />
           </Routes>
-
         </main>
       </div>
-
     </BrowserRouter>
   );
 }
-
 export default App;

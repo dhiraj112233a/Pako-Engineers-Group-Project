@@ -19,7 +19,12 @@ const MenuDropdown = ({ items }) => {
       "Instruments": "/instruments",
       "Consumables": "/consumables",
       "Bought-out Items": "/bought-out-items",
-      "Customer Enquiry": "/customer-enquiry"
+      "Customer Enquiry": "/customer-enquiry",
+      "Work Orders": "/work-orders",
+      "Production Plan": "/production-plan",
+      "Raw Material": "/raw-material",
+      "Finished Goods": "/finished-goods",
+      "Stock Management": "/stock-management"
     };
 
     if (routes[label]) {
