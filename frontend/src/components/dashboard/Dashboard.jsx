@@ -1,5 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/Erp.css';
+import '../../styles/ErpExtras.css';
+import { useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, balances, stockState, today } from '../../store/erpstore';
 
 const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
 const RESULTS = [18, 22, 19, 25, 21, 27, 24, 26, 24, 16, 0, 0];
@@ -18,26 +21,45 @@ const COLORS = ['#1e3a8a', '#22d3ee', '#3b82f6', '#38bdf8', '#7c3aed', '#0d9488'
 const money = (n) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : `₹${(n / 1e5).toFixed(2)} L`);
 const full = (n) => `₹${Math.round(n).toLocaleString('en-IN')}`;
 
+const SERIES = [
+  ['Basic', '#1e3a8a'], ['GST', '#0d9488'], ['Total', '#38bdf8'], ['Target', '#94a3b8'],
+];
+
 function LineChart() {
-  const W = 620, H = 230, P = 30;
+  const W = 620, H = 230, P = 34;
   const max = Math.max(...TOTAL) * 1.1;
   const x = (i) => P + (i * (W - 2 * P)) / 11;
   const y = (v) => H - P - (v / max) * (H - 2 * P);
   const pts = (a) => a.map((v, i) => `${x(i)},${y(v)}`).join(' ');
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="erp-svg">
-      {[0, 0.25, 0.5, 0.75, 1].map((t) => (
-        <line key={t} x1={P} x2={W - P} y1={H - P - t * (H - 2 * P)} y2={H - P - t * (H - 2 * P)} stroke="#e2e8f0" />
-      ))}
-      <polygon points={`${x(0)},${H - P} ${pts(TOTAL)} ${x(11)},${H - P}`} fill="#38bdf8" opacity="0.12" />
-      <polyline points={pts(TARGET)} fill="none" stroke="#94a3b8" strokeDasharray="4 4" />
-      <polyline points={pts(BASIC)} fill="none" stroke="#1e3a8a" strokeWidth="2" />
-      <polyline points={pts(TOTAL)} fill="none" stroke="#38bdf8" strokeWidth="2" />
-      <polyline points={pts(GST)} fill="none" stroke="#0d9488" strokeWidth="2" />
-      {MONTHS.map((m, i) => (
-        <text key={m} x={x(i)} y={H - 10} fontSize="9" textAnchor="middle" fill="#94a3b8">{m}</text>
-      ))}
-    </svg>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="erp-svg">
+        {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+          <g key={t}>
+            <line x1={P} x2={W - P} y1={H - P - t * (H - 2 * P)} y2={H - P - t * (H - 2 * P)} stroke="#e2e8f0" />
+            <text x={P - 5} y={H - P - t * (H - 2 * P) + 3} fontSize="8" textAnchor="end" fill="#94a3b8">
+              {Math.round((t * max) / 1e5)}L
+            </text>
+          </g>
+        ))}
+        <polygon points={`${x(0)},${H - P} ${pts(TOTAL)} ${x(11)},${H - P}`} fill="#38bdf8" opacity="0.12" />
+        <polyline points={pts(TARGET)} fill="none" stroke="#94a3b8" strokeDasharray="4 4" />
+        <polyline points={pts(BASIC)} fill="none" stroke="#1e3a8a" strokeWidth="2" />
+        <polyline points={pts(TOTAL)} fill="none" stroke="#38bdf8" strokeWidth="2" />
+        <polyline points={pts(GST)} fill="none" stroke="#0d9488" strokeWidth="2" />
+        {MONTHS.map((m, i) => (
+          <g key={m}>
+            <text x={x(i)} y={H - 10} fontSize="9" textAnchor="middle" fill="#94a3b8">{m}</text>
+            <circle cx={x(i)} cy={y(TOTAL[i])} r="8" fill="transparent">
+              <title>{`${m}: ${full(TOTAL[i])} (target ${full(TARGET[i])})`}</title>
+            </circle>
+          </g>
+        ))}
+      </svg>
+      <div className="erp-legend">
+        {SERIES.map(([n, c]) => <span key={n}><i style={{ background: c }}></i>{n}</span>)}
+      </div>
+    </>
   );
 }
 
@@ -46,27 +68,40 @@ function Bars({ data, scale }) {
   return data.map(([name, v], i) => (
     <div className="erp-bar" key={name}>
       <span>{name}</span>
-      <i style={{ width: `${(v / max) * 70}%`, background: COLORS[i] }} title={`₹${(v * scale).toFixed(1)} L`}></i>
+      <i style={{ width: `${(v / max) * 60}%`, background: COLORS[i] }}></i>
+      <em>₹{(v * scale).toFixed(1)} L</em>
     </div>
   ));
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [orders] = useStore(WO_KEY, WO_SEED);
+  const [moves] = useStore(MOVE_KEY, MOVE_SEED);
+
+  const openWo = orders.filter((w) => w.status !== 'Closed');
+  const overdue = openWo.filter((w) => w.due < today()).length;
+  const lowItems = [...balances(moves, 'Raw Material'), ...balances(moves, 'Finished Goods')]
+    .filter((b) => stockState(b) !== 'In stock').length;
+
   const yBasic = sum(BASIC), yGst = sum(GST), yTotal = sum(TOTAL), yTarget = sum(TARGET);
+  const pct = (yTotal / yTarget) * 100;
   const cur = 9; // Jan
   const kpis = [
-    { label: 'Target Achievement', value: `${((yTotal / yTarget) * 100).toFixed(1)}%`, note: `Target: ${money(yTarget)}` },
+    { label: 'Target Achievement', value: `${pct.toFixed(1)}%`, note: `Target: ${money(yTarget)}` },
     { label: 'Daily Pace', value: 'Ahead', note: '+₹29.18 L' },
     { label: 'Invoices (FY)', value: sum(RESULTS) + 5, note: 'This month: 26' },
     { label: 'Active Customers', value: 38 },
     { label: 'Total POs', value: 312, note: 'Pending: 27' },
     { label: 'Prev. FY Sales', value: '₹2.48 Cr' },
+    { label: 'Open Work Orders', value: openWo.length, note: overdue ? `${overdue} overdue` : 'None overdue', to: '/work-orders' },
+    { label: 'Low / Out of Stock', value: lowItems, note: 'View stock', to: '/raw-material' },
   ];
 
   return (
     <div className="erp-page">
       <div className="erp-head">
-        <div><h1>Dashboard</h1><p>FY 2025-26 Overview · demo data</p></div>
+        <div><h1>Dashboard</h1><p>FY 2025-26 Overview · sales figures are demo data</p></div>
       </div>
 
       <div className="erp-grid two">
@@ -90,7 +125,10 @@ export default function Dashboard() {
 
       <div className="erp-grid">
         {kpis.map((k) => (
-          <div className="erp-card" key={k.label}>
+          <div
+            className={`erp-card ${k.to ? 'link' : ''}`} key={k.label}
+            onClick={k.to ? () => navigate(k.to) : undefined}
+          >
             <b>{k.value}</b><small>{k.label}</small>{k.note && <em>{k.note}</em>}
           </div>
         ))}
@@ -131,7 +169,7 @@ export default function Dashboard() {
                 <td><b>Total</b></td><td className="num"><b>{sum(RESULTS)}</b></td><td className="num"><b>{full(yBasic)}</b></td>
                 <td className="num"><b>{full(yGst)}</b></td><td className="num"><b>{full(yTotal)}</b></td>
                 <td className="num"><b>{full(yTarget)}</b></td>
-                <td className="num"><span className="erp-pill bad">{((yTotal / yTarget) * 100).toFixed(1)}%</span></td>
+                <td className="num"><span className={`erp-pill ${pct >= 100 ? 'good' : pct >= 70 ? 'warn' : 'bad'}`}>{pct.toFixed(1)}%</span></td>
               </tr>
             </tbody>
           </table>
