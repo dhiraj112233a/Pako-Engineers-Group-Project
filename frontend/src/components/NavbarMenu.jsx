@@ -188,5 +188,4 @@ const NavbarMenu = ({
     </div>
   );
 };
-
 export default NavbarMenu;

@@ -124,5 +124,4 @@ const CustomerEnquiry = () => {
     </div>
   );
 };
-
 export default CustomerEnquiry;
