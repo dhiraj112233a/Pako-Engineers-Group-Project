@@ -22,6 +22,7 @@ const MenuDropdown = ({ items }) => {
       "Customer Enquiry": "/customer-enquiry",
       "Work Orders": "/work-orders",
       "Production Plan": "/production-plan",
+      "Production Status": "/production-status",
       "Raw Material": "/raw-material",
       "Finished Goods": "/finished-goods",
       "Stock Management": "/stock-management"

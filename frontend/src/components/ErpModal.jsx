@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ErpExtras.css';
 
-// Generic form modal. fields: [{ key, label, type, options, required, default, wide, placeholder }]
+// Generic form modal.
+// fields: [{ key, label, type, options, suggest, required, default, wide, placeholder }]
 // onSave(values) may return a string to show as an error; anything else = success.
 export default function ErpModal({ title, fields, onSave, onClose, submitLabel = 'Save' }) {
   const [vals, setVals] = useState(() => Object.fromEntries(fields.map((f) => [f.key, f.default ?? ''])));
@@ -37,11 +38,19 @@ export default function ErpModal({ title, fields, onSave, onClose, submitLabel =
                   {f.options.map((o) => <option key={o}>{o}</option>)}
                 </select>
               ) : (
-                <input
-                  type={f.type || 'text'} placeholder={f.placeholder} value={vals[f.key]}
-                  step={f.type === 'number' ? 'any' : undefined}
-                  onChange={(e) => setVals({ ...vals, [f.key]: e.target.value })}
-                />
+                <>
+                  <input
+                    type={f.type || 'text'} placeholder={f.placeholder} value={vals[f.key]}
+                    list={f.suggest ? `dl-${f.key}` : undefined}
+                    step={f.type === 'number' ? 'any' : undefined}
+                    onChange={(e) => setVals({ ...vals, [f.key]: e.target.value })}
+                  />
+                  {f.suggest && (
+                    <datalist id={`dl-${f.key}`}>
+                      {f.suggest.map((s) => <option key={s} value={s} />)}
+                    </datalist>
+                  )}
+                </>
               )}
             </label>
           ))}

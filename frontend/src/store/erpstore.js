@@ -9,9 +9,14 @@ const read = (k, init) => {
 export function useStore(key, initial) {
   const [val, setVal] = useState(() => read(key, initial));
   useEffect(() => {
-    const h = (e) => { if (e.detail === key) setVal(read(key, initial)); };
-    window.addEventListener(EVT, h);
-    return () => window.removeEventListener(EVT, h);
+    const sameTab = (e) => { if (e.detail === key) setVal(read(key, initial)); };
+    const otherTab = (e) => { if (e.key === key) setVal(read(key, initial)); };
+    window.addEventListener(EVT, sameTab);
+    window.addEventListener('storage', otherTab);
+    return () => {
+      window.removeEventListener(EVT, sameTab);
+      window.removeEventListener('storage', otherTab);
+    };
   }, [key]);
   const set = useCallback((next) => {
     const cur = read(key, initial);
@@ -48,8 +53,11 @@ export function balances(moves, stockType) {
       reference: m.reference, hsn: '', unit: 'Nos.', onHand: 0, avgRate: 0, value: 0, reorder: 0, lastMovement: null,
     });
     const q = Number(m.qty) || 0, r = Number(m.rate) || 0;
-    if (m.hsn) b.hsn = m.hsn;
-    if (m.unit) b.unit = m.unit;
+    // Only receipts define the item's unit / HSN (issues must not overwrite them)
+    if (m.type === 'Receipt') {
+      if (m.hsn) b.hsn = m.hsn;
+      if (m.unit) b.unit = m.unit;
+    }
     if (m.reorder !== '' && m.reorder != null) b.reorder = Number(m.reorder) || 0;
     if (m.type === 'Receipt') {
       const nv = b.value + q * r;

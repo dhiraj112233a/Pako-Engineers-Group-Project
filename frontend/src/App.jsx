@@ -17,6 +17,7 @@ import CustomerEnquiry from './components/transactionpages/customerEnquiry';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
 import ProductionPlan from './components/productionpages/ProductionPlan';
+import ProductionStatus from './components/productionpages/ProductionStatus';
 import RawMaterial from './components/stockpages/Rawmaterial';
 import FinishedGoods from './components/stockpages/FinishedGoods';
 import StockManagement from './components/stockpages/StockManagement';
@@ -46,6 +47,7 @@ function App() {
             <Route path="/customer-enquiry" element={<CustomerEnquiry />} />
             <Route path="/work-orders" element={<WorkOrders />} />
             <Route path="/production-plan" element={<ProductionPlan />} />
+            <Route path="/production-status" element={<ProductionStatus />} />
             <Route path="/raw-material" element={<RawMaterial />} />
             <Route path="/finished-goods" element={<FinishedGoods />} />
             <Route path="/stock-management" element={<StockManagement />} />

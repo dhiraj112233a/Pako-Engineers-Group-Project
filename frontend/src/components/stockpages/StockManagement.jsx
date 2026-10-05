@@ -3,16 +3,16 @@ import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
 import { useStore, MOVE_KEY, MOVE_SEED, balances, fmtDate, today, skuNo } from '../../store/erpstore';
 
-const fields = [
+const baseFields = [
   { key: 'stock', label: 'Stock', options: ['Raw Material', 'Finished Goods'], default: 'Raw Material' },
   { key: 'type', label: 'Type', options: ['Receipt', 'Issue', 'Adjust', 'Dispatch'], default: 'Receipt' },
   { key: 'reference', label: 'Reference (item / material)', required: true, wide: true },
   { key: 'qty', label: 'Qty (Adjust can be negative)', type: 'number', required: true },
   { key: 'rate', label: 'Rate (₹) — used on Receipt', type: 'number' },
-  { key: 'unit', label: 'Unit', default: 'Nos.' },
-  { key: 'hsn', label: 'HSN' },
+  { key: 'unit', label: 'Unit (set on Receipt)', default: 'Nos.' },
+  { key: 'hsn', label: 'HSN (set on Receipt)' },
   { key: 'reorder', label: 'Reorder level', type: 'number' },
-  { key: 'date', label: 'Date', type: 'date', default: today() },
+  { key: 'date', label: 'Date', type: 'date' },
 ];
 
 const tone = { Receipt: 'good', Issue: 'warn', Adjust: '', Dispatch: 'bad' };
@@ -20,6 +20,15 @@ const tone = { Receipt: 'good', Issue: 'warn', Adjust: '', Dispatch: 'bad' };
 export default function StockManagement() {
   const [moves, setMoves] = useStore(MOVE_KEY, MOVE_SEED);
   const [show, setShow] = useState(false);
+
+  // Suggest existing references so typos don't create duplicate items;
+  // default the date at open-time (not module-load time).
+  const refs = [...new Set(moves.map((m) => m.reference))];
+  const fields = baseFields.map((f) => {
+    if (f.key === 'reference') return { ...f, suggest: refs };
+    if (f.key === 'date') return { ...f, default: today() };
+    return f;
+  });
 
   const save = (v) => {
     const ref = v.reference.trim().toUpperCase();

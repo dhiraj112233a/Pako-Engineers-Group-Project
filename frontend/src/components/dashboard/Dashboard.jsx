@@ -12,6 +12,9 @@ const TOTAL = BASIC.map((b, i) => b + GST[i]);
 const TARGET = MONTHS.map(() => 25e5);
 const sum = (a) => a.reduce((s, x) => s + x, 0);
 
+// Index of the latest month that has sales — charts stop here instead of dropping to 0.
+const LAST = BASIC.reduce((last, v, i) => (v > 0 ? i : last), 0);
+
 const CUSTOMERS = [
   ['Kirloskar Brothers Ltd', 62], ['Shakti Pumps', 55], ['CRI Pumps', 44], ['KSB Limited', 38], ['Grundfos India', 30],
   ['Texmo Industries', 26], ['Lubi Pumps', 21], ['Crompton Greaves', 17], ['Falcon Pumps', 12], ['Oswal Pumps', 9],
@@ -27,10 +30,11 @@ const SERIES = [
 
 function LineChart() {
   const W = 620, H = 230, P = 34;
+  const n = LAST + 1;
   const max = Math.max(...TOTAL) * 1.1;
   const x = (i) => P + (i * (W - 2 * P)) / 11;
   const y = (v) => H - P - (v / max) * (H - 2 * P);
-  const pts = (a) => a.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  const pts = (a) => a.slice(0, n).map((v, i) => `${x(i)},${y(v)}`).join(' ');
   return (
     <>
       <svg viewBox={`0 0 ${W} ${H}`} className="erp-svg">
@@ -42,22 +46,24 @@ function LineChart() {
             </text>
           </g>
         ))}
-        <polygon points={`${x(0)},${H - P} ${pts(TOTAL)} ${x(11)},${H - P}`} fill="#38bdf8" opacity="0.12" />
-        <polyline points={pts(TARGET)} fill="none" stroke="#94a3b8" strokeDasharray="4 4" />
+        <polygon points={`${x(0)},${H - P} ${pts(TOTAL)} ${x(n - 1)},${H - P}`} fill="#38bdf8" opacity="0.12" />
+        <polyline points={TARGET.map((v, i) => `${x(i)},${y(v)}`).join(' ')} fill="none" stroke="#94a3b8" strokeDasharray="4 4" />
         <polyline points={pts(BASIC)} fill="none" stroke="#1e3a8a" strokeWidth="2" />
         <polyline points={pts(TOTAL)} fill="none" stroke="#38bdf8" strokeWidth="2" />
         <polyline points={pts(GST)} fill="none" stroke="#0d9488" strokeWidth="2" />
         {MONTHS.map((m, i) => (
           <g key={m}>
             <text x={x(i)} y={H - 10} fontSize="9" textAnchor="middle" fill="#94a3b8">{m}</text>
-            <circle cx={x(i)} cy={y(TOTAL[i])} r="8" fill="transparent">
-              <title>{`${m}: ${full(TOTAL[i])} (target ${full(TARGET[i])})`}</title>
-            </circle>
+            {i < n && (
+              <circle cx={x(i)} cy={y(TOTAL[i])} r="8" fill="transparent">
+                <title>{`${m}: ${full(TOTAL[i])} (target ${full(TARGET[i])})`}</title>
+              </circle>
+            )}
           </g>
         ))}
       </svg>
       <div className="erp-legend">
-        {SERIES.map(([n, c]) => <span key={n}><i style={{ background: c }}></i>{n}</span>)}
+        {SERIES.map(([name, c]) => <span key={name}><i style={{ background: c }}></i>{name}</span>)}
       </div>
     </>
   );
@@ -81,21 +87,24 @@ export default function Dashboard() {
 
   const openWo = orders.filter((w) => w.status !== 'Closed');
   const overdue = openWo.filter((w) => w.due < today()).length;
-  const lowItems = [...balances(moves, 'Raw Material'), ...balances(moves, 'Finished Goods')]
-    .filter((b) => stockState(b) !== 'In stock').length;
+  const allBalances = [...balances(moves, 'Raw Material'), ...balances(moves, 'Finished Goods')];
+  const lowItems = allBalances.filter((b) => stockState(b) !== 'In stock').length;
+  const stockValue = sum(allBalances.map((b) => b.value));
 
   const yBasic = sum(BASIC), yGst = sum(GST), yTotal = sum(TOTAL), yTarget = sum(TARGET);
   const pct = (yTotal / yTarget) * 100;
-  const cur = 9; // Jan
+  const cur = LAST;
+
   const kpis = [
     { label: 'Target Achievement', value: `${pct.toFixed(1)}%`, note: `Target: ${money(yTarget)}` },
     { label: 'Daily Pace', value: 'Ahead', note: '+₹29.18 L' },
-    { label: 'Invoices (FY)', value: sum(RESULTS) + 5, note: 'This month: 26' },
+    { label: 'Invoices (FY)', value: sum(RESULTS), note: `This month: ${RESULTS[cur]}` },
     { label: 'Active Customers', value: 38 },
     { label: 'Total POs', value: 312, note: 'Pending: 27' },
     { label: 'Prev. FY Sales', value: '₹2.48 Cr' },
     { label: 'Open Work Orders', value: openWo.length, note: overdue ? `${overdue} overdue` : 'None overdue', to: '/work-orders' },
     { label: 'Low / Out of Stock', value: lowItems, note: 'View stock', to: '/raw-material' },
+    { label: 'Stock Value', value: full(stockValue), note: 'Raw + finished', to: '/raw-material' },
   ];
 
   return (
@@ -114,7 +123,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="erp-card">
-          <h3>Monthly Sales <span className="erp-badge">↗ 115.5%</span></h3>
+          <h3>Monthly Sales ({MONTHS[cur]}) <span className="erp-badge">↗ 115.5%</span></h3>
           <div className="erp-split">
             <div><small>Basic</small><b>{money(BASIC[cur])}</b></div>
             <div><small>GST</small><b>{money(GST[cur])}</b></div>

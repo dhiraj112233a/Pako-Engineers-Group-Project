@@ -1,19 +1,41 @@
 import React, { useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
-import { useStore, WO_KEY, WO_SEED } from '../../store/erpstore';
+import { useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, today } from '../../store/erpstore';
+
+const UNIT = { NOS: 'Nos.', KG: 'Kg', SET: 'Set' };
 
 export default function ProductionPlan() {
   const [rows, setRows] = useStore(WO_KEY, WO_SEED);
+  const [, setMoves] = useStore(MOVE_KEY, MOVE_SEED);
   const [target, setTarget] = useState(null);
 
   const save = (v) => {
     const done = v.done === '' ? target.done : Number(v.done);
-    if (done < 0 || done > target.qty) return `Completed qty must be between 0 and ${target.qty}`;
+    if (Number.isNaN(done)) return 'Enter a valid completed quantity';
+    if (done < target.done) return `Completed qty cannot go below ${target.done}`;
+    if (done > target.qty) return `Completed qty cannot exceed ${target.qty}`;
+
+    // Newly completed pieces go into Finished Goods stock automatically.
+    const delta = done - target.done;
+    if (delta > 0) {
+      setMoves((list) => [
+        ...list,
+        {
+          id: Math.max(0, ...list.map((m) => m.id)) + 1, date: today(), type: 'Receipt',
+          stock: 'Finished Goods', reference: target.drawing.trim().toUpperCase(), hsn: '',
+          unit: UNIT[target.unit] || 'Nos.', qty: delta, rate: 0, reorder: '', source: target.woNo,
+        },
+      ]);
+    }
+
     setRows((list) => list.map((w) => {
       if (w.id !== target.id) return w;
       const status = done >= w.qty ? 'Closed' : done > 0 ? 'In Progress' : w.status;
-      return { ...w, done, status, operations: [...(w.operations || []), { process: v.process.trim(), machine: v.machine.trim() }] };
+      return {
+        ...w, done, status,
+        operations: [...(w.operations || []), { process: v.process.trim(), machine: v.machine.trim() }],
+      };
     }));
     setTarget(null);
   };
@@ -49,7 +71,7 @@ export default function ProductionPlan() {
     <>
       <ErpTablePage
         title="Production Plan" icon="fa-tasks"
-        subtitle="Plan each work order's operations (process → machine), then record actual progress."
+        subtitle="Plan each work order's operations (process → machine), then record actual progress. Completed qty is added to Finished Goods automatically."
         stats={[
           { label: 'Work orders', value: rows.length },
           { label: 'Not planned', value: rows.filter((r) => !r.operations?.length && r.status !== 'Closed').length, tone: 'red' },
