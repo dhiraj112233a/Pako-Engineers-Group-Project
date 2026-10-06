@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/ErpExtras.css';
-
 // Generic form modal.
 // fields: [{ key, label, type, options, suggest, required, default, wide, placeholder }]
 // onSave(values) may return a string to show as an error; anything else = success.

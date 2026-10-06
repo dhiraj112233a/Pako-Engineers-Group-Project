@@ -1,10 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../styles/MenuDropdown.css";
-
 const MenuDropdown = ({ items }) => {
   const navigate = useNavigate();
-
   const handleItemClick = (label) => {
     const routes = {
       "Customers": "/customer",
@@ -27,12 +25,10 @@ const MenuDropdown = ({ items }) => {
       "Finished Goods": "/finished-goods",
       "Stock Management": "/stock-management"
     };
-
     if (routes[label]) {
       navigate(routes[label]);
     }
   };
-
   return (
     <div className="menu-dropdown">
       <div className="dropdown-grid">
@@ -50,5 +46,4 @@ const MenuDropdown = ({ items }) => {
     </div>
   );
 };
-
 export default MenuDropdown;
