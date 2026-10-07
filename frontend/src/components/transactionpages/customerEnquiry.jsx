@@ -90,20 +90,18 @@ const CustomerEnquiry = () => {
                   <td className="px-4 py-3 text-sm text-gray-600">{item.date}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{item.days}</td>
                   <td className="px-4 py-3 text-sm font-medium">
-                    <span className={`${
-                      item.priority === 'High' ? 'text-red-600' :
-                      item.priority === 'Medium' ? 'text-orange-500' :
-                      'text-green-600'
-                    }`}>
+                    <span className={`${item.priority === 'High' ? 'text-red-600' :
+                        item.priority === 'Medium' ? 'text-orange-500' :
+                          'text-green-600'
+                      }`}>
                       {item.priority}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm font-medium">
-                    <span className={`${
-                      item.status === 'Quoted' ? 'text-purple-600' :
-                      item.status === 'Open' ? 'text-blue-600' :
-                      'text-gray-600'
-                    }`}>
+                    <span className={`${item.status === 'Quoted' ? 'text-purple-600' :
+                        item.status === 'Open' ? 'text-blue-600' :
+                          'text-gray-600'
+                      }`}>
                       {item.status}
                     </span>
                   </td>
