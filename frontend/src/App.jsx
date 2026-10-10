@@ -14,6 +14,7 @@ import Instruments from './components/masterpages/instruments';
 import Consumables from './components/masterpages/consumables';
 import BoughtOutItems from './components/masterpages/boughtoutitems';
 import CustomerEnquiry from './components/transactionpages/customerEnquiry';
+import SalesInvoices from './components/transactionpages/Salesinvoices';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
 import ProductionPlan from './components/productionpages/ProductionPlan';
@@ -45,6 +46,7 @@ function App() {
             <Route path="/consumables" element={<Consumables />} />
             <Route path="/bought-out-items" element={<BoughtOutItems />} />
             <Route path="/customer-enquiry" element={<CustomerEnquiry />} />
+            <Route path="/sales-invoices" element={<SalesInvoices />} />
             <Route path="/work-orders" element={<WorkOrders />} />
             <Route path="/production-plan" element={<ProductionPlan />} />
             <Route path="/production-status" element={<ProductionStatus />} />

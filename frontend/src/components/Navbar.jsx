@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import NavbarMenu from './NavbarMenu';
-import "../styles/navbar.css";
+import "../styles/Navbar.css";
 
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState('Dashboard');
@@ -51,7 +51,7 @@ const Navbar = () => {
           <button className="nav-icon-btn" title="User">
             <i className="fas fa-user-circle"></i>
           </button>
-          <button
+          <button 
             className="hamburger-menu"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -72,7 +72,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="mobile-menu">
           {menuItems.map((item, index) => (
-            <button
+            <button 
               key={index}
               className={`mobile-menu-item ${activeMenu === item.label ? 'active' : ''}`}
               onClick={() => {

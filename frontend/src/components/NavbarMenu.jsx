@@ -54,7 +54,8 @@ const NavbarMenu = ({
         { icon: 'fa-clock', label: 'Pending List' },
         { icon: 'fa-arrow-right-arrow-left', label: 'Process PR' },
         { icon: 'fa-arrow-right-arrow-left', label: 'Process PO' },
-        { icon: 'fa-truck-fast', label: 'Dispatch' }
+        { icon: 'fa-truck-fast', label: 'Dispatch' },
+        { icon: 'fa-file-invoice-dollar', label: 'Sales Invoice' }
       ]
     },
     {

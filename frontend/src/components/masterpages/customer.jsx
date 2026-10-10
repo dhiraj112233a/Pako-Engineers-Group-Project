@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { useStore, CUST_KEY } from '../../store/erpstore';
 
 function Customer() {
 
-  // Store customer list
-  const [customers, setCustomers] = useState([]);
+  // Customer list (saved in localStorage so the Dashboard and Invoices can use it)
+  const [customers, setCustomers] = useStore(CUST_KEY, []);
 
   // Show or hide Add Customer form
   const [showForm, setShowForm] = useState(false);
@@ -22,14 +23,14 @@ function Customer() {
   // Add customer
   const addCustomer = () => {
 
-    if (name === '') {
+    if (name.trim() === '') {
       alert('Please enter customer name');
       return;
     }
 
     const newCustomer = {
-      id: customers.length + 101,
-      name: name,
+      id: Math.max(100, ...customers.map((c) => c.id)) + 1,
+      name: name.trim().toUpperCase(),
       contact: contact,
       status: status,
       value: value
