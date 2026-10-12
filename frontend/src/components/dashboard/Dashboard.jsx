@@ -6,16 +6,13 @@ import {
   useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, INV_KEY, CUST_KEY, TARGET_KEY,
   balances, stockState, today, fyOf, fyLabel, fyIndex, salesByMonth, salesByCustomer,
 } from '../../store/erpstore';
-
 const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
 const COLORS = ['#1e3a8a', '#22d3ee', '#3b82f6', '#38bdf8', '#7c3aed', '#0d9488', '#2563eb', '#60a5fa', '#6d28d9', '#0891b2'];
 const SERIES = [['Basic', '#1e3a8a'], ['GST', '#0d9488'], ['Total', '#38bdf8'], ['Target', '#94a3b8']];
-
 const sum = (a) => a.reduce((s, x) => s + x, 0);
 const money = (n) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : `₹${(n / 1e5).toFixed(2)} L`);
 const full = (n) => `₹${Math.round(n).toLocaleString('en-IN')}`;
 const delta = (cur, prev) => (prev > 0 ? ((cur - prev) / prev) * 100 : null);
-
 function Badge({ v }) {
   if (v === null) return null;
   return (
@@ -24,7 +21,6 @@ function Badge({ v }) {
     </span>
   );
 }
-
 function LineChart({ basic, gst, total, target }) {
   const W = 620, H = 230, P = 34;
   const max = Math.max(...total, ...target, 1) * 1.1;
@@ -62,7 +58,6 @@ function LineChart({ basic, gst, total, target }) {
     </>
   );
 }
-
 function Bars({ data }) {
   if (!data.length) return <p className="erp-empty" style={{ padding: 16 }}>No sales in this period</p>;
   const max = Math.max(...data.map((d) => d[1]), 1);
@@ -74,7 +69,6 @@ function Bars({ data }) {
     </div>
   ));
 }
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const [orders] = useStore(WO_KEY, WO_SEED);
@@ -82,30 +76,24 @@ export default function Dashboard() {
   const [invoices] = useStore(INV_KEY, []);
   const [customers] = useStore(CUST_KEY, []);
   const [monthlyTarget, setMonthlyTarget] = useStore(TARGET_KEY, 2500000);
-
   const curFy = fyOf(today());
   const [fy, setFy] = useState(curFy);
   const years = [...new Set([curFy, ...invoices.map((i) => fyOf(i.date))])].sort((a, b) => b - a);
-
   // ---- everything below is derived from stored data ----
   const m = salesByMonth(invoices, fy);
   const prev = salesByMonth(invoices, fy - 1);
   const TARGET = Array(12).fill(monthlyTarget);
   const cur = fy === curFy ? fyIndex(today()) : 11;
-
   const yBasic = sum(m.basic), yGst = sum(m.gst), yTotal = sum(m.total), yTarget = sum(TARGET);
   const prevTotal = sum(prev.total);
   const pct = yTarget ? (yTotal / yTarget) * 100 : 0;
   const invCount = sum(m.count);
-
   const openWo = orders.filter((w) => w.status !== 'Closed');
   const overdue = openWo.filter((w) => w.due < today()).length;
   const lowItems = [...balances(moves, 'Raw Material'), ...balances(moves, 'Finished Goods')]
     .filter((b) => stockState(b) !== 'In stock').length;
-
   const billedCustomers = new Set(invoices.filter((i) => fyOf(i.date) === fy).map((i) => i.customer)).size;
   const activeCustomers = customers.filter((c) => c.status === 'Active').length;
-
   const kpis = [
     { label: 'Target Achievement', value: `${pct.toFixed(1)}%`, note: `Target: ${money(yTarget)}` },
     { label: `Invoices (FY ${fyLabel(fy)})`, value: invCount, note: `This month: ${m.count[cur]}`, to: '/sales-invoices' },
@@ -115,14 +103,12 @@ export default function Dashboard() {
     { label: 'Open Work Orders', value: openWo.length, note: overdue ? `${overdue} overdue` : 'None overdue', to: '/work-orders' },
     { label: 'Low / Out of Stock', value: lowItems, note: 'View stock', to: '/raw-material' },
   ];
-
   const editTarget = () => {
     const v = window.prompt('Monthly sales target (₹)', monthlyTarget);
     if (v === null) return;
     const n = Number(v);
     if (n > 0) setMonthlyTarget(n);
   };
-
   return (
     <div className="erp-page">
       <div className="erp-head">
@@ -138,7 +124,6 @@ export default function Dashboard() {
           <button className="erp-btn" onClick={() => navigate('/sales-invoices')}>+ Add invoice</button>
         </div>
       </div>
-
       {invCount === 0 && (
         <div className="erp-card" style={{ marginBottom: 14, background: '#eef2ff' }}>
           <h3>No sales recorded for FY {fyLabel(fy)}</h3>
@@ -147,7 +132,6 @@ export default function Dashboard() {
           </p>
         </div>
       )}
-
       <div className="erp-grid two">
         <div className="erp-card">
           <h3>Yearly Sales <Badge v={delta(yTotal, prevTotal)} /></h3>
@@ -166,7 +150,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
       <div className="erp-grid">
         {kpis.map((k) => (
           <div
@@ -177,7 +160,6 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
-
       <div className="erp-grid two">
         <div className="erp-card">
           <h3>Monthly Sales vs Target</h3>
@@ -188,12 +170,10 @@ export default function Dashboard() {
           <Bars data={salesByCustomer(invoices, fy, cur)} />
         </div>
       </div>
-
       <div className="erp-card" style={{ marginBottom: 18 }}>
         <h3>Customer-wise Sales — Yearly</h3>
         <Bars data={salesByCustomer(invoices, fy)} />
       </div>
-
       <div className="erp-card">
         <h3>Month-wise Breakdown — FY {fyLabel(fy)}</h3>
         <div className="erp-table-wrap">
