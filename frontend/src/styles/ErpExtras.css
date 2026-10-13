@@ -203,6 +203,18 @@
     border-color: #1d4ed8;
 }
 
+/* NEW: red border + message under a field that failed validation */
+.erp-form-grid input.has-err,
+.erp-form-grid select.has-err {
+    border-color: #ef4444;
+}
+
+.erp-field-err {
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 500;
+}
+
 .erp-err {
     color: #b91c1c;
     background: #fee2e2;

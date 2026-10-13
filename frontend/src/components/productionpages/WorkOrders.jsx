@@ -3,12 +3,14 @@ import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
 import { useStore, WO_KEY, WO_SEED, fmtDate, today, nextWoNo } from '../../store/erpstore';
 
-const fields = [
-  { key: 'customer', label: 'Customer', required: true, wide: true, placeholder: 'e.g. NAMOKAR ENGINEERING' },
-  { key: 'drawing', label: 'Drawing No', required: true },
-  { key: 'qty', label: 'Quantity', type: 'number', required: true },
+// Built inside a function so "today" is read when the modal opens,
+// not once when the file loads (which goes stale if the page stays open overnight).
+const buildFields = () => [
+  { key: 'customer', label: 'Customer', required: true, wide: true, upper: true, placeholder: 'e.g. NAMOKAR ENGINEERING' },
+  { key: 'drawing', label: 'Drawing No', required: true, upper: true },
+  { key: 'qty', label: 'Quantity', type: 'number', required: true, integer: true, min: 1 },
   { key: 'unit', label: 'Unit', options: ['NOS', 'KG', 'SET'], default: 'NOS' },
-  { key: 'due', label: 'Due date', type: 'date', required: true },
+  { key: 'due', label: 'Due date', type: 'date', required: true, min: today() },
   { key: 'priority', label: 'Priority', options: ['Low', 'Normal', 'High'], default: 'Normal' },
 ];
 
@@ -22,7 +24,7 @@ export default function WorkOrders() {
   const isOverdue = (r) => r.status !== 'Closed' && r.due < today();
 
   const save = (v) => {
-    if (Number(v.qty) <= 0) return 'Quantity must be greater than 0';
+    // basic checks (quantity > 0, whole number) are now done by the modal itself
     setRows((list) => [
       { id: Date.now(), woNo: nextWoNo(list), ...v, qty: Number(v.qty), done: 0, approval: '—', status: 'Open', operations: [] },
       ...list,
@@ -68,7 +70,7 @@ export default function WorkOrders() {
         ]}
         empty="No work orders yet — click + New Work Order"
       />
-      {show && <ErpModal title="New Work Order" fields={fields} onSave={save} onClose={() => setShow(false)} submitLabel="Create" />}
+      {show && <ErpModal title="New Work Order" fields={buildFields()} onSave={save} onClose={() => setShow(false)} submitLabel="Create" />}
     </>
   );
 }

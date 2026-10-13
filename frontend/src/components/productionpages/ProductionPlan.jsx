@@ -12,6 +12,7 @@ export default function ProductionPlan() {
 
   const save = (v) => {
     const done = v.done === '' ? target.done : Number(v.done);
+    // kept as a safety net — the modal already checks min / max / whole number
     if (Number.isNaN(done)) return 'Enter a valid completed quantity';
     if (done < target.done) return `Completed qty cannot go below ${target.done}`;
     if (done > target.qty) return `Completed qty cannot exceed ${target.qty}`;
@@ -63,8 +64,11 @@ export default function ProductionPlan() {
 
   const fields = target && [
     { key: 'process', label: 'Process', required: true, placeholder: 'e.g. Turning' },
-    { key: 'machine', label: 'Machine', required: true, placeholder: 'e.g. CNC-01' },
-    { key: 'done', label: `Qty completed so far (of ${target.qty})`, type: 'number', default: target.done, wide: true },
+    { key: 'machine', label: 'Machine', required: true, upper: true, placeholder: 'e.g. CNC-01' },
+    {
+      key: 'done', label: `Qty completed so far (of ${target.qty})`, type: 'number', wide: true,
+      default: target.done, integer: true, min: target.done, max: target.qty,
+    },
   ];
 
   return (

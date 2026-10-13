@@ -13,18 +13,17 @@ export default function SalesInvoices() {
   // Pick from the Customer master when it has entries, otherwise type the name.
   const customerField = customers.length
     ? { key: 'customer', label: 'Customer', options: customers.map((c) => c.name), default: customers[0].name, wide: true }
-    : { key: 'customer', label: 'Customer', required: true, wide: true, placeholder: 'Type customer name (or add customers in Master → Customers)' };
+    : { key: 'customer', label: 'Customer', required: true, wide: true, upper: true, placeholder: 'Type customer name (or add customers in Master → Customers)' };
 
   const fields = [
     customerField,
     { key: 'date', label: 'Invoice date', type: 'date', required: true, default: today() },
-    { key: 'basic', label: 'Basic amount (₹)', type: 'number', required: true },
+    { key: 'basic', label: 'Basic amount (₹)', type: 'number', required: true, min: 0.01 },
     { key: 'gstPct', label: 'GST %', options: ['0', '5', '12', '18', '28'], default: '18' },
   ];
 
   const save = (v) => {
     const basic = Number(v.basic);
-    if (!(basic > 0)) return 'Basic amount must be greater than 0';
     setRows((list) => [
       { id: Date.now(), invNo: nextInvNo(list), customer: v.customer.trim().toUpperCase(), date: v.date, basic, gstPct: Number(v.gstPct) },
       ...list,

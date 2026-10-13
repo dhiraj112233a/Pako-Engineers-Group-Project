@@ -19,7 +19,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
 import ProductionPlan from './components/productionpages/ProductionPlan';
 import ProductionStatus from './components/productionpages/ProductionStatus';
-import RawMaterial from './components/stockpages/Rawmaterial';
+import RawMaterial from './components/stockpages/RawMaterial';
 import FinishedGoods from './components/stockpages/FinishedGoods';
 import StockManagement from './components/stockpages/StockManagement';
 import './App.css';

@@ -3,15 +3,18 @@ import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
 import { useStore, MOVE_KEY, MOVE_SEED, balances, fmtDate, today, skuNo } from '../../store/erpstore';
 
+// Rate, unit, HSN and reorder level only matter when stock is received.
+const isReceipt = (v) => v.type === 'Receipt';
+
 const baseFields = [
   { key: 'stock', label: 'Stock', options: ['Raw Material', 'Finished Goods'], default: 'Raw Material' },
   { key: 'type', label: 'Type', options: ['Receipt', 'Issue', 'Adjust', 'Dispatch'], default: 'Receipt' },
-  { key: 'reference', label: 'Reference (item / material)', required: true, wide: true },
+  { key: 'reference', label: 'Reference (item / material)', required: true, wide: true, upper: true },
   { key: 'qty', label: 'Qty (Adjust can be negative)', type: 'number', required: true },
-  { key: 'rate', label: 'Rate (₹) — used on Receipt', type: 'number' },
-  { key: 'unit', label: 'Unit (set on Receipt)', default: 'Nos.' },
-  { key: 'hsn', label: 'HSN (set on Receipt)' },
-  { key: 'reorder', label: 'Reorder level', type: 'number' },
+  { key: 'rate', label: 'Rate (₹)', type: 'number', min: 0, showIf: isReceipt },
+  { key: 'unit', label: 'Unit', default: 'Nos.', showIf: isReceipt },
+  { key: 'hsn', label: 'HSN', showIf: isReceipt, pattern: /^\d{4,8}$/, patternMsg: 'HSN must be 4–8 digits' },
+  { key: 'reorder', label: 'Reorder level', type: 'number', integer: true, min: 0, showIf: isReceipt },
   { key: 'date', label: 'Date', type: 'date' },
 ];
 
@@ -43,7 +46,18 @@ export default function StockManagement() {
     }
     setMoves((list) => [
       ...list,
-      { id: Math.max(0, ...list.map((m) => m.id)) + 1, ...v, reference: ref, qty, rate: Number(v.rate) || 0, source: 'Manual' },
+      {
+        id: Math.max(0, ...list.map((m) => m.id)) + 1,
+        ...v,
+        reference: ref,
+        qty,
+        // these fields are hidden (so undefined) for Issue / Adjust / Dispatch
+        rate: Number(v.rate) || 0,
+        unit: v.unit || '',
+        hsn: v.hsn || '',
+        reorder: v.reorder ?? '',
+        source: 'Manual',
+      },
     ]);
     setShow(false);
   };
