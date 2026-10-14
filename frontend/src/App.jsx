@@ -14,6 +14,14 @@ import Instruments from './components/masterpages/instruments';
 import Consumables from './components/masterpages/consumables';
 import BoughtOutItems from './components/masterpages/boughtoutitems';
 import CustomerEnquiry from './components/transactionpages/customerEnquiry';
+import CustomerPo from './components/transactionpages/customerPo';
+import VendorPo from './components/transactionpages/vendorPo';
+import ProcessPr from './components/transactionpages/processPr';
+import ProcessPo from './components/transactionpages/ProcessPo';
+import Dispatch from './components/transactionpages/dispatch';
+import Quotation from './components/transactionpages/quotation';
+import PurchaseList from './components/transactionpages/purchaseList';
+import PendingList from './components/transactionpages/pendingList';
 import SalesInvoices from './components/transactionpages/Salesinvoices';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
@@ -46,6 +54,14 @@ function App() {
             <Route path="/consumables" element={<Consumables />} />
             <Route path="/bought-out-items" element={<BoughtOutItems />} />
             <Route path="/customer-enquiry" element={<CustomerEnquiry />} />
+            <Route path="/customer-po" element={<CustomerPo />} />
+            <Route path="/vendor-po" element={<VendorPo />} />
+            <Route path="/process-pr" element={<ProcessPr />} />
+            <Route path="/process-po" element={<ProcessPo />} />
+            <Route path="/dispatch" element={<Dispatch />} />
+            <Route path="/quotation" element={<Quotation />} />
+            <Route path="/purchase-list" element={<PurchaseList />} />
+            <Route path="/pending-list" element={<PendingList />} />
             <Route path="/sales-invoices" element={<SalesInvoices />} />
             <Route path="/work-orders" element={<WorkOrders />} />
             <Route path="/production-plan" element={<ProductionPlan />} />

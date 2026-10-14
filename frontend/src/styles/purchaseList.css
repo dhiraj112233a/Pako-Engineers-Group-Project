@@ -1,0 +1,76 @@
+.purchase-list-page .erp-head h1 {
+    gap: 10px;
+}
+
+.purchase-list-page .erp-head h1 i {
+    color: #1d4ed8;
+    font-size: 18px;
+}
+
+.purchase-list-stats {
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    margin-bottom: 14px;
+}
+
+.purchase-list-stats .erp-card {
+    padding: 12px 15px;
+}
+
+.purchase-list-stats .erp-card b {
+    font-size: 20px;
+}
+
+.purchase-list-tools {
+    align-items: center;
+}
+
+.purchase-list-tools > input[type=text] {
+    max-width: 340px;
+}
+
+.purchase-list-view-toggle {
+    display: flex;
+    gap: 3px;
+    margin-left: auto;
+    padding: 3px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.purchase-list-view-toggle button {
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.purchase-list-view-toggle button.active {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.purchase-list-table {
+    min-width: 900px;
+}
+
+.purchase-list-table td:nth-child(6) {
+    max-width: 280px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .purchase-list-view-toggle {
+        margin-left: 0;
+    }
+
+    .purchase-list-tools > input[type=text] {
+        max-width: none;
+        width: 100%;
+    }
+}

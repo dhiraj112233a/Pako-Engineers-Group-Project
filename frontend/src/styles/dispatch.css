@@ -1,0 +1,83 @@
+.dispatch-modal {
+    max-width: 650px;
+}
+
+.dispatch-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 170px;
+    gap: 12px;
+}
+
+.dispatch-fields label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dispatch-fields input,
+.dispatch-fields select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 9px 10px;
+    border: 1px solid #dbe2ea;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.dispatch-fields input:focus,
+.dispatch-fields select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.dispatch-hint {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #1e40af;
+    font-size: 12px;
+}
+
+.dispatch-order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.dispatch-order-summary strong {
+    color: #1f2937;
+    font-size: 12px;
+}
+
+.dispatch-delete {
+    color: #b91c1c;
+}
+
+@media (max-width: 560px) {
+    .dispatch-modal {
+        padding: 16px;
+    }
+
+    .dispatch-fields {
+        grid-template-columns: 1fr;
+    }
+}

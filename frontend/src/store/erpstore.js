@@ -26,6 +26,13 @@ export function useStore(key, initial) {
 export const WO_KEY = 'pako.workOrders';
 export const MOVE_KEY = 'pako.stockMoves';
 export const INV_KEY = 'pako.invoices';
+export const ENQ_KEY = 'pako.enquiries';
+export const QUOTATION_KEY = 'pako.quotations';
+export const CPO_KEY = 'pako.customerPurchaseOrders';
+export const VPO_KEY = 'pako.vendorPurchaseOrders';
+export const PROCESS_PR_KEY = 'pako.processPurchaseRequests';
+export const PROCESS_PO_KEY = 'pako.processPurchaseOrders';
+export const DISPATCH_KEY = 'pako.dispatchChallans';
 export const CUST_KEY = 'pako.customers';
 export const TARGET_KEY = 'pako.monthlyTarget';
 
@@ -42,6 +49,20 @@ export const nextWoNo = (list) =>
   `WO-${String(Math.max(0, ...list.map((w) => parseInt(w.woNo.slice(3), 10) || 0)) + 1).padStart(4, '0')}`;
 export const nextInvNo = (list) =>
   `INV-${String(Math.max(0, ...list.map((i) => parseInt(i.invNo.slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextEnqNo = (list) =>
+  `ENQ-${String(Math.max(0, ...list.map((e) => parseInt(String(e.enquiryNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextQuotationNo = (list) =>
+  `QT-${String(Math.max(0, ...list.map((quotation) => parseInt(String(quotation.quotationNo || '').slice(3), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextCustomerPoNo = (list) =>
+  `CPO-${String(Math.max(0, ...list.map((po) => parseInt(String(po.poNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextVendorPoNo = (list) =>
+  `VPO-${String(Math.max(0, ...list.map((po) => parseInt(String(po.poNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextProcessPrNo = (list) =>
+  `PPR-${String(Math.max(0, ...list.map((pr) => parseInt(String(pr.prNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextProcessPoNo = (list) =>
+  `PPO-${String(Math.max(0, ...list.map((po) => parseInt(String(po.poNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+export const nextDispatchNo = (list) =>
+  `DC-${String(Math.max(0, ...list.map((challan) => parseInt(String(challan.challanNo || '').slice(3), 10) || 0)) + 1).padStart(4, '0')}`;
 export const skuNo = (id) => `SKU-${String(id).padStart(4, '0')}`;
 
 // ---- Financial year helpers (Indian FY: April → March) ----

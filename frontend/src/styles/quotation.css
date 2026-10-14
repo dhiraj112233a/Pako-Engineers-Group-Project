@@ -1,0 +1,237 @@
+.quotation-modal {
+    max-width: 900px;
+    max-height: 94vh;
+}
+
+.quotation-header-fields,
+.quotation-line-fields,
+.quotation-detail-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.quotation-header-fields label,
+.quotation-line-fields label,
+.quotation-detail-fields label,
+.quotation-terms {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.quotation-header-fields input,
+.quotation-header-fields select,
+.quotation-line-fields input,
+.quotation-line-fields select,
+.quotation-detail-fields input,
+.quotation-terms textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid #dbe2ea;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.quotation-header-fields input:focus,
+.quotation-header-fields select:focus,
+.quotation-line-fields input:focus,
+.quotation-line-fields select:focus,
+.quotation-detail-fields input:focus,
+.quotation-terms textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.quotation-reference {
+    grid-column: 1 / -1;
+}
+
+.quotation-lines-section {
+    margin-top: 16px;
+}
+
+.quotation-section-heading,
+.quotation-line-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quotation-section-heading {
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.quotation-section-heading h4 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.quotation-line {
+    margin-bottom: 9px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.quotation-line-heading {
+    margin-bottom: 9px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.quotation-line-heading strong {
+    color: #475569;
+}
+
+.quotation-line-heading > span {
+    flex: 1;
+}
+
+.quotation-line-heading > b {
+    color: #1d4ed8;
+}
+
+.quotation-remove-line,
+.quotation-delete {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.quotation-item-name,
+.quotation-description {
+    grid-column: span 2;
+}
+
+.quotation-amount input {
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.quotation-remarks {
+    grid-column: span 2;
+}
+
+.quotation-bottom-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(250px, .9fr);
+    gap: 14px;
+    margin-top: 12px;
+    align-items: start;
+}
+
+.quotation-detail-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.quotation-warranty {
+    grid-column: 1 / -1;
+}
+
+.quotation-terms {
+    margin-top: 12px;
+}
+
+.quotation-terms textarea {
+    resize: vertical;
+}
+
+.quotation-totals {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+}
+
+.quotation-totals div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.quotation-totals b {
+    color: #334155;
+}
+
+.quotation-totals .quotation-grand-total {
+    margin-top: 5px;
+    padding-top: 9px;
+    border-top: 1px solid #cbd5e1;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.quotation-totals .quotation-grand-total b {
+    color: #1d4ed8;
+    font-size: 15px;
+}
+
+.quotation-totals small {
+    display: block;
+    margin-top: 7px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.quotation-status {
+    padding: 4px 7px;
+    border: 1px solid #dbe2ea;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #334155;
+    font: inherit;
+}
+
+@media (max-width: 700px) {
+    .quotation-header-fields,
+    .quotation-line-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .quotation-bottom-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .quotation-modal {
+        padding: 16px;
+    }
+
+    .quotation-header-fields,
+    .quotation-line-fields,
+    .quotation-detail-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .quotation-reference,
+    .quotation-item-name,
+    .quotation-description,
+    .quotation-remarks,
+    .quotation-warranty {
+        grid-column: auto;
+    }
+}

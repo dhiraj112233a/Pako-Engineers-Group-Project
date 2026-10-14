@@ -1,0 +1,254 @@
+.customer-po-modal {
+    max-width: 900px;
+    max-height: 94vh;
+}
+
+.customer-po-fields,
+.customer-po-line-fields,
+.customer-po-charge-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.customer-po-fields label,
+.customer-po-line-fields label,
+.customer-po-charge-fields label,
+.customer-po-terms-fields label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.customer-po-fields input:not([type=checkbox]),
+.customer-po-fields select,
+.customer-po-line-fields input,
+.customer-po-line-fields select,
+.customer-po-charge-fields input:not([type=checkbox]),
+.customer-po-charge-fields select,
+.customer-po-terms-fields input,
+.customer-po-terms-fields textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid #dbe2ea;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.customer-po-fields input:focus,
+.customer-po-fields select:focus,
+.customer-po-line-fields input:focus,
+.customer-po-line-fields select:focus,
+.customer-po-charge-fields input:focus,
+.customer-po-charge-fields select:focus,
+.customer-po-terms-fields input:focus,
+.customer-po-terms-fields textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.customer-po-verbal,
+.customer-po-igst {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.customer-po-verbal input,
+.customer-po-igst input {
+    margin: 0;
+}
+
+.customer-po-lines-section {
+    margin-top: 16px;
+}
+
+.customer-po-section-heading,
+.customer-po-line-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer-po-section-heading {
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.customer-po-section-heading h4 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.customer-po-line {
+    margin-bottom: 9px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.customer-po-line-heading {
+    margin-bottom: 9px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.customer-po-line-heading strong {
+    color: #475569;
+}
+
+.customer-po-line-heading > span {
+    flex: 1;
+}
+
+.customer-po-line-heading > b {
+    color: #1d4ed8;
+}
+
+.customer-po-remove-line,
+.customer-po-delete {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.po-drawing,
+.po-description {
+    grid-column: span 2;
+}
+
+.customer-po-line-calc {
+    grid-column: span 2;
+    align-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 14px;
+    padding: 8px 0;
+    color: #64748b;
+    font-size: 10px;
+}
+
+.customer-po-line-calc b {
+    color: #334155;
+}
+
+.customer-po-totals-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(250px, .9fr);
+    gap: 14px;
+    margin-top: 12px;
+    align-items: start;
+}
+
+.customer-po-charge-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.customer-po-charge-fields small,
+.customer-po-terms-fields small {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.customer-po-igst {
+    align-self: center;
+    flex-direction: row !important;
+}
+
+.customer-po-totals {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+}
+
+.customer-po-totals div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.customer-po-totals b {
+    color: #334155;
+}
+
+.customer-po-totals .customer-po-grand-total {
+    margin-top: 5px;
+    padding-top: 9px;
+    border-top: 1px solid #cbd5e1;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.customer-po-totals .customer-po-grand-total b {
+    color: #1d4ed8;
+    font-size: 15px;
+}
+
+.customer-po-terms-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.customer-po-terms-fields textarea {
+    resize: vertical;
+}
+
+@media (max-width: 700px) {
+    .customer-po-fields,
+    .customer-po-line-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .customer-po-totals-layout,
+    .customer-po-terms-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .customer-po-modal {
+        padding: 16px;
+    }
+
+    .customer-po-fields,
+    .customer-po-line-fields,
+    .customer-po-charge-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .po-drawing,
+    .po-description,
+    .customer-po-line-calc {
+        grid-column: span 1;
+    }
+}
