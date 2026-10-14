@@ -2,21 +2,17 @@ import React, { useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
 import { useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, today } from '../../store/erpstore';
-
 const UNIT = { NOS: 'Nos.', KG: 'Kg', SET: 'Set' };
-
 export default function ProductionPlan() {
   const [rows, setRows] = useStore(WO_KEY, WO_SEED);
   const [, setMoves] = useStore(MOVE_KEY, MOVE_SEED);
   const [target, setTarget] = useState(null);
-
   const save = (v) => {
     const done = v.done === '' ? target.done : Number(v.done);
     // kept as a safety net — the modal already checks min / max / whole number
     if (Number.isNaN(done)) return 'Enter a valid completed quantity';
     if (done < target.done) return `Completed qty cannot go below ${target.done}`;
     if (done > target.qty) return `Completed qty cannot exceed ${target.qty}`;
-
     // Newly completed pieces go into Finished Goods stock automatically.
     const delta = done - target.done;
     if (delta > 0) {
@@ -29,7 +25,6 @@ export default function ProductionPlan() {
         },
       ]);
     }
-
     setRows((list) => list.map((w) => {
       if (w.id !== target.id) return w;
       const status = done >= w.qty ? 'Closed' : done > 0 ? 'In Progress' : w.status;
@@ -40,7 +35,6 @@ export default function ProductionPlan() {
     }));
     setTarget(null);
   };
-
   const columns = [
     {
       key: 'plan', label: '', render: (r) => (
@@ -61,7 +55,6 @@ export default function ProductionPlan() {
     },
     { key: 'status', label: 'Status' },
   ];
-
   const fields = target && [
     { key: 'process', label: 'Process', required: true, placeholder: 'e.g. Turning' },
     { key: 'machine', label: 'Machine', required: true, upper: true, placeholder: 'e.g. CNC-01' },
@@ -70,7 +63,6 @@ export default function ProductionPlan() {
       default: target.done, integer: true, min: target.done, max: target.qty,
     },
   ];
-
   return (
     <>
       <ErpTablePage
