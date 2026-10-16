@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
 import ErpModal from '../ErpModal';
 import { useStore, WO_KEY, WO_SEED, fmtDate, today, nextWoNo } from '../../store/erpstore';
-
 // Built inside a function so "today" is read when the modal opens,
 // not once when the file loads (which goes stale if the page stays open overnight).
 const buildFields = () => [
@@ -13,16 +12,12 @@ const buildFields = () => [
   { key: 'due', label: 'Due date', type: 'date', required: true, min: today() },
   { key: 'priority', label: 'Priority', options: ['Low', 'Normal', 'High'], default: 'Normal' },
 ];
-
 const statusTone = { Open: '', 'In Progress': 'warn', Closed: 'good' };
 const prioTone = { High: 'bad', Normal: '', Low: 'good' };
-
 export default function WorkOrders() {
   const [rows, setRows] = useStore(WO_KEY, WO_SEED);
   const [show, setShow] = useState(false);
-
   const isOverdue = (r) => r.status !== 'Closed' && r.due < today();
-
   const save = (v) => {
     // basic checks (quantity > 0, whole number) are now done by the modal itself
     setRows((list) => [
@@ -32,7 +27,6 @@ export default function WorkOrders() {
     setShow(false);
   };
   const remove = (r) => window.confirm(`Delete ${r.woNo}?`) && setRows((l) => l.filter((w) => w.id !== r.id));
-
   const columns = [
     { key: 'woNo', label: 'WO No', render: (r) => <b>{r.woNo}</b> },
     { key: 'customer', label: 'Customer' },
@@ -50,7 +44,6 @@ export default function WorkOrders() {
     { key: 'status', label: 'Status', render: (r) => <span className={`erp-pill ${statusTone[r.status] || ''}`}>{r.status}</span> },
     { key: 'actions', label: '', render: (r) => <button className="erp-link-btn" style={{ color: '#b91c1c' }} onClick={() => remove(r)}>Delete</button> },
   ];
-
   return (
     <>
       <ErpTablePage
