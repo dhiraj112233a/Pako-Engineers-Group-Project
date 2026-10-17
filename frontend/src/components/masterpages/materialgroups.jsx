@@ -1,56 +1,245 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const groups = [
-  { id: 'MG-001', name: 'Ferrous Alloys', count: '18 items', owner: 'Engineering', status: 'Active' },
-  { id: 'MG-002', name: 'Non-Ferrous', count: '12 items', owner: 'Procurement', status: 'Active' },
-  { id: 'MG-003', name: 'Lubricants', count: '9 items', owner: 'QA', status: 'Review' },
-  { id: 'MG-004', name: 'Composites', count: '7 items', owner: 'R&D', status: 'Active' }
-];
+function MaterialGroups() {
+  const [groups, setGroups] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-const MaterialGroups = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [groupName, setGroupName] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('Active');
+
+  const addGroup = () => {
+    if (groupName.trim() === '') {
+      alert('Please enter material group name');
+      return;
+    }
+
+    const newGroup = {
+      id: Date.now(),
+      groupName,
+      description,
+      status
+    };
+
+    setGroups([...groups, newGroup]);
+    setGroupName('');
+    setDescription('');
+    setStatus('Active');
+    setShowForm(false);
+  };
+
+  const deleteGroup = (id) => {
+    setGroups(groups.filter((group) => group.id !== id));
+  };
+
+  const filteredGroups = groups.filter((group) =>
+    group.groupName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      <div className="customer-header">
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Material Groups</h2>
-        </div>
-        <button style={{ border: 'none', background: '#2563eb', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + New Group
-        </button>
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Groups</h3>
-          <input type="text" placeholder="Search group" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+          <p className="small-title">MASTER DATA</p>
+          <h1>Material Groups</h1>
+          <p className="page-description">Manage material groups</p>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#eff6ff' }}>
-            <tr>
-              {['Group ID', 'Group Name', 'Items', 'Owner', 'Status'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {groups.map((group) => (
-              <tr key={group.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{group.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{group.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{group.count}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{group.owner}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: group.status === 'Active' ? '#dcfce7' : '#fef3c7', color: group.status === 'Active' ? '#166534' : '#92400e' }}>{group.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Groups
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Group
+          </button>
+        </div>
       </div>
+
+      <div className="summary-container">
+        <div className="summary-box">
+          <p>Total Groups</p>
+          <h2>{groups.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {groups.filter((group) => group.status === 'Active').length}
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+          <h2>
+            {groups.filter((group) => group.status === 'Inactive').length}
+          </h2>
+        </div>
+      </div>
+
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
+
+            <div className="popup-table-header">
+              <div>
+                <h2>Material Group List</h2>
+                <p>View and manage material groups</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="table-top">
+              <h2>Material Groups</h2>
+
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search material group"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Material Group</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredGroups.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="no-data">
+                        No material groups found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredGroups.map((group, index) => (
+                      <tr key={group.id}>
+                        <td>{index + 1}</td>
+                        <td>{group.groupName}</td>
+                        <td>{group.description || '—'}</td>
+
+                        <td>
+                          <span
+                            className={
+                              group.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {group.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteGroup(group.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
+
+            <div className="form-header">
+              <div>
+                <h2>Add Material Group</h2>
+                <p>Enter material group details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="form-group">
+              <label>Material Group Name *</label>
+              <input
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                className="form-textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addGroup}>
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
-  </section>
-);
+  );
+}
 
 export default MaterialGroups;

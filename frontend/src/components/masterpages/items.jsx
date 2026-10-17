@@ -1,90 +1,102 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import "../../styles/Master.css";
 
 function Items() {
 
   const [items, setItems] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState("");
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-  const [itemName, setItemName] = useState("");
-  const [itemCode, setItemCode] = useState("");
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("Active");
+  const [drawingNumber, setDrawingNumber] = useState('');
+  const [description, setDescription] = useState('');
+  const [oldDrawing, setOldDrawing] = useState('');
+  const [revision, setRevision] = useState('');
+  const [hsnCode, setHsnCode] = useState('');
+  const [basicPrice, setBasicPrice] = useState('');
+  const [itemType, setItemType] = useState('Material');
 
   const addItem = () => {
 
-    if (itemName === "") {
-      alert("Please enter item name");
-      return;
-    }
-
-    if (itemCode === "") {
-      alert("Please enter item code");
+    if (drawingNumber.trim() === '') {
+      alert('Please enter drawing number');
       return;
     }
 
     const newItem = {
-      id: items.length + 1,
-      name: itemName,
-      code: itemCode,
-      category: category,
-      status: status
+      id: Date.now(),
+      drawingNumber,
+      description,
+      oldDrawing,
+      revision,
+      hsnCode,
+      basicPrice,
+      itemType
     };
 
     setItems([...items, newItem]);
 
-    setItemName("");
-    setItemCode("");
-    setCategory("");
-    setStatus("Active");
+    setDrawingNumber('');
+    setDescription('');
+    setOldDrawing('');
+    setRevision('');
+    setHsnCode('');
+    setBasicPrice('');
+    setItemType('Material');
 
     setShowForm(false);
   };
 
   const deleteItem = (id) => {
-
-    const newItems = items.filter(
-      (item) => item.id !== id
+    setItems(
+      items.filter((item) => item.id !== id)
     );
-
-    setItems(newItems);
   };
 
   const filteredItems = items.filter(
     (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.code.toLowerCase().includes(search.toLowerCase())
+      item.drawingNumber
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      item.description
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (
-    <div className="customer-page">
 
-      {/* Header */}
+    <div className="customer-page">
 
       <div className="customer-header">
 
         <div>
           <p className="small-title">MASTER DATA</p>
-
           <h1>Items</h1>
-
           <p className="page-description">
-            Manage your items
+            Manage item master
           </p>
         </div>
 
-        <button
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Item
-        </button>
+        <div className="master-buttons">
+
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Items
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Item
+          </button>
+
+        </div>
 
       </div>
 
-
-      {/* Summary */}
 
       <div className="summary-container">
 
@@ -94,24 +106,33 @@ function Items() {
         </div>
 
         <div className="summary-box">
-          <p>Active</p>
-
+          <p>Materials</p>
           <h2>
             {
               items.filter(
-                (item) => item.status === "Active"
+                (item) => item.itemType === 'Material'
               ).length
             }
           </h2>
         </div>
 
         <div className="summary-box">
-          <p>Inactive</p>
-
+          <p>Finished Goods</p>
           <h2>
             {
               items.filter(
-                (item) => item.status === "Inactive"
+                (item) => item.itemType === 'Finished Good'
+              ).length
+            }
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Bought Out</p>
+          <h2>
+            {
+              items.filter(
+                (item) => item.itemType === 'Bought Out'
               ).length
             }
           </h2>
@@ -120,129 +141,111 @@ function Items() {
       </div>
 
 
-      {/* Add Item Form */}
+      {showTable && (
 
-      {showForm && (
+        <div className="popup-overlay">
 
-        <div className="customer-form">
+          <div className="table-popup">
 
-          <div className="form-header">
+            <div className="popup-table-header">
 
-            <div>
-              <h2>Add Item</h2>
+              <div>
+                <h2>Item List</h2>
+                <p>View and manage items</p>
+              </div>
 
-              <p>
-                Enter item details
-              </p>
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+
             </div>
 
-            <button
-              className="close-button"
-              onClick={() => setShowForm(false)}
-            >
-              X
-            </button>
 
-          </div>
+            <div className="table-top">
 
+              <h2>Items</h2>
 
-          {/* Item Name */}
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search item"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
-          <div className="form-group">
-
-            <label>Item Name</label>
-
-            <input
-              type="text"
-              placeholder="Enter item name"
-              value={itemName}
-              onChange={(e) =>
-                setItemName(e.target.value)
-              }
-            />
-
-          </div>
+            </div>
 
 
-          {/* Item Code */}
+            <div className="customer-table-container">
 
-          <div className="form-group">
+              <table>
 
-            <label>Item Code</label>
+                <thead>
 
-            <input
-              type="text"
-              placeholder="Enter item code"
-              value={itemCode}
-              onChange={(e) =>
-                setItemCode(e.target.value)
-              }
-            />
+                  <tr>
+                    <th>#</th>
+                    <th>Drawing No.</th>
+                    <th>Description</th>
+                    <th>Old Drawing</th>
+                    <th>Revision</th>
+                    <th>HSN Code</th>
+                    <th>Item Type</th>
+                    <th>Basic Price</th>
+                    <th>Action</th>
+                  </tr>
 
-          </div>
+                </thead>
 
+                <tbody>
 
-          {/* Category */}
+                  {filteredItems.length === 0 ? (
 
-          <div className="form-group">
+                    <tr>
+                      <td colSpan="9" className="no-data">
+                        No items found
+                      </td>
+                    </tr>
 
-            <label>Category</label>
+                  ) : (
 
-            <input
-              type="text"
-              placeholder="Enter category"
-              value={category}
-              onChange={(e) =>
-                setCategory(e.target.value)
-              }
-            />
+                    filteredItems.map((item, index) => (
 
-          </div>
+                      <tr key={item.id}>
 
+                        <td>{index + 1}</td>
+                        <td>{item.drawingNumber}</td>
+                        <td>{item.description || '—'}</td>
+                        <td>{item.oldDrawing || '—'}</td>
+                        <td>{item.revision || '—'}</td>
+                        <td>{item.hsnCode || '—'}</td>
+                        <td>{item.itemType}</td>
+                        <td>₹{item.basicPrice || 0}</td>
 
-          {/* Status */}
+                        <td>
 
-          <div className="form-group">
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteItem(item.id)}
+                          >
+                            Delete
+                          </button>
 
-            <label>Status</label>
+                        </td>
 
-            <select
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value)
-              }
-            >
+                      </tr>
 
-              <option value="Active">
-                Active
-              </option>
+                    ))
 
-              <option value="Inactive">
-                Inactive
-              </option>
+                  )}
 
-            </select>
+                </tbody>
 
-          </div>
+              </table>
 
-
-          {/* Buttons */}
-
-          <div className="form-buttons">
-
-            <button
-              className="cancel-button"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-
-            <button
-              className="save-button"
-              onClick={addItem}
-            >
-              Save Item
-            </button>
+            </div>
 
           </div>
 
@@ -251,127 +254,188 @@ function Items() {
       )}
 
 
-      {/* Item Table */}
+      {showForm && (
 
-      <div className="customer-table-container">
+        <div className="popup-overlay">
 
-        <div className="table-top">
+          <div className="customer-form">
 
-          <h2>Item List</h2>
+            <div className="form-header">
 
-          <input
-            type="text"
-            placeholder="Search item"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="search-input"
-          />
+              <div>
+                <h2>Add Item</h2>
+                <p>Enter item details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Drawing Number *</label>
+
+              <input
+                type="text"
+                value={drawingNumber}
+                onChange={(e) =>
+                  setDrawingNumber(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Description</label>
+
+              <textarea
+                className="form-textarea"
+                value={description}
+                onChange={(e) =>
+                  setDescription(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="form-row">
+
+              <div className="form-group">
+
+                <label>Old Drawing No.</label>
+
+                <input
+                  type="text"
+                  value={oldDrawing}
+                  onChange={(e) =>
+                    setOldDrawing(e.target.value)
+                  }
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>Revision</label>
+
+                <input
+                  type="text"
+                  value={revision}
+                  onChange={(e) =>
+                    setRevision(e.target.value)
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
+            <div className="form-row">
+
+              <div className="form-group">
+
+                <label>HSN Code</label>
+
+                <input
+                  type="text"
+                  value={hsnCode}
+                  onChange={(e) =>
+                    setHsnCode(e.target.value)
+                  }
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>Basic Price ₹</label>
+
+                <input
+                  type="number"
+                  value={basicPrice}
+                  onChange={(e) =>
+                    setBasicPrice(e.target.value)
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Item Type</label>
+
+              <select
+                value={itemType}
+                onChange={(e) =>
+                  setItemType(e.target.value)
+                }
+              >
+
+                <option value="Material">
+                  Material
+                </option>
+
+                <option value="Finished Good">
+                  Finished Good
+                </option>
+
+                <option value="Bought Out">
+                  Bought Out
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Drawing PDF / Image</label>
+
+              <input type="file" />
+
+            </div>
+
+
+            <div className="form-buttons">
+
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="save-button"
+                onClick={addItem}
+              >
+                Create
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>Item ID</th>
-
-              <th>Item Name</th>
-
-              <th>Item Code</th>
-
-              <th>Category</th>
-
-              <th>Status</th>
-
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredItems.length === 0 ? (
-
-              <tr>
-
-                <td
-                  colSpan="6"
-                  className="no-data"
-                >
-                  No items found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredItems.map((item) => (
-
-                <tr key={item.id}>
-
-                  <td>
-                    I-{item.id}
-                  </td>
-
-                  <td>
-                    {item.name}
-                  </td>
-
-                  <td>
-                    {item.code}
-                  </td>
-
-                  <td>
-                    {item.category || "—"}
-                  </td>
-
-                  <td>
-
-                    <span
-                      className={
-                        item.status === "Active"
-                          ? "active-status"
-                          : "inactive-status"
-                      }
-                    >
-                      {item.status}
-                    </span>
-
-                  </td>
-
-                  <td>
-
-                    <button
-                      className="delete-button"
-                      onClick={() =>
-                        deleteItem(item.id)
-                      }
-                    >
-                      Delete
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))
-
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
+      )}
 
     </div>
+
   );
 }
 

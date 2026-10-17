@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
-import { useStore, CUST_KEY } from '../../store/erpstore';
 
 function Customer() {
 
-  // Customer list (saved in localStorage so the Dashboard and Invoices can use it)
-  const [customers, setCustomers] = useStore(CUST_KEY, []);
-
-  // Show or hide Add Customer form
+  const [customers, setCustomers] = useState([]);
   const [showForm, setShowForm] = useState(false);
-
-  // Search box
+  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
-  // Form values
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [status, setStatus] = useState('Active');
   const [value, setValue] = useState('');
 
-
-  // Add customer
   const addCustomer = () => {
 
     if (name.trim() === '') {
@@ -29,8 +21,8 @@ function Customer() {
     }
 
     const newCustomer = {
-      id: Math.max(100, ...customers.map((c) => c.id)) + 1,
-      name: name.trim().toUpperCase(),
+      id: Date.now(),
+      name: name,
       contact: contact,
       status: status,
       value: value
@@ -38,18 +30,14 @@ function Customer() {
 
     setCustomers([...customers, newCustomer]);
 
-    // Clear form
     setName('');
     setContact('');
     setStatus('Active');
     setValue('');
 
-    // Close form
     setShowForm(false);
   };
 
-
-  // Delete customer
   const deleteCustomer = (id) => {
 
     const newCustomers = customers.filter(
@@ -59,48 +47,47 @@ function Customer() {
     setCustomers(newCustomers);
   };
 
-
-  // Search customers
   const filteredCustomers = customers.filter(
     (customer) =>
-      customer.name.toLowerCase().includes(search.toLowerCase())
+      customer.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
-
 
   return (
 
     <div className="customer-page">
 
-      {/* PAGE HEADER */}
-
       <div className="customer-header">
 
         <div>
-          <p className="small-title">
-            MASTER DATA
-          </p>
-
-          <h1>
-            Customers
-          </h1>
-
+          <p className="small-title">MASTER DATA</p>
+          <h1>Customers</h1>
           <p className="page-description">
             Manage your customers
           </p>
         </div>
 
+        <div className="master-buttons">
 
-        <button
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Customer
-        </button>
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Customers
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Customer
+          </button>
+
+        </div>
 
       </div>
 
-
-      {/* SUMMARY */}
 
       <div className="summary-container">
 
@@ -132,137 +119,138 @@ function Customer() {
         </div>
 
         <div className="summary-box">
-          <p>Total Value</p>
-          <h2>₹0</h2>
+          <p>Inactive</p>
+          <h2>
+            {
+              customers.filter(
+                (customer) => customer.status === 'Inactive'
+              ).length
+            }
+          </h2>
         </div>
 
       </div>
 
 
-      {/* ADD CUSTOMER FORM */}
+      {showTable && (
 
-      {showForm && (
+        <div className="popup-overlay">
 
-        <div className="customer-form">
+          <div className="table-popup">
 
-          <div className="form-header">
+            <div className="popup-table-header">
 
-            <div>
-              <h2>Add Customer</h2>
-              <p>Enter customer details</p>
+              <div>
+                <h2>Customer List</h2>
+                <p>View and manage customers</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+
             </div>
 
-            <button
-              className="close-button"
-              onClick={() => setShowForm(false)}
-            >
-              X
-            </button>
 
-          </div>
+            <div className="table-top">
 
+              <h2>Customers</h2>
 
-          {/* CUSTOMER NAME */}
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search customer"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
-          <div className="form-group">
-
-            <label>
-              Customer Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter customer name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-
-          </div>
+            </div>
 
 
-          {/* CONTACT */}
+            <div className="customer-table-container">
 
-          <div className="form-group">
+              <table>
 
-            <label>
-              Contact Person
-            </label>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Customer Name</th>
+                    <th>Contact Person</th>
+                    <th>Status</th>
+                    <th>Value</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
 
-            <input
-              type="text"
-              placeholder="Enter contact person"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-            />
+                <tbody>
 
-          </div>
+                  {filteredCustomers.length === 0 ? (
 
+                    <tr>
+                      <td colSpan="6" className="no-data">
+                        No customers found
+                      </td>
+                    </tr>
 
-          {/* STATUS */}
+                  ) : (
 
-          <div className="form-group">
+                    filteredCustomers.map((customer, index) => (
 
-            <label>
-              Status
-            </label>
+                      <tr key={customer.id}>
 
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
+                        <td>{index + 1}</td>
 
-              <option value="Active">
-                Active
-              </option>
+                        <td>{customer.name}</td>
 
-              <option value="Pending">
-                Pending
-              </option>
+                        <td>{customer.contact || '—'}</td>
 
-              <option value="Inactive">
-                Inactive
-              </option>
+                        <td>
 
-            </select>
+                          <span
+                            className={
+                              customer.status === 'Active'
+                                ? 'active-status'
+                                : customer.status === 'Pending'
+                                  ? 'pending-status'
+                                  : 'inactive-status'
+                            }
+                          >
+                            {customer.status}
+                          </span>
 
-          </div>
+                        </td>
 
+                        <td>
+                          {customer.value || '—'}
+                        </td>
 
-          {/* VALUE */}
+                        <td>
 
-          <div className="form-group">
+                          <button
+                            className="delete-button"
+                            onClick={() =>
+                              deleteCustomer(customer.id)
+                            }
+                          >
+                            Delete
+                          </button>
 
-            <label>
-              Value
-            </label>
+                        </td>
 
-            <input
-              type="text"
-              placeholder="Enter value"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+                      </tr>
 
-          </div>
+                    ))
 
+                  )}
 
-          {/* FORM BUTTONS */}
+                </tbody>
 
-          <div className="form-buttons">
+              </table>
 
-            <button
-              className="cancel-button"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-
-            <button
-              className="save-button"
-              onClick={addCustomer}
-            >
-              Save Customer
-            </button>
+            </div>
 
           </div>
 
@@ -271,140 +259,112 @@ function Customer() {
       )}
 
 
-      {/* CUSTOMER TABLE */}
+      {showForm && (
 
-      <div className="customer-table-container">
+        <div className="popup-overlay">
 
-        <div className="table-top">
+          <div className="customer-form">
 
-          <h2>
-            Customer List
-          </h2>
+            <div className="form-header">
+
+              <div>
+                <h2>Add Customer</h2>
+                <p>Enter customer details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+
+            </div>
 
 
-          {/* SEARCH */}
+            <div className="form-group">
 
-          <input
-            type="text"
-            placeholder="Search customer"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
+              <label>Customer Name *</label>
+
+              <input
+                type="text"
+                placeholder="Enter customer name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Contact Person</label>
+
+              <input
+                type="text"
+                placeholder="Enter contact person"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Status</label>
+
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Inactive">Inactive</option>
+
+              </select>
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Value</label>
+
+              <input
+                type="text"
+                placeholder="Enter value"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+
+            </div>
+
+
+            <div className="form-buttons">
+
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="save-button"
+                onClick={addCustomer}
+              >
+                Create
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Customer ID
-              </th>
-
-              <th>
-                Customer Name
-              </th>
-
-              <th>
-                Contact Person
-              </th>
-
-              <th>
-                Status
-              </th>
-
-              <th>
-                Value
-              </th>
-
-              <th>
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredCustomers.length === 0 ? (
-
-              <tr>
-
-                <td
-                  colSpan="6"
-                  className="no-data"
-                >
-                  No customers found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredCustomers.map((customer) => (
-
-                <tr key={customer.id}>
-
-                  <td>
-                    C-{customer.id}
-                  </td>
-
-                  <td>
-                    {customer.name}
-                  </td>
-
-                  <td>
-                    {customer.contact}
-                  </td>
-
-                  <td>
-                    <span
-                      className={
-                        customer.status === 'Active'
-                          ? 'active-status'
-                          : customer.status === 'Pending'
-                            ? 'pending-status'
-                            : 'inactive-status'
-                      }
-                    >
-                      {customer.status}
-                    </span>
-                  </td>
-
-                  <td>
-                    {customer.value || '—'}
-                  </td>
-
-                  <td>
-
-                    <button
-                      className="delete-button"
-                      onClick={() =>
-                        deleteCustomer(customer.id)
-                      }
-                    >
-                      Delete
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))
-
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
+      )}
 
     </div>
 

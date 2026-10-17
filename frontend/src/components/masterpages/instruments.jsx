@@ -1,56 +1,328 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const instruments = [
-  { id: 'IN-001', name: 'Micrometer 0-25', dept: 'QA', status: 'Calibrated', nextDue: '2026-11-12' },
-  { id: 'IN-002', name: 'Vernier Caliper', dept: 'Production', status: 'Due Soon', nextDue: '2026-10-20' },
-  { id: 'IN-003', name: 'Height Gauge', dept: 'Quality', status: 'Calibrated', nextDue: '2026-12-03' },
-  { id: 'IN-004', name: 'Dial Indicator', dept: 'Inspection', status: 'Overdue', nextDue: '2026-09-01' }
-];
+function Instruments() {
+  const [instruments, setInstruments] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-const Instruments = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [instrumentName, setInstrumentName] = useState('');
+  const [instrumentCode, setInstrumentCode] = useState('');
+  const [range, setRange] = useState('');
+  const [leastCount, setLeastCount] = useState('');
+  const [make, setMake] = useState('');
+  const [calibrationDate, setCalibrationDate] = useState('');
+  const [status, setStatus] = useState('Active');
+
+  const addInstrument = () => {
+    if (instrumentName.trim() === '') {
+      alert('Please enter instrument name');
+      return;
+    }
+
+    const newInstrument = {
+      id: Date.now(),
+      instrumentName,
+      instrumentCode,
+      range,
+      leastCount,
+      make,
+      calibrationDate,
+      status
+    };
+
+    setInstruments([...instruments, newInstrument]);
+    setInstrumentName('');
+    setInstrumentCode('');
+    setRange('');
+    setLeastCount('');
+    setMake('');
+    setCalibrationDate('');
+    setStatus('Active');
+    setShowForm(false);
+  };
+
+  const deleteInstrument = (id) => {
+    setInstruments(
+      instruments.filter((instrument) => instrument.id !== id)
+    );
+  };
+
+  const filteredInstruments = instruments.filter(
+    (instrument) =>
+      instrument.instrumentName
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      instrument.instrumentCode
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      <div className="customer-header">
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Instruments</h2>
-        </div>
-        <button style={{ border: 'none', background: '#0ea5e9', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + Add Instrument
-        </button>
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Calibration Register</h3>
-          <input type="text" placeholder="Search instrument" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+          <p className="small-title">MASTER DATA</p>
+          <h1>Instruments</h1>
+          <p className="page-description">
+            Manage measuring instruments
+          </p>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#f0f9ff' }}>
-            <tr>
-              {['Instrument ID', 'Instrument Name', 'Department', 'Status', 'Next Due'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {instruments.map((instrument) => (
-              <tr key={instrument.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{instrument.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{instrument.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{instrument.dept}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: instrument.status === 'Calibrated' ? '#dcfce7' : instrument.status === 'Due Soon' ? '#fef3c7' : '#fee2e2', color: instrument.status === 'Calibrated' ? '#166534' : instrument.status === 'Due Soon' ? '#92400e' : '#991b1b' }}>{instrument.status}</span>
-                </td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{instrument.nextDue}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Instruments
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Instrument
+          </button>
+        </div>
       </div>
+
+      <div className="summary-container">
+        <div className="summary-box">
+          <p>Total Instruments</p>
+          <h2>{instruments.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {
+              instruments.filter(
+                (instrument) => instrument.status === 'Active'
+              ).length
+            }
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+          <h2>
+            {
+              instruments.filter(
+                (instrument) => instrument.status === 'Inactive'
+              ).length
+            }
+          </h2>
+        </div>
+      </div>
+
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
+
+            <div className="popup-table-header">
+              <div>
+                <h2>Instrument List</h2>
+                <p>View and manage instruments</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="table-top">
+              <h2>Instruments</h2>
+
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search instrument"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Instrument Code</th>
+                    <th>Instrument Name</th>
+                    <th>Range</th>
+                    <th>Least Count</th>
+                    <th>Make</th>
+                    <th>Calibration Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredInstruments.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="no-data">
+                        No instruments found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredInstruments.map((instrument, index) => (
+                      <tr key={instrument.id}>
+                        <td>{index + 1}</td>
+                        <td>{instrument.instrumentCode || '—'}</td>
+                        <td>{instrument.instrumentName}</td>
+                        <td>{instrument.range || '—'}</td>
+                        <td>{instrument.leastCount || '—'}</td>
+                        <td>{instrument.make || '—'}</td>
+                        <td>{instrument.calibrationDate || '—'}</td>
+
+                        <td>
+                          <span
+                            className={
+                              instrument.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {instrument.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() =>
+                              deleteInstrument(instrument.id)
+                            }
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
+
+            <div className="form-header">
+              <div>
+                <h2>Add Instrument</h2>
+                <p>Enter instrument details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Instrument Code</label>
+                <input
+                  type="text"
+                  value={instrumentCode}
+                  onChange={(e) => setInstrumentCode(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Instrument Name *</label>
+                <input
+                  type="text"
+                  value={instrumentName}
+                  onChange={(e) => setInstrumentName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Range</label>
+                <input
+                  type="text"
+                  value={range}
+                  onChange={(e) => setRange(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Least Count</label>
+                <input
+                  type="text"
+                  value={leastCount}
+                  onChange={(e) => setLeastCount(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Make</label>
+              <input
+                type="text"
+                value={make}
+                onChange={(e) => setMake(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Calibration Date</label>
+              <input
+                type="date"
+                value={calibrationDate}
+                onChange={(e) => setCalibrationDate(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="save-button"
+                onClick={addInstrument}
+              >
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Instruments;

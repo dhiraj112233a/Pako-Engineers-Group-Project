@@ -1,298 +1,245 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import "../../styles/Master.css";
 
-function Processes() {
+function ProcessMaster() {
 
   const [processes, setProcesses] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState("");
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-  const [processName, setProcessName] = useState("");
-  const [processCode, setProcessCode] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("Active");
-
+  const [processCode, setProcessCode] = useState('');
+  const [processName, setProcessName] = useState('');
+  const [description, setDescription] = useState('');
+  const [rate, setRate] = useState('');
+  const [status, setStatus] = useState('Active');
 
   const addProcess = () => {
 
-    if (processName === "") {
-      alert("Please enter process name");
-      return;
-    }
-
-    if (processCode === "") {
-      alert("Please enter process code");
+    if (processName.trim() === '') {
+      alert('Please enter process name');
       return;
     }
 
     const newProcess = {
-      id: processes.length + 1,
-      name: processName,
-      code: processCode,
-      description: description,
-      status: status
+      id: Date.now(),
+      processCode,
+      processName,
+      description,
+      rate,
+      status
     };
 
-    setProcesses([
-      ...processes,
-      newProcess
-    ]);
+    setProcesses([...processes, newProcess]);
 
-    setProcessName("");
-    setProcessCode("");
-    setDescription("");
-    setStatus("Active");
+    setProcessCode('');
+    setProcessName('');
+    setDescription('');
+    setRate('');
+    setStatus('Active');
 
     setShowForm(false);
   };
 
-
   const deleteProcess = (id) => {
-
-    const newProcesses = processes.filter(
-      (process) => process.id !== id
+    setProcesses(
+      processes.filter((process) => process.id !== id)
     );
-
-    setProcesses(newProcesses);
   };
-
 
   const filteredProcesses = processes.filter(
     (process) =>
-      process.name
+      process.processName
         .toLowerCase()
         .includes(search.toLowerCase()) ||
-
-      process.code
+      process.processCode
         .toLowerCase()
         .includes(search.toLowerCase())
   );
 
-
   return (
-    <div className="customer-page">
 
-      {/* Header */}
+    <div className="customer-page">
 
       <div className="customer-header">
 
         <div>
-
-          <p className="small-title">
-            MASTER DATA
-          </p>
-
-          <h1>
-            Processes
-          </h1>
-
+          <p className="small-title">MASTER DATA</p>
+          <h1>Process Master</h1>
           <p className="page-description">
-            Manage your processes
+            Manage manufacturing processes
           </p>
+        </div>
+
+        <div className="master-buttons">
+
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Processes
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Process
+          </button>
 
         </div>
 
-
-        <button
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Process
-        </button>
-
       </div>
 
-
-      {/* Summary */}
 
       <div className="summary-container">
 
         <div className="summary-box">
-
-          <p>
-            Total Processes
-          </p>
-
-          <h2>
-            {processes.length}
-          </h2>
-
+          <p>Total Processes</p>
+          <h2>{processes.length}</h2>
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Active
-          </p>
-
+          <p>Active</p>
           <h2>
             {
               processes.filter(
-                (process) => process.status === "Active"
+                (process) => process.status === 'Active'
               ).length
             }
           </h2>
-
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Inactive
-          </p>
-
+          <p>Inactive</p>
           <h2>
             {
               processes.filter(
-                (process) => process.status === "Inactive"
+                (process) => process.status === 'Inactive'
               ).length
             }
           </h2>
-
         </div>
 
       </div>
 
 
-      {/* Add Process Form */}
+      {showTable && (
 
-      {showForm && (
+        <div className="popup-overlay">
 
-        <div className="customer-form">
+          <div className="table-popup">
 
-          <div className="form-header">
+            <div className="popup-table-header">
 
-            <div>
+              <div>
+                <h2>Process List</h2>
+                <p>View and manage processes</p>
+              </div>
 
-              <h2>
-                Add Process
-              </h2>
-
-              <p>
-                Enter process details
-              </p>
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
 
             </div>
 
 
-            <button
-              className="close-button"
-              onClick={() => setShowForm(false)}
-            >
-              X
-            </button>
+            <div className="table-top">
 
-          </div>
+              <h2>Processes</h2>
 
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search process"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
-          {/* Process Name */}
-
-          <div className="form-group">
-
-            <label>
-              Process Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter process name"
-              value={processName}
-              onChange={(e) =>
-                setProcessName(e.target.value)
-              }
-            />
-
-          </div>
+            </div>
 
 
-          {/* Process Code */}
+            <div className="customer-table-container">
 
-          <div className="form-group">
+              <table>
 
-            <label>
-              Process Code
-            </label>
+                <thead>
 
-            <input
-              type="text"
-              placeholder="Enter process code"
-              value={processCode}
-              onChange={(e) =>
-                setProcessCode(e.target.value)
-              }
-            />
+                  <tr>
+                    <th>#</th>
+                    <th>Process Code</th>
+                    <th>Process Name</th>
+                    <th>Description</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
 
-          </div>
+                </thead>
 
+                <tbody>
 
-          {/* Description */}
+                  {filteredProcesses.length === 0 ? (
 
-          <div className="form-group">
+                    <tr>
+                      <td colSpan="7" className="no-data">
+                        No processes found
+                      </td>
+                    </tr>
 
-            <label>
-              Description
-            </label>
+                  ) : (
 
-            <input
-              type="text"
-              placeholder="Enter process description"
-              value={description}
-              onChange={(e) =>
-                setDescription(e.target.value)
-              }
-            />
+                    filteredProcesses.map((process, index) => (
 
-          </div>
+                      <tr key={process.id}>
 
+                        <td>{index + 1}</td>
+                        <td>{process.processCode || '—'}</td>
+                        <td>{process.processName}</td>
+                        <td>{process.description || '—'}</td>
+                        <td>₹{process.rate || 0}</td>
 
-          {/* Status */}
+                        <td>
 
-          <div className="form-group">
+                          <span
+                            className={
+                              process.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {process.status}
+                          </span>
 
-            <label>
-              Status
-            </label>
+                        </td>
 
-            <select
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value)
-              }
-            >
+                        <td>
 
-              <option value="Active">
-                Active
-              </option>
+                          <button
+                            className="delete-button"
+                            onClick={() =>
+                              deleteProcess(process.id)
+                            }
+                          >
+                            Delete
+                          </button>
 
-              <option value="Inactive">
-                Inactive
-              </option>
+                        </td>
 
-            </select>
+                      </tr>
 
-          </div>
+                    ))
 
+                  )}
 
-          {/* Buttons */}
+                </tbody>
 
-          <div className="form-buttons">
+              </table>
 
-            <button
-              className="cancel-button"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-
-
-            <button
-              className="save-button"
-              onClick={addProcess}
-            >
-              Save Process
-            </button>
+            </div>
 
           </div>
 
@@ -301,145 +248,131 @@ function Processes() {
       )}
 
 
-      {/* Process Table */}
+      {showForm && (
 
-      <div className="customer-table-container">
+        <div className="popup-overlay">
 
-        <div className="table-top">
+          <div className="customer-form">
 
-          <h2>
-            Process List
-          </h2>
+            <div className="form-header">
+
+              <div>
+                <h2>Add Process</h2>
+                <p>Enter process details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+
+            </div>
 
 
-          <input
-            type="text"
-            placeholder="Search process"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="search-input"
-          />
+            <div className="form-group">
+
+              <label>Process Code</label>
+
+              <input
+                type="text"
+                value={processCode}
+                onChange={(e) =>
+                  setProcessCode(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Process Name *</label>
+
+              <input
+                type="text"
+                value={processName}
+                onChange={(e) =>
+                  setProcessName(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Description</label>
+
+              <textarea
+                className="form-textarea"
+                value={description}
+                onChange={(e) =>
+                  setDescription(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Rate ₹</label>
+
+              <input
+                type="number"
+                value={rate}
+                onChange={(e) => setRate(e.target.value)}
+              />
+
+            </div>
+
+
+            <div className="form-group">
+
+              <label>Status</label>
+
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+
+              </select>
+
+            </div>
+
+
+            <div className="form-buttons">
+
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="save-button"
+                onClick={addProcess}
+              >
+                Create
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Process ID
-              </th>
-
-              <th>
-                Process Name
-              </th>
-
-              <th>
-                Process Code
-              </th>
-
-              <th>
-                Description
-              </th>
-
-              <th>
-                Status
-              </th>
-
-              <th>
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredProcesses.length === 0 ? (
-
-              <tr>
-
-                <td
-                  colSpan="6"
-                  className="no-data"
-                >
-                  No processes found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredProcesses.map(
-                (process) => (
-
-                  <tr key={process.id}>
-
-                    <td>
-                      P-{process.id}
-                    </td>
-
-                    <td>
-                      {process.name}
-                    </td>
-
-                    <td>
-                      {process.code}
-                    </td>
-
-                    <td>
-                      {process.description || "—"}
-                    </td>
-
-                    <td>
-
-                      <span
-                        className={
-                          process.status === "Active"
-                            ? "active-status"
-                            : "inactive-status"
-                        }
-                      >
-                        {process.status}
-                      </span>
-
-                    </td>
-
-                    <td>
-
-                      <button
-                        className="delete-button"
-                        onClick={() =>
-                          deleteProcess(process.id)
-                        }
-                      >
-                        Delete
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                )
-              )
-
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
+      )}
 
     </div>
+
   );
 }
 
-export default Processes;
+export default ProcessMaster;
