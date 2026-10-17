@@ -1,443 +1,277 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import "../../styles/Master.css";
 
 function MaterialSpecs() {
-
-  const [materialSpecs, setMaterialSpecs] = useState([]);
+  const [specs, setSpecs] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState("");
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-  const [materialName, setMaterialName] = useState("");
-  const [specification, setSpecification] = useState("");
-  const [unit, setUnit] = useState("");
-  const [status, setStatus] = useState("Active");
+  const [specName, setSpecName] = useState('');
+  const [materialGroup, setMaterialGroup] = useState('');
+  const [grade, setGrade] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('Active');
 
-  const addMaterialSpec = () => {
-
-    if (materialName === "") {
-      alert("Please enter material name");
+  const addSpec = () => {
+    if (specName.trim() === '') {
+      alert('Please enter material specification');
       return;
     }
 
-    if (specification === "") {
-      alert("Please enter specification");
-      return;
-    }
-
-    const newMaterialSpec = {
-      id: materialSpecs.length + 1,
-      materialName: materialName,
-      specification: specification,
-      unit: unit,
-      status: status
+    const newSpec = {
+      id: Date.now(),
+      specName,
+      materialGroup,
+      grade,
+      description,
+      status
     };
 
-    setMaterialSpecs([
-      ...materialSpecs,
-      newMaterialSpec
-    ]);
-
-    setMaterialName("");
-    setSpecification("");
-    setUnit("");
-    setStatus("Active");
-
+    setSpecs([...specs, newSpec]);
+    setSpecName('');
+    setMaterialGroup('');
+    setGrade('');
+    setDescription('');
+    setStatus('Active');
     setShowForm(false);
   };
 
-
-  const deleteMaterialSpec = (id) => {
-
-    const newMaterialSpecs = materialSpecs.filter(
-      (materialSpec) => materialSpec.id !== id
-    );
-
-    setMaterialSpecs(newMaterialSpecs);
+  const deleteSpec = (id) => {
+    setSpecs(specs.filter((spec) => spec.id !== id));
   };
 
-
-  const filteredMaterialSpecs = materialSpecs.filter(
-    (materialSpec) =>
-      materialSpec.materialName
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-
-      materialSpec.specification
-        .toLowerCase()
-        .includes(search.toLowerCase())
+  const filteredSpecs = specs.filter(
+    (spec) =>
+      spec.specName.toLowerCase().includes(search.toLowerCase()) ||
+      spec.materialGroup.toLowerCase().includes(search.toLowerCase()) ||
+      spec.grade.toLowerCase().includes(search.toLowerCase())
   );
-
 
   return (
     <div className="customer-page">
 
-      {/* Header */}
-
       <div className="customer-header">
-
         <div>
-
-          <p className="small-title">
-            MASTER DATA
-          </p>
-
-          <h1>
-            Material Specs
-          </h1>
-
+          <p className="small-title">MASTER DATA</p>
+          <h1>Material Specifications</h1>
           <p className="page-description">
             Manage material specifications
           </p>
-
         </div>
 
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Specifications
+          </button>
 
-        <button
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Material Spec
-        </button>
-
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Specification
+          </button>
+        </div>
       </div>
-
-
-      {/* Summary */}
 
       <div className="summary-container">
-
         <div className="summary-box">
-
-          <p>
-            Total Specs
-          </p>
-
-          <h2>
-            {materialSpecs.length}
-          </h2>
-
+          <p>Total Specifications</p>
+          <h2>{specs.length}</h2>
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Active
-          </p>
-
-          <h2>
-            {
-              materialSpecs.filter(
-                (spec) => spec.status === "Active"
-              ).length
-            }
-          </h2>
-
+          <p>Active</p>
+          <h2>{specs.filter((spec) => spec.status === 'Active').length}</h2>
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Inactive
-          </p>
-
-          <h2>
-            {
-              materialSpecs.filter(
-                (spec) => spec.status === "Inactive"
-              ).length
-            }
-          </h2>
-
+          <p>Inactive</p>
+          <h2>{specs.filter((spec) => spec.status === 'Inactive').length}</h2>
         </div>
-
       </div>
 
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
 
-      {/* Add Material Specification Form */}
+            <div className="popup-table-header">
+              <div>
+                <h2>Material Specification List</h2>
+                <p>View and manage specifications</p>
+              </div>
 
-      {showForm && (
-
-        <div className="customer-form">
-
-          <div className="form-header">
-
-            <div>
-
-              <h2>
-                Add Material Specification
-              </h2>
-
-              <p>
-                Enter material specification details
-              </p>
-
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
             </div>
 
+            <div className="table-top">
+              <h2>Specifications</h2>
 
-            <button
-              className="close-button"
-              onClick={() => setShowForm(false)}
-            >
-              X
-            </button>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search specification"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
 
-          </div>
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Material Specification</th>
+                    <th>Material Group</th>
+                    <th>Grade</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
 
+                <tbody>
+                  {filteredSpecs.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="no-data">
+                        No specifications found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredSpecs.map((spec, index) => (
+                      <tr key={spec.id}>
+                        <td>{index + 1}</td>
+                        <td>{spec.specName}</td>
+                        <td>{spec.materialGroup || '—'}</td>
+                        <td>{spec.grade || '—'}</td>
+                        <td>{spec.description || '—'}</td>
 
-          {/* Material Name */}
+                        <td>
+                          <span
+                            className={
+                              spec.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {spec.status}
+                          </span>
+                        </td>
 
-          <div className="form-group">
-
-            <label>
-              Material Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter material name"
-              value={materialName}
-              onChange={(e) =>
-                setMaterialName(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Specification */}
-
-          <div className="form-group">
-
-            <label>
-              Specification
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter specification"
-              value={specification}
-              onChange={(e) =>
-                setSpecification(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Unit */}
-
-          <div className="form-group">
-
-            <label>
-              Unit
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter unit"
-              value={unit}
-              onChange={(e) =>
-                setUnit(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Status */}
-
-          <div className="form-group">
-
-            <label>
-              Status
-            </label>
-
-            <select
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value)
-              }
-            >
-
-              <option value="Active">
-                Active
-              </option>
-
-              <option value="Inactive">
-                Inactive
-              </option>
-
-            </select>
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteSpec(spec.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
           </div>
-
-
-          {/* Form Buttons */}
-
-          <div className="form-buttons">
-
-            <button
-              className="cancel-button"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-
-
-            <button
-              className="save-button"
-              onClick={addMaterialSpec}
-            >
-              Save Material Spec
-            </button>
-
-          </div>
-
         </div>
-
       )}
 
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
 
-      {/* Material Specs Table */}
+            <div className="form-header">
+              <div>
+                <h2>Add Material Specification</h2>
+                <p>Enter specification details</p>
+              </div>
 
-      <div className="customer-table-container">
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
 
-        <div className="table-top">
+            <div className="form-group">
+              <label>Material Specification *</label>
+              <input
+                type="text"
+                value={specName}
+                onChange={(e) => setSpecName(e.target.value)}
+              />
+            </div>
 
-          <h2>
-            Material Specification List
-          </h2>
+            <div className="form-group">
+              <label>Material Group</label>
+              <select
+                value={materialGroup}
+                onChange={(e) => setMaterialGroup(e.target.value)}
+              >
+                <option value="">Select Material Group</option>
+                <option value="Steel">Steel</option>
+                <option value="Stainless Steel">Stainless Steel</option>
+                <option value="Aluminium">Aluminium</option>
+                <option value="Brass">Brass</option>
+                <option value="Cast Iron">Cast Iron</option>
+              </select>
+            </div>
 
+            <div className="form-group">
+              <label>Grade</label>
+              <input
+                type="text"
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+              />
+            </div>
 
-          <input
-            type="text"
-            placeholder="Search material"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="search-input"
-          />
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                className="form-textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
 
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addSpec}>
+                Create
+              </button>
+            </div>
+
+          </div>
         </div>
-
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Spec ID
-              </th>
-
-              <th>
-                Material Name
-              </th>
-
-              <th>
-                Specification
-              </th>
-
-              <th>
-                Unit
-              </th>
-
-              <th>
-                Status
-              </th>
-
-              <th>
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredMaterialSpecs.length === 0 ? (
-
-              <tr>
-
-                <td
-                  colSpan="6"
-                  className="no-data"
-                >
-                  No material specifications found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredMaterialSpecs.map(
-                (materialSpec) => (
-
-                  <tr key={materialSpec.id}>
-
-                    <td>
-                      MS-{materialSpec.id}
-                    </td>
-
-                    <td>
-                      {materialSpec.materialName}
-                    </td>
-
-                    <td>
-                      {materialSpec.specification}
-                    </td>
-
-                    <td>
-                      {materialSpec.unit || "—"}
-                    </td>
-
-                    <td>
-
-                      <span
-                        className={
-                          materialSpec.status === "Active"
-                            ? "active-status"
-                            : "inactive-status"
-                        }
-                      >
-                        {materialSpec.status}
-                      </span>
-
-                    </td>
-
-                    <td>
-
-                      <button
-                        className="delete-button"
-                        onClick={() =>
-                          deleteMaterialSpec(
-                            materialSpec.id
-                          )
-                        }
-                      >
-                        Delete
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                )
-              )
-
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
+      )}
 
     </div>
   );

@@ -1,56 +1,317 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const tools = [
-  { id: 'TL-101', name: 'End Mill 6mm', category: 'Cutting Tool', qty: '28 pcs', status: 'Active' },
-  { id: 'TL-102', name: 'Drill Bit 8mm', category: 'Cutting Tool', qty: '43 pcs', status: 'Low' },
-  { id: 'TL-103', name: 'Fixture Clamp', category: 'Holding', qty: '16 pcs', status: 'Active' },
-  { id: 'TL-104', name: 'Gauge Block', category: 'Inspection', qty: '11 pcs', status: 'Review' }
-];
+function Tools() {
+  const [tools, setTools] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-const Tools = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [toolCode, setToolCode] = useState('');
+  const [toolName, setToolName] = useState('');
+  const [toolType, setToolType] = useState('');
+  const [size, setSize] = useState('');
+  const [make, setMake] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [status, setStatus] = useState('Active');
+
+  const addTool = () => {
+    if (toolName.trim() === '') {
+      alert('Please enter tool name');
+      return;
+    }
+
+    const newTool = {
+      id: Date.now(),
+      toolCode,
+      toolName,
+      toolType,
+      size,
+      make,
+      quantity,
+      status
+    };
+
+    setTools([...tools, newTool]);
+    setToolCode('');
+    setToolName('');
+    setToolType('');
+    setSize('');
+    setMake('');
+    setQuantity('');
+    setStatus('Active');
+    setShowForm(false);
+  };
+
+  const deleteTool = (id) => {
+    setTools(tools.filter((tool) => tool.id !== id));
+  };
+
+  const filteredTools = tools.filter(
+    (tool) =>
+      tool.toolName.toLowerCase().includes(search.toLowerCase()) ||
+      tool.toolCode.toLowerCase().includes(search.toLowerCase()) ||
+      tool.toolType.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      <div className="customer-header">
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Tools</h2>
-        </div>
-        <button style={{ border: 'none', background: '#ef4444', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + Add Tool
-        </button>
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Tool Catalogue</h3>
-          <input type="text" placeholder="Search tool" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+          <p className="small-title">MASTER DATA</p>
+          <h1>Tools</h1>
+          <p className="page-description">
+            Manage tools and equipment
+          </p>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#fef2f2' }}>
-            <tr>
-              {['Tool ID', 'Tool Name', 'Category', 'Quantity', 'Status'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tools.map((tool) => (
-              <tr key={tool.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{tool.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{tool.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{tool.category}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{tool.qty}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: tool.status === 'Active' ? '#dcfce7' : tool.status === 'Low' ? '#fef3c7' : '#f3f4f6', color: tool.status === 'Active' ? '#166534' : tool.status === 'Low' ? '#92400e' : '#374151' }}>{tool.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Tools
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Tool
+          </button>
+        </div>
       </div>
+
+      <div className="summary-container">
+        <div className="summary-box">
+          <p>Total Tools</p>
+          <h2>{tools.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {tools.filter((tool) => tool.status === 'Active').length}
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+          <h2>
+            {tools.filter((tool) => tool.status === 'Inactive').length}
+          </h2>
+        </div>
+      </div>
+
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
+
+            <div className="popup-table-header">
+              <div>
+                <h2>Tool List</h2>
+                <p>View and manage tools</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="table-top">
+              <h2>Tools</h2>
+
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search tool"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Tool Code</th>
+                    <th>Tool Name</th>
+                    <th>Tool Type</th>
+                    <th>Size</th>
+                    <th>Make</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredTools.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="no-data">
+                        No tools found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredTools.map((tool, index) => (
+                      <tr key={tool.id}>
+                        <td>{index + 1}</td>
+                        <td>{tool.toolCode || '—'}</td>
+                        <td>{tool.toolName}</td>
+                        <td>{tool.toolType || '—'}</td>
+                        <td>{tool.size || '—'}</td>
+                        <td>{tool.make || '—'}</td>
+                        <td>{tool.quantity || 0}</td>
+
+                        <td>
+                          <span
+                            className={
+                              tool.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {tool.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteTool(tool.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
+
+            <div className="form-header">
+              <div>
+                <h2>Add Tool</h2>
+                <p>Enter tool details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Tool Code</label>
+                <input
+                  type="text"
+                  value={toolCode}
+                  onChange={(e) => setToolCode(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Tool Name *</label>
+                <input
+                  type="text"
+                  value={toolName}
+                  onChange={(e) => setToolName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Tool Type</label>
+              <select
+                value={toolType}
+                onChange={(e) => setToolType(e.target.value)}
+              >
+                <option value="">Select Tool Type</option>
+                <option value="Cutting Tool">Cutting Tool</option>
+                <option value="Drilling Tool">Drilling Tool</option>
+                <option value="Milling Tool">Milling Tool</option>
+                <option value="Turning Tool">Turning Tool</option>
+                <option value="Grinding Tool">Grinding Tool</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Size</label>
+                <input
+                  type="text"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Quantity</label>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Make</label>
+              <input
+                type="text"
+                value={make}
+                onChange={(e) => setMake(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addTool}>
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Tools;

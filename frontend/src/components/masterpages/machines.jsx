@@ -1,442 +1,290 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import "../../styles/Master.css";
 
 function Machines() {
-
   const [machines, setMachines] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState("");
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-  const [machineName, setMachineName] = useState("");
-  const [machineCode, setMachineCode] = useState("");
-  const [machineType, setMachineType] = useState("");
-  const [status, setStatus] = useState("Active");
-
+  const [machineName, setMachineName] = useState('');
+  const [machineCode, setMachineCode] = useState('');
+  const [machineType, setMachineType] = useState('');
+  const [capacity, setCapacity] = useState('');
+  const [rate, setRate] = useState('');
+  const [status, setStatus] = useState('Active');
 
   const addMachine = () => {
-
-    if (machineName === "") {
-      alert("Please enter machine name");
-      return;
-    }
-
-    if (machineCode === "") {
-      alert("Please enter machine code");
+    if (machineName.trim() === '') {
+      alert('Please enter machine name');
       return;
     }
 
     const newMachine = {
-      id: machines.length + 1,
-      name: machineName,
-      code: machineCode,
-      type: machineType,
-      status: status
+      id: Date.now(),
+      machineName,
+      machineCode,
+      machineType,
+      capacity,
+      rate,
+      status
     };
 
-    setMachines([
-      ...machines,
-      newMachine
-    ]);
-
-    setMachineName("");
-    setMachineCode("");
-    setMachineType("");
-    setStatus("Active");
-
+    setMachines([...machines, newMachine]);
+    setMachineName('');
+    setMachineCode('');
+    setMachineType('');
+    setCapacity('');
+    setRate('');
+    setStatus('Active');
     setShowForm(false);
   };
 
-
   const deleteMachine = (id) => {
-
-    const newMachines = machines.filter(
-      (machine) => machine.id !== id
-    );
-
-    setMachines(newMachines);
+    setMachines(machines.filter((machine) => machine.id !== id));
   };
-
 
   const filteredMachines = machines.filter(
     (machine) =>
-      machine.name
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-
-      machine.code
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      machine.machineName.toLowerCase().includes(search.toLowerCase()) ||
+      machine.machineCode.toLowerCase().includes(search.toLowerCase())
   );
-
 
   return (
     <div className="customer-page">
 
-      {/* Header */}
-
       <div className="customer-header">
-
         <div>
-
-          <p className="small-title">
-            MASTER DATA
-          </p>
-
-          <h1>
-            Machines
-          </h1>
-
-          <p className="page-description">
-            Manage your machines
-          </p>
-
+          <p className="small-title">MASTER DATA</p>
+          <h1>Machines</h1>
+          <p className="page-description">Manage machine master</p>
         </div>
 
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Machines
+          </button>
 
-        <button
-          className="add-button"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Machine
-        </button>
-
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Machine
+          </button>
+        </div>
       </div>
-
-
-      {/* Summary */}
 
       <div className="summary-container">
-
         <div className="summary-box">
-
-          <p>
-            Total Machines
-          </p>
-
-          <h2>
-            {machines.length}
-          </h2>
-
+          <p>Total Machines</p>
+          <h2>{machines.length}</h2>
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Active
-          </p>
-
+          <p>Active</p>
           <h2>
-            {
-              machines.filter(
-                (machine) => machine.status === "Active"
-              ).length
-            }
+            {machines.filter((machine) => machine.status === 'Active').length}
           </h2>
-
         </div>
 
-
         <div className="summary-box">
-
-          <p>
-            Inactive
-          </p>
-
+          <p>Inactive</p>
           <h2>
-            {
-              machines.filter(
-                (machine) => machine.status === "Inactive"
-              ).length
-            }
+            {machines.filter((machine) => machine.status === 'Inactive').length}
           </h2>
-
         </div>
-
       </div>
 
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
 
-      {/* Add Machine Form */}
+            <div className="popup-table-header">
+              <div>
+                <h2>Machine List</h2>
+                <p>View and manage machines</p>
+              </div>
 
-      {showForm && (
-
-        <div className="customer-form">
-
-          <div className="form-header">
-
-            <div>
-
-              <h2>
-                Add Machine
-              </h2>
-
-              <p>
-                Enter machine details
-              </p>
-
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
             </div>
 
+            <div className="table-top">
+              <h2>Machines</h2>
 
-            <button
-              className="close-button"
-              onClick={() => setShowForm(false)}
-            >
-              X
-            </button>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search machine"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
 
-          </div>
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Machine Code</th>
+                    <th>Machine Name</th>
+                    <th>Machine Type</th>
+                    <th>Capacity</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
 
+                <tbody>
+                  {filteredMachines.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="no-data">
+                        No machines found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredMachines.map((machine, index) => (
+                      <tr key={machine.id}>
+                        <td>{index + 1}</td>
+                        <td>{machine.machineCode || '—'}</td>
+                        <td>{machine.machineName}</td>
+                        <td>{machine.machineType || '—'}</td>
+                        <td>{machine.capacity || '—'}</td>
+                        <td>₹{machine.rate || 0}</td>
 
-          {/* Machine Name */}
+                        <td>
+                          <span
+                            className={
+                              machine.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {machine.status}
+                          </span>
+                        </td>
 
-          <div className="form-group">
-
-            <label>
-              Machine Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter machine name"
-              value={machineName}
-              onChange={(e) =>
-                setMachineName(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Machine Code */}
-
-          <div className="form-group">
-
-            <label>
-              Machine Code
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter machine code"
-              value={machineCode}
-              onChange={(e) =>
-                setMachineCode(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Machine Type */}
-
-          <div className="form-group">
-
-            <label>
-              Machine Type
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter machine type"
-              value={machineType}
-              onChange={(e) =>
-                setMachineType(e.target.value)
-              }
-            />
-
-          </div>
-
-
-          {/* Status */}
-
-          <div className="form-group">
-
-            <label>
-              Status
-            </label>
-
-            <select
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value)
-              }
-            >
-
-              <option value="Active">
-                Active
-              </option>
-
-              <option value="Inactive">
-                Inactive
-              </option>
-
-            </select>
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteMachine(machine.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
           </div>
-
-
-          {/* Buttons */}
-
-          <div className="form-buttons">
-
-            <button
-              className="cancel-button"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
-
-
-            <button
-              className="save-button"
-              onClick={addMachine}
-            >
-              Save Machine
-            </button>
-
-          </div>
-
         </div>
-
       )}
 
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
 
-      {/* Machine Table */}
+            <div className="form-header">
+              <div>
+                <h2>Add Machine</h2>
+                <p>Enter machine details</p>
+              </div>
 
-      <div className="customer-table-container">
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
 
-        <div className="table-top">
+            <div className="form-row">
+              <div className="form-group">
+                <label>Machine Code</label>
+                <input
+                  type="text"
+                  value={machineCode}
+                  onChange={(e) => setMachineCode(e.target.value)}
+                />
+              </div>
 
-          <h2>
-            Machine List
-          </h2>
+              <div className="form-group">
+                <label>Machine Name *</label>
+                <input
+                  type="text"
+                  value={machineName}
+                  onChange={(e) => setMachineName(e.target.value)}
+                />
+              </div>
+            </div>
 
+            <div className="form-group">
+              <label>Machine Type</label>
+              <input
+                type="text"
+                value={machineType}
+                onChange={(e) => setMachineType(e.target.value)}
+              />
+            </div>
 
-          <input
-            type="text"
-            placeholder="Search machine"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="search-input"
-          />
+            <div className="form-row">
+              <div className="form-group">
+                <label>Capacity</label>
+                <input
+                  type="text"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+                />
+              </div>
 
+              <div className="form-group">
+                <label>Rate ₹</label>
+                <input
+                  type="number"
+                  value={rate}
+                  onChange={(e) => setRate(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addMachine}>
+                Create
+              </button>
+            </div>
+
+          </div>
         </div>
-
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                Machine ID
-              </th>
-
-              <th>
-                Machine Name
-              </th>
-
-              <th>
-                Machine Code
-              </th>
-
-              <th>
-                Machine Type
-              </th>
-
-              <th>
-                Status
-              </th>
-
-              <th>
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {filteredMachines.length === 0 ? (
-
-              <tr>
-
-                <td
-                  colSpan="6"
-                  className="no-data"
-                >
-                  No machines found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredMachines.map(
-                (machine) => (
-
-                  <tr key={machine.id}>
-
-                    <td>
-                      M-{machine.id}
-                    </td>
-
-                    <td>
-                      {machine.name}
-                    </td>
-
-                    <td>
-                      {machine.code}
-                    </td>
-
-                    <td>
-                      {machine.type || "—"}
-                    </td>
-
-                    <td>
-
-                      <span
-                        className={
-                          machine.status === "Active"
-                            ? "active-status"
-                            : "inactive-status"
-                        }
-                      >
-                        {machine.status}
-                      </span>
-
-                    </td>
-
-                    <td>
-
-                      <button
-                        className="delete-button"
-                        onClick={() =>
-                          deleteMachine(machine.id)
-                        }
-                      >
-                        Delete
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                )
-              )
-
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
+      )}
 
     </div>
   );

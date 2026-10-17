@@ -1,63 +1,302 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const materials = [
-  { id: 'M-010', name: 'Alloy Steel 42CrMo4', type: 'Metal', stock: '360 kg', value: '₹9.5K' },
-  { id: 'M-011', name: 'Brass Rod 20mm', type: 'Metal', stock: '140 kg', value: '₹6.7K' },
-  { id: 'M-012', name: 'Synthetic Oil', type: 'Chemical', stock: '180 L', value: '₹3.2K' },
-  { id: 'M-013', name: 'Carbon Fiber Sheet', type: 'Composite', stock: '52 pcs', value: '₹11.1K' }
-];
+function Materials() {
+  const [materials, setMaterials] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-const Materials = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [materialName, setMaterialName] = useState('');
+  const [materialGroup, setMaterialGroup] = useState('');
+  const [materialSpec, setMaterialSpec] = useState('');
+  const [unit, setUnit] = useState('Kg');
+  const [rate, setRate] = useState('');
+  const [status, setStatus] = useState('Active');
+
+  const addMaterial = () => {
+    if (materialName.trim() === '') {
+      alert('Please enter material name');
+      return;
+    }
+
+    const newMaterial = {
+      id: Date.now(),
+      materialName,
+      materialGroup,
+      materialSpec,
+      unit,
+      rate,
+      status
+    };
+
+    setMaterials([...materials, newMaterial]);
+    setMaterialName('');
+    setMaterialGroup('');
+    setMaterialSpec('');
+    setUnit('Kg');
+    setRate('');
+    setStatus('Active');
+    setShowForm(false);
+  };
+
+  const deleteMaterial = (id) => {
+    setMaterials(materials.filter((material) => material.id !== id));
+  };
+
+  const filteredMaterials = materials.filter(
+    (material) =>
+      material.materialName.toLowerCase().includes(search.toLowerCase()) ||
+      material.materialGroup.toLowerCase().includes(search.toLowerCase()) ||
+      material.materialSpec.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      <div className="customer-header">
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Materials</h2>
+          <p className="small-title">MASTER DATA</p>
+          <h1>Materials</h1>
+          <p className="page-description">Manage material master</p>
         </div>
-        <button style={{ border: 'none', background: '#7c3aed', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + Add Material
-        </button>
+
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Materials
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Material
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        {[['Total Materials', '638'], ['Approved', '504'], ['Expiring Soon', '29'], ['Stock Value', '₹36.8L']].map(([label, value]) => (
-          <div key={label} style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', padding: '1rem 1.1rem' }}>
-            <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '0.5rem' }}>{label}</div>
-            <div style={{ color: '#0f172a', fontSize: '1.8rem', fontWeight: 700 }}>{value}</div>
+      <div className="summary-container">
+        <div className="summary-box">
+          <p>Total Materials</p>
+          <h2>{materials.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {materials.filter((material) => material.status === 'Active').length}
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+          <h2>
+            {materials.filter((material) => material.status === 'Inactive').length}
+          </h2>
+        </div>
+      </div>
+
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
+
+            <div className="popup-table-header">
+              <div>
+                <h2>Material List</h2>
+                <p>View and manage materials</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="table-top">
+              <h2>Materials</h2>
+
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search material"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Material Name</th>
+                    <th>Material Group</th>
+                    <th>Material Spec</th>
+                    <th>Unit</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredMaterials.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="no-data">
+                        No materials found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredMaterials.map((material, index) => (
+                      <tr key={material.id}>
+                        <td>{index + 1}</td>
+                        <td>{material.materialName}</td>
+                        <td>{material.materialGroup || '—'}</td>
+                        <td>{material.materialSpec || '—'}</td>
+                        <td>{material.unit}</td>
+                        <td>₹{material.rate || 0}</td>
+
+                        <td>
+                          <span
+                            className={
+                              material.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {material.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteMaterial(material.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
           </div>
-        ))}
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Material Register</h3>
-          <input type="text" placeholder="Search material" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
         </div>
+      )}
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#f5f3ff' }}>
-            <tr>
-              {['Material ID', 'Material Name', 'Type', 'Stock', 'Value'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {materials.map((material) => (
-              <tr key={material.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{material.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{material.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{material.type}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{material.stock}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 700 }}>{material.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
+
+            <div className="form-header">
+              <div>
+                <h2>Add Material</h2>
+                <p>Enter material details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="form-group">
+              <label>Material Name *</label>
+              <input
+                type="text"
+                value={materialName}
+                onChange={(e) => setMaterialName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Material Group</label>
+              <select
+                value={materialGroup}
+                onChange={(e) => setMaterialGroup(e.target.value)}
+              >
+                <option value="">Select Material Group</option>
+                <option value="Steel">Steel</option>
+                <option value="Stainless Steel">Stainless Steel</option>
+                <option value="Aluminium">Aluminium</option>
+                <option value="Brass">Brass</option>
+                <option value="Cast Iron">Cast Iron</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Material Specification</label>
+              <input
+                type="text"
+                value={materialSpec}
+                onChange={(e) => setMaterialSpec(e.target.value)}
+              />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Unit</label>
+                <select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                >
+                  <option value="Kg">Kg</option>
+                  <option value="Nos">Nos</option>
+                  <option value="Meter">Meter</option>
+                  <option value="Ton">Ton</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Rate ₹</label>
+                <input
+                  type="number"
+                  value={rate}
+                  onChange={(e) => setRate(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addMaterial}>
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
-  </section>
-);
+  );
+}
 
 export default Materials;

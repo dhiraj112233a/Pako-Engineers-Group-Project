@@ -1,56 +1,314 @@
-import React from 'react';
+import React, { useState } from 'react';
+import "../../styles/Master.css";
 
-const boughtOutItems = [
-  { id: 'BO-001', name: 'Hydraulic Seal', supplier: 'Flowline Supply', stock: '28 pcs', status: 'Available' },
-  { id: 'BO-002', name: 'Needle Valve', supplier: 'Prime Valve Co', stock: '14 pcs', status: 'Low' },
-  { id: 'BO-003', name: 'Gear Motor', supplier: 'DriveTech', stock: '9 pcs', status: 'Available' },
-  { id: 'BO-004', name: 'Bearing Sleeve', supplier: 'Northline Mfg', stock: '5 pcs', status: 'Review' }
-];
+function BoughtOutItems() {
+  const [items, setItems] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [search, setSearch] = useState('');
 
-const BoughtOutItems = () => (
-  <section style={{ padding: '2rem', background: '#f5f7fb', minHeight: '100vh' }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+  const [itemCode, setItemCode] = useState('');
+  const [itemName, setItemName] = useState('');
+  const [description, setDescription] = useState('');
+  const [unit, setUnit] = useState('Nos');
+  const [supplier, setSupplier] = useState('');
+  const [price, setPrice] = useState('');
+  const [status, setStatus] = useState('Active');
+
+  const addItem = () => {
+    if (itemName.trim() === '') {
+      alert('Please enter item name');
+      return;
+    }
+
+    const newItem = {
+      id: Date.now(),
+      itemCode,
+      itemName,
+      description,
+      unit,
+      supplier,
+      price,
+      status
+    };
+
+    setItems([...items, newItem]);
+    setItemCode('');
+    setItemName('');
+    setDescription('');
+    setUnit('Nos');
+    setSupplier('');
+    setPrice('');
+    setStatus('Active');
+    setShowForm(false);
+  };
+
+  const deleteItem = (id) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.itemName.toLowerCase().includes(search.toLowerCase()) ||
+      item.itemCode.toLowerCase().includes(search.toLowerCase()) ||
+      item.supplier.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="customer-page">
+
+      <div className="customer-header">
         <div>
-          <p style={{ margin: 0, color: '#5b6475', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Master Data</p>
-          <h2 style={{ margin: '0.35rem 0 0', color: '#1f2937', fontSize: '2rem' }}>Bought-out Items</h2>
-        </div>
-        <button style={{ border: 'none', background: '#9333ea', color: '#fff', borderRadius: '8px', padding: '0.8rem 1.25rem', fontWeight: 600, cursor: 'pointer' }}>
-          + Add Item
-        </button>
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', boxShadow: '0 8px 18px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Purchased Items</h3>
-          <input type="text" placeholder="Search item" style={{ padding: '0.7rem 0.9rem', border: '1px solid #d1d5db', borderRadius: '8px', width: '220px', outline: 'none' }} />
+          <p className="small-title">MASTER DATA</p>
+          <h1>Bought Out Items</h1>
+          <p className="page-description">
+            Manage bought out items
+          </p>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#faf5ff' }}>
-            <tr>
-              {['Item ID', 'Item Name', 'Supplier', 'Stock', 'Status'].map((header) => (
-                <th key={header} style={{ padding: '0.9rem 1rem', textAlign: 'left', fontSize: '12px', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {boughtOutItems.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.id}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937' }}>{item.name}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#475569' }}>{item.supplier}</td>
-                <td style={{ padding: '0.9rem 1rem', color: '#1f2937', fontWeight: 600 }}>{item.stock}</td>
-                <td style={{ padding: '0.9rem 1rem' }}>
-                  <span style={{ display: 'inline-block', padding: '0.4rem 0.7rem', borderRadius: '999px', fontSize: '12px', fontWeight: 700, background: item.status === 'Available' ? '#dcfce7' : item.status === 'Low' ? '#fef3c7' : '#f3f4f6', color: item.status === 'Available' ? '#166534' : item.status === 'Low' ? '#92400e' : '#374151' }}>{item.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="master-buttons">
+          <button
+            className="view-button"
+            onClick={() => setShowTable(true)}
+          >
+            View Items
+          </button>
+
+          <button
+            className="add-button"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Item
+          </button>
+        </div>
       </div>
+
+      <div className="summary-container">
+        <div className="summary-box">
+          <p>Total Items</p>
+          <h2>{items.length}</h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Active</p>
+          <h2>
+            {items.filter((item) => item.status === 'Active').length}
+          </h2>
+        </div>
+
+        <div className="summary-box">
+          <p>Inactive</p>
+          <h2>
+            {items.filter((item) => item.status === 'Inactive').length}
+          </h2>
+        </div>
+      </div>
+
+      {showTable && (
+        <div className="popup-overlay">
+          <div className="table-popup">
+
+            <div className="popup-table-header">
+              <div>
+                <h2>Bought Out Item List</h2>
+                <p>View and manage bought out items</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowTable(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="table-top">
+              <h2>Bought Out Items</h2>
+
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search item"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="customer-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Item Code</th>
+                    <th>Item Name</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredItems.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="no-data">
+                        No bought out items found
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredItems.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>{index + 1}</td>
+                        <td>{item.itemCode || '—'}</td>
+                        <td>{item.itemName}</td>
+                        <td>{item.description || '—'}</td>
+                        <td>{item.unit}</td>
+                        <td>{item.supplier || '—'}</td>
+                        <td>₹{item.price || 0}</td>
+
+                        <td>
+                          <span
+                            className={
+                              item.status === 'Active'
+                                ? 'active-status'
+                                : 'inactive-status'
+                            }
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <button
+                            className="delete-button"
+                            onClick={() => deleteItem(item.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="popup-overlay">
+          <div className="customer-form">
+
+            <div className="form-header">
+              <div>
+                <h2>Add Bought Out Item</h2>
+                <p>Enter item details</p>
+              </div>
+
+              <button
+                className="close-button"
+                onClick={() => setShowForm(false)}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Item Code</label>
+                <input
+                  type="text"
+                  value={itemCode}
+                  onChange={(e) => setItemCode(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Item Name *</label>
+                <input
+                  type="text"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                className="form-textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Unit</label>
+                <select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                >
+                  <option value="Nos">Nos</option>
+                  <option value="Kg">Kg</option>
+                  <option value="Meter">Meter</option>
+                  <option value="Set">Set</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Price ₹</label>
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Supplier</label>
+              <input
+                type="text"
+                value={supplier}
+                onChange={(e) => setSupplier(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className="form-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="save-button" onClick={addItem}>
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
-  </section>
-);
+  );
+}
 
 export default BoughtOutItems;
