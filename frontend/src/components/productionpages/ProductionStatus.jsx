@@ -1,18 +1,14 @@
 import React from 'react';
 import ErpTablePage from '../ErpTablePage';
 import { useStore, WO_KEY, WO_SEED, fmtDate, today } from '../../store/erpstore';
-
 const tone = { Open: '', 'In Progress': 'warn', Closed: 'good' };
-
 export default function ProductionStatus() {
   const [orders] = useStore(WO_KEY, WO_SEED);
-
   const rows = orders.map((r) => ({
     ...r,
     pct: r.qty ? Math.round((r.done / r.qty) * 100) : 0,
     late: r.status !== 'Closed' && r.due < today(),
   }));
-
   const columns = [
     { key: 'woNo', label: 'WO No', render: (r) => <b>{r.woNo}</b> },
     { key: 'customer', label: 'Customer' },

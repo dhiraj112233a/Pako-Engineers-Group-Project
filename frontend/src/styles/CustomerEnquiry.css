@@ -1,0 +1,156 @@
+.enquiry-modal {
+    max-width: 860px;
+    max-height: 94vh;
+}
+
+.enquiry-fields,
+.enquiry-item-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.enquiry-fields label,
+.enquiry-item-fields label,
+.enquiry-notes {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.enquiry-fields input,
+.enquiry-fields select,
+.enquiry-item-fields input,
+.enquiry-item-fields select,
+.enquiry-notes textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid #dbe2ea;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.enquiry-fields input:focus,
+.enquiry-fields select:focus,
+.enquiry-item-fields input:focus,
+.enquiry-item-fields select:focus,
+.enquiry-notes textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.enquiry-items-section {
+    margin-top: 16px;
+}
+
+.enquiry-section-heading,
+.enquiry-item-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.enquiry-section-heading {
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.enquiry-section-heading h4 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.enquiry-item-card {
+    margin-bottom: 9px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.enquiry-item-heading {
+    margin-bottom: 9px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.enquiry-item-heading strong {
+    color: #475569;
+}
+
+.enquiry-item-heading span {
+    flex: 1;
+}
+
+.enquiry-remove-line {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.enquiry-item-name,
+.enquiry-item-description {
+    grid-column: span 2;
+}
+
+.enquiry-item-remarks {
+    grid-column: span 1;
+}
+
+.enquiry-notes {
+    margin-top: 12px;
+}
+
+.enquiry-notes textarea {
+    resize: vertical;
+}
+
+.enquiry-delete {
+    color: #b91c1c;
+}
+
+@media (max-width: 700px) {
+    .enquiry-fields,
+    .enquiry-item-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .enquiry-item-name,
+    .enquiry-item-description {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 520px) {
+    .enquiry-modal {
+        padding: 16px;
+    }
+
+    .enquiry-fields,
+    .enquiry-item-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .enquiry-item-name,
+    .enquiry-item-description,
+    .enquiry-item-remarks {
+        grid-column: span 1;
+    }
+}

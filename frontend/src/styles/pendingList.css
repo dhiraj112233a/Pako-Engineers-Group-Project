@@ -1,0 +1,90 @@
+.pending-list-page .erp-head h1 {
+    gap: 10px;
+}
+
+.pending-list-page .erp-head h1 i {
+    color: #1d4ed8;
+    font-size: 18px;
+}
+
+.pending-pdf-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #16a34a;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pending-pdf-button:hover {
+    background: #15803d;
+}
+
+.pending-pdf-button:focus-visible {
+    outline: 3px solid #86efac;
+    outline-offset: 2px;
+}
+
+.pending-list-stats {
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    margin-bottom: 14px;
+}
+
+.pending-list-stats .erp-card {
+    padding: 12px 15px;
+}
+
+.pending-list-stats .erp-card b {
+    font-size: 20px;
+}
+
+.pending-list-stats .pending-green {
+    background: #ecfdf5;
+}
+
+.pending-list-stats .pending-green b {
+    color: #15803d;
+}
+
+.pending-list-stats .pending-purple {
+    background: #f5f3ff;
+}
+
+.pending-list-stats .pending-purple b {
+    color: #6d28d9;
+    font-size: 17px;
+}
+
+.pending-list-tools > input[type=text] {
+    max-width: 340px;
+}
+
+.pending-list-table {
+    min-width: 1050px;
+}
+
+.pending-list-table td:nth-child(2) {
+    min-width: 180px;
+}
+
+.pending-list-table td:nth-child(6),
+.pending-list-table td:nth-child(7) {
+    max-width: 230px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .pending-list-tools > input[type=text] {
+        max-width: none;
+        width: 100%;
+    }
+
+    .pending-pdf-button {
+        margin-left: auto;
+    }
+}
