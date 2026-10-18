@@ -22,7 +22,7 @@ import Dispatch from './components/transactionpages/dispatch';
 import Quotation from './components/transactionpages/quotation';
 import PurchaseList from './components/transactionpages/purchaseList';
 import PendingList from './components/transactionpages/pendingList';
-import SalesInvoices from './components/transactionpages/Salesinvoices';
+import SalesInvoices from './components/transactionpages/SalesInvoices';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
 import ProductionPlan from './components/productionpages/ProductionPlan';
