@@ -132,6 +132,8 @@ const NavbarMenu = ({
       // Dashboard navigation
       if (label === 'Dashboard') {
         navigate('/');
+      } else if (label === 'Document Vault') {
+        navigate('/document-vault');
       }
     }
   };

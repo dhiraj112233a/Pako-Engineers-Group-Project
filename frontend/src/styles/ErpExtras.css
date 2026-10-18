@@ -23,6 +23,16 @@
     background: #f1f5f9;
 }
 
+.erp-btn.secondary {
+    background: #fff;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.erp-btn.secondary:hover {
+    background: #f1f5f9;
+}
+
 .erp-btn.sm {
     padding: 4px 12px;
     font-size: 12px;
@@ -184,38 +194,60 @@
     color: #475569;
 }
 
-.erp-form-grid label.wide {
+.erp-form-grid label.wide,
+.erp-form-grid label.full {
     grid-column: 1 / -1;
 }
 
 .erp-form-grid input,
-.erp-form-grid select {
+.erp-form-grid select,
+.erp-form-grid textarea {
+    width: 100%;
+    min-height: 41px;
     padding: 9px 10px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
+    background: #fff;
+    color: #1e293b;
     font-size: 13px;
     font-weight: 400;
+    box-sizing: border-box;
+}
+
+.erp-form-grid textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.erp-form-grid input::placeholder,
+.erp-form-grid textarea::placeholder {
+    color: #94a3b8;
 }
 
 .erp-form-grid input:focus,
-.erp-form-grid select:focus {
+.erp-form-grid select:focus,
+.erp-form-grid textarea:focus {
     outline: none;
     border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 /* NEW: red border + message under a field that failed validation */
 .erp-form-grid input.has-err,
-.erp-form-grid select.has-err {
+.erp-form-grid select.has-err,
+.erp-form-grid textarea.has-err {
     border-color: #ef4444;
 }
 
-.erp-field-err {
+.erp-field-err,
+.erp-error {
     color: #b91c1c;
     font-size: 11px;
     font-weight: 500;
 }
 
-.erp-err {
+.erp-err,
+.erp-error {
     color: #b91c1c;
     background: #fee2e2;
     border-radius: 8px;

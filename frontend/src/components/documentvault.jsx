@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/DocumentVault.css";
+import "../styles/documentvault.css";
 
 function DocumentVault() {
   const [documents, setDocuments] = useState([]);

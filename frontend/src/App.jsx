@@ -23,6 +23,7 @@ import Quotation from './components/transactionpages/quotation';
 import PurchaseList from './components/transactionpages/purchaseList';
 import PendingList from './components/transactionpages/pendingList';
 import SalesInvoices from './components/transactionpages/SalesInvoices';
+import DocumentVault from './components/documentvault';
 import Dashboard from './components/dashboard/Dashboard';
 import WorkOrders from './components/productionpages/WorkOrders';
 import ProductionPlan from './components/productionpages/ProductionPlan';
@@ -63,6 +64,7 @@ function App() {
             <Route path="/purchase-list" element={<PurchaseList />} />
             <Route path="/pending-list" element={<PendingList />} />
             <Route path="/sales-invoices" element={<SalesInvoices />} />
+            <Route path="/document-vault" element={<DocumentVault />} />
             <Route path="/work-orders" element={<WorkOrders />} />
             <Route path="/production-plan" element={<ProductionPlan />} />
             <Route path="/production-status" element={<ProductionStatus />} />

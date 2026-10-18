@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavbarMenu from './NavbarMenu';
 import "../styles/Navbar.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('Dashboard');
   const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -79,6 +81,11 @@ const Navbar = () => {
                 setActiveMenu(item.label);
                 setOpenDropdown(null);
                 setMobileMenuOpen(false);
+                if (item.label === 'Dashboard') {
+                  navigate('/');
+                } else if (item.label === 'Document Vault') {
+                  navigate('/document-vault');
+                }
               }}
             >
               <i className={`fas ${item.icon}`}></i>
