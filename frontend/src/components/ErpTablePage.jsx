@@ -9,7 +9,6 @@ const cmp = (a, b) => {
     ? a - b
     : String(a).localeCompare(String(b), undefined, { numeric: true });
 };
-
 // Shared layout for Production + Stock pages: header, stat cards, filters, sortable table.
 export default function ErpTablePage({
   title, icon, subtitle, action, onAction, stats = [], columns, rows,
