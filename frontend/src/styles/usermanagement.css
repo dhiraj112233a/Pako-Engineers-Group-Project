@@ -1,0 +1,319 @@
+.user-management-page {
+    min-height: 100vh;
+    padding: 26px 30px;
+    background: #f5f7fb;
+}
+
+.user-management-header,
+.user-management-heading,
+.user-management-header-actions,
+.user-management-row-actions {
+    display: flex;
+    align-items: center;
+}
+
+.user-management-header {
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.user-management-heading {
+    gap: 11px;
+}
+
+.user-management-icon {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 10px;
+    background: #e8efff;
+    color: #1d4ed8;
+    font-size: 16px;
+}
+
+.user-management-heading h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 21px;
+}
+
+.user-management-heading p {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.user-management-header-actions {
+    gap: 11px;
+}
+
+.user-management-help {
+    padding: 7px 10px;
+    border: 1px solid #94a3b8;
+    border-radius: 7px;
+    background: #fff;
+    color: #475569;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.user-management-help i {
+    margin-right: 4px;
+}
+
+.user-management-search {
+    display: flex;
+    width: min(100%, 330px);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 0 10px;
+    border: 1px solid #dbe2ea;
+    border-radius: 7px;
+    background: #fff;
+    color: #94a3b8;
+}
+
+.user-management-search input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 37px;
+    border: 0;
+    outline: none;
+    color: #334155;
+    font-size: 11px;
+}
+
+.user-management-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.user-management-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.user-management-table th {
+    padding: 10px 12px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+}
+
+.user-management-table td {
+    padding: 10px 12px;
+    border-top: 1px solid #edf1f5;
+    color: #475569;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.user-management-table td strong,
+.user-management-table td small {
+    display: block;
+}
+
+.user-management-table td strong {
+    color: #1f2937;
+    font-size: 10px;
+}
+
+.user-management-table td small {
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+.user-management-table td .user-management-login-flag {
+    color: #1d4ed8;
+}
+
+.user-management-role {
+    color: #334155;
+    font-weight: 700;
+}
+
+.user-management-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 99px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.user-management-status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.user-management-status.inactive {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.user-management-row-actions {
+    gap: 4px;
+}
+
+.user-management-row-actions button {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background: #fff;
+    color: #64748b;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.user-management-row-actions button:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.user-management-row-actions button.delete:hover {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.user-management-empty {
+    padding: 32px !important;
+    color: #64748b !important;
+    text-align: center;
+}
+
+.user-management-modal,
+.user-permissions-modal {
+    max-width: 520px;
+}
+
+.user-management-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px 12px;
+}
+
+.user-management-form-grid label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.user-management-form-grid label.user-management-full {
+    grid-column: 1 / -1;
+}
+
+.user-management-form-grid input,
+.user-management-form-grid select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 39px;
+    padding: 8px 9px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 12px;
+}
+
+.user-management-form-grid input:focus,
+.user-management-form-grid select:focus {
+    outline: none;
+    border-color: #1d4ed8;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+.user-management-login-check {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.user-management-login-check input,
+.user-permissions-list input {
+    accent-color: #1d4ed8;
+}
+
+.user-management-note {
+    margin: 9px 0 0;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.user-permissions-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.user-permissions-list label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #334155;
+    font-size: 11px;
+}
+
+.user-permissions-list input {
+    margin: 0;
+}
+
+@media (max-width: 650px) {
+    .user-management-page {
+        padding: 18px 15px;
+    }
+
+    .user-management-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .user-management-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .user-management-table {
+        min-width: 650px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-management-form-grid,
+    .user-permissions-list {
+        grid-template-columns: 1fr;
+    }
+
+    .user-management-form-grid label.user-management-full {
+        grid-column: auto;
+    }
+}

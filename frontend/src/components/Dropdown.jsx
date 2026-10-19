@@ -34,7 +34,12 @@ const MenuDropdown = ({ items }) => {
       "Production Status": "/production-status",
       "Raw Material": "/raw-material",
       "Finished Goods": "/finished-goods",
-      "Stock Management": "/stock-management"
+      "Stock Management": "/stock-management",
+      "GST Settings": "/admin/gst-setting",
+      "Vendor T&C": "/admin/vendor-terms",
+      "Sales Targets": "/admin/sales-targets",
+      "Global Setting": "/admin/global-setting",
+      "User Management": "/admin/user-management"
     };
 
     if (routes[label]) {

@@ -35,9 +35,42 @@ export const PROCESS_PO_KEY = 'pako.processPurchaseOrders';
 export const DISPATCH_KEY = 'pako.dispatchChallans';
 export const CUST_KEY = 'pako.customers';
 export const TARGET_KEY = 'pako.monthlyTarget';
+export const SALES_TARGETS_KEY = 'pako.salesTargets';
+export const GST_SLAB_KEY = 'pako.gstSlabs';
+export const VENDOR_TERMS_KEY = 'pako.vendorTerms';
+export const GLOBAL_SETTINGS_KEY = 'pako.globalSettings';
+export const USERS_KEY = 'pako.users';
+
+export const GLOBAL_SETTINGS_DEFAULT = {
+  numbering: {
+    invoice: { prefix: 'INV-', next: 1 },
+    vendorPo: { prefix: 'VPO-', next: 4 },
+    enquiry: { prefix: 'ENQ-', next: 30 },
+    quotation: { prefix: 'QTN-2026-', next: 116 },
+    orderAcceptance: { prefix: 'PF-', next: 56 },
+  },
+  customerDefaults: { paymentTerms: '' },
+  company: {
+    name: 'PAKO ENGINEERS',
+    address: '',
+    gstin: '',
+    pan: '',
+    phone: '',
+    email: '',
+    website: '',
+    bankName: '',
+    accountHolder: '',
+    accountNumber: '',
+    ifsc: '',
+  },
+};
 
 export const WO_SEED = [
   { id: 2, woNo: 'WO-0002', customer: 'NAMOKAR ENGINEERING', drawing: '26342 M3001/DLZ001', qty: 48, unit: 'NOS', done: 0, due: '2026-07-31', priority: 'Normal', approval: '—', status: 'Open', operations: [] },
+];
+export const GST_SLAB_SEED = [
+  { id: 1, name: 'GST 18%', cgst: 9, sgst: 9, igst: 0 },
+  { id: 2, name: 'IGST 18%', cgst: 0, sgst: 0, igst: 18 },
 ];
 export const MOVE_SEED = [
   { id: 1, date: '2026-07-01', type: 'Receipt', stock: 'Raw Material', reference: 'CUTTER M20', hsn: '84879000', unit: 'Nos.', qty: 6, rate: 0, reorder: 0, source: 'Opening' },
@@ -45,18 +78,30 @@ export const MOVE_SEED = [
 
 export const today = () => new Date().toISOString().slice(0, 10);
 export const fmtDate = (d) => { if (!d) return '—'; const [y, m, day] = d.split('-'); return `${day}/${m}/${y}`; };
+const configuredDocumentNo = (list, field, settingKey, fallbackPrefix, fallbackStart = 1) => {
+  const settings = read(GLOBAL_SETTINGS_KEY, GLOBAL_SETTINGS_DEFAULT);
+  const numberSetting = settings.numbering?.[settingKey] || {};
+  const prefix = String(numberSetting.prefix ?? fallbackPrefix);
+  const firstSerial = Number(numberSetting.next);
+  const largestSerial = Math.max(0, ...list.map((item) => {
+    const match = String(item[field] || '').match(/(\d+)$/);
+    return match ? Number(match[1]) : 0;
+  }));
+  const serial = Math.max(Number.isInteger(firstSerial) && firstSerial > 0 ? firstSerial : fallbackStart, largestSerial + 1);
+  return `${prefix}${String(serial).padStart(4, '0')}`;
+};
 export const nextWoNo = (list) =>
   `WO-${String(Math.max(0, ...list.map((w) => parseInt(w.woNo.slice(3), 10) || 0)) + 1).padStart(4, '0')}`;
 export const nextInvNo = (list) =>
-  `INV-${String(Math.max(0, ...list.map((i) => parseInt(i.invNo.slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+  configuredDocumentNo(list, 'invNo', 'invoice', 'INV-');
 export const nextEnqNo = (list) =>
-  `ENQ-${String(Math.max(0, ...list.map((e) => parseInt(String(e.enquiryNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+  configuredDocumentNo(list, 'enquiryNo', 'enquiry', 'ENQ-');
 export const nextQuotationNo = (list) =>
-  `QT-${String(Math.max(0, ...list.map((quotation) => parseInt(String(quotation.quotationNo || '').slice(3), 10) || 0)) + 1).padStart(4, '0')}`;
+  configuredDocumentNo(list, 'quotationNo', 'quotation', 'QT-');
 export const nextCustomerPoNo = (list) =>
   `CPO-${String(Math.max(0, ...list.map((po) => parseInt(String(po.poNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
 export const nextVendorPoNo = (list) =>
-  `VPO-${String(Math.max(0, ...list.map((po) => parseInt(String(po.poNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
+  configuredDocumentNo(list, 'poNo', 'vendorPo', 'VPO-');
 export const nextProcessPrNo = (list) =>
   `PPR-${String(Math.max(0, ...list.map((pr) => parseInt(String(pr.prNo || '').slice(4), 10) || 0)) + 1).padStart(4, '0')}`;
 export const nextProcessPoNo = (list) =>

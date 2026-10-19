@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
-import { useStore, CPO_KEY, CUST_KEY, fmtDate, today, nextCustomerPoNo } from '../../store/erpstore';
+import { useStore, CPO_KEY, CUST_KEY, GST_SLAB_KEY, GST_SLAB_SEED, GLOBAL_SETTINGS_KEY, GLOBAL_SETTINGS_DEFAULT, fmtDate, today, nextCustomerPoNo } from '../../store/erpstore';
 import '../../styles/customerPo.css';
 
 const defaultTerms = 'Material as per approved drawing\nDelivery within 30 days\nPayment 30 days from invoice';
@@ -66,6 +66,8 @@ function calculatePo(po) {
 export default function CustomerPo() {
   const [rows, setRows] = useStore(CPO_KEY, []);
   const [customers] = useStore(CUST_KEY, []);
+  const [gstSlabs] = useStore(GST_SLAB_KEY, GST_SLAB_SEED);
+  const [globalSettings] = useStore(GLOBAL_SETTINGS_KEY, GLOBAL_SETTINGS_DEFAULT);
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(newDraft);
   const [error, setError] = useState('');
@@ -80,9 +82,12 @@ export default function CustomerPo() {
   }, [show]);
 
   const totals = useMemo(() => calculatePo(draft), [draft]);
+  const gstRates = [...new Set(gstSlabs.map((slab) => Number(slab.cgst) + Number(slab.sgst) || Number(slab.igst)))].sort((a, b) => a - b);
+  if (!gstRates.includes(Number(draft.gstPct))) gstRates.push(Number(draft.gstPct));
+  gstRates.sort((a, b) => a - b);
 
   const openForm = () => {
-    setDraft(newDraft());
+    setDraft({ ...newDraft(), paymentTerms: globalSettings.customerDefaults?.paymentTerms || '' });
     setError('');
     setShow(true);
   };
@@ -367,7 +372,7 @@ export default function CustomerPo() {
                 <label>
                   <span>GST Slab</span>
                   <select value={draft.gstPct} onChange={(event) => updateDraft('gstPct', event.target.value)}>
-                    {['0', '5', '12', '18', '28'].map((rate) => <option key={rate} value={rate}>{`GST ${rate}%`}</option>)}
+                    {gstRates.map((rate) => <option key={rate} value={rate}>{`GST ${rate}%`}</option>)}
                   </select>
                   <small>CGST + SGST: {draft.igst ? '0% + 0%' : `${asNumber(draft.gstPct) / 2}% + ${asNumber(draft.gstPct) / 2}%`} · IGST: {draft.igst ? `${draft.gstPct}%` : '0%'}</small>
                 </label>

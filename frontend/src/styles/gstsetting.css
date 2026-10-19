@@ -1,0 +1,24 @@
+.gst-slab-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.erp-link-btn.gst-slab-delete {
+    color: #b91c1c;
+}
+
+.gst-setting-summary {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.gst-setting-overlay .gst-setting-modal {
+    max-width: 560px;
+}
+
+@media (max-width: 560px) {
+    .gst-setting-overlay .erp-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
