@@ -31,6 +31,11 @@ import ProductionStatus from './components/productionpages/ProductionStatus';
 import RawMaterial from './components/stockpages/RawMaterial';
 import FinishedGoods from './components/stockpages/FinishedGoods';
 import StockManagement from './components/stockpages/StockManagement';
+import GSTSettings from './components/setting/gstsetting';
+import VendorTerms from './components/setting/vendorandtc';
+import SalesTargets from './components/setting/salestarget';
+import GlobalSettings from './components/setting/globalsetting';
+import UserManagement from './components/setting/usermanagement';
 import './App.css';
 function App() {
   return (
@@ -71,6 +76,16 @@ function App() {
             <Route path="/raw-material" element={<RawMaterial />} />
             <Route path="/finished-goods" element={<FinishedGoods />} />
             <Route path="/stock-management" element={<StockManagement />} />
+            <Route path="/gst-setting" element={<GSTSettings />} />
+            <Route path="/admin/gst-setting" element={<GSTSettings />} />
+            <Route path="/admin/vendor-terms" element={<VendorTerms />} />
+            <Route path="/vendor-terms" element={<VendorTerms />} />
+            <Route path="/admin/sales-targets" element={<SalesTargets />} />
+            <Route path="/sales-targets" element={<SalesTargets />} />
+            <Route path="/admin/global-setting" element={<GlobalSettings />} />
+            <Route path="/global-setting" element={<GlobalSettings />} />
+            <Route path="/admin/user-management" element={<UserManagement />} />
+            <Route path="/user-management" element={<UserManagement />} />
           </Routes>
         </main>
       </div>

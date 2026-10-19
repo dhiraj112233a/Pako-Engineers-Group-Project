@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
-import { useStore, VPO_KEY, fmtDate, today, nextVendorPoNo } from '../../store/erpstore';
+import { useStore, VPO_KEY, VENDOR_TERMS_KEY, fmtDate, today, nextVendorPoNo } from '../../store/erpstore';
 import '../../styles/vendorPo.css';
 
 const newLine = (id) => ({
@@ -63,6 +63,7 @@ function calculatePo(po) {
 
 export default function VendorPo() {
   const [rows, setRows] = useStore(VPO_KEY, []);
+  const [vendorTerms] = useStore(VENDOR_TERMS_KEY, []);
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(newDraft);
   const [error, setError] = useState('');
@@ -79,7 +80,8 @@ export default function VendorPo() {
   const totals = useMemo(() => calculatePo(draft), [draft]);
 
   const openForm = () => {
-    setDraft(newDraft());
+    const defaultTerms = vendorTerms.find((term) => term.appliesTo === 'Vendor PO' && term.isDefault);
+    setDraft({ ...newDraft(), terms: defaultTerms?.content || '' });
     setError('');
     setShow(true);
   };

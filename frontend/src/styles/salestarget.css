@@ -1,0 +1,258 @@
+.sales-target-page {
+    min-height: 100vh;
+    padding: 28px 30px;
+    background: #f5f7fb;
+}
+
+.sales-target-header,
+.sales-target-heading,
+.sales-target-header-actions,
+.sales-target-year-heading,
+.sales-target-year-actions {
+    display: flex;
+    align-items: center;
+}
+
+.sales-target-header {
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.sales-target-heading {
+    gap: 12px;
+}
+
+.sales-target-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 11px;
+    background: #e8efff;
+    color: #1d4ed8;
+    font-size: 17px;
+}
+
+.sales-target-heading h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 22px;
+}
+
+.sales-target-heading p {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.sales-target-header-actions {
+    gap: 12px;
+}
+
+.sales-target-back {
+    padding: 8px 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #fff;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sales-target-back i {
+    margin-right: 4px;
+    color: #64748b;
+}
+
+.sales-target-years {
+    display: grid;
+    gap: 15px;
+}
+
+.sales-target-year-card {
+    padding: 15px 14px 13px;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #1d4ed8;
+    border-radius: 9px;
+    background: #fff;
+}
+
+.sales-target-year-heading {
+    gap: 9px;
+    margin-bottom: 10px;
+}
+
+.sales-target-year-heading h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.sales-target-year-heading strong {
+    margin-left: auto;
+    color: #334155;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.sales-target-year-actions {
+    gap: 4px;
+}
+
+.sales-target-year-actions button {
+    display: grid;
+    width: 25px;
+    height: 25px;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.sales-target-year-actions button:hover {
+    background: #f1f5f9;
+    color: #1d4ed8;
+}
+
+.sales-target-year-actions .sales-target-delete:hover {
+    color: #b91c1c;
+}
+
+.sales-target-month-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.sales-target-month {
+    display: flex;
+    min-width: 0;
+    min-height: 52px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #f1f5f9;
+    border-radius: 6px;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.sales-target-month span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.sales-target-month b {
+    max-width: 100%;
+    color: #1e293b;
+    font-size: 10px;
+    overflow-wrap: anywhere;
+}
+
+.sales-target-empty {
+    padding: 32px 16px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 9px;
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+}
+
+.sales-target-modal {
+    max-width: 600px;
+}
+
+.sales-target-form-fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sales-target-form-fields select,
+.sales-target-month-fields input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 38px;
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #fff;
+    color: #1e293b;
+    font-size: 12px;
+}
+
+.sales-target-form-summary {
+    margin: 15px 0 9px;
+    color: #475569;
+    font-size: 12px;
+}
+
+.sales-target-form-summary b {
+    color: #1e293b;
+}
+
+.sales-target-month-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.sales-target-month-fields label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sales-target-month-fields input:focus,
+.sales-target-form-fields select:focus {
+    outline: none;
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+@media (max-width: 860px) {
+    .sales-target-month-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .sales-target-page {
+        padding: 18px 16px;
+    }
+
+    .sales-target-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sales-target-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .sales-target-year-heading {
+        flex-wrap: wrap;
+    }
+
+    .sales-target-year-heading strong {
+        flex-basis: 100%;
+        margin-left: 0;
+    }
+
+    .sales-target-month-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

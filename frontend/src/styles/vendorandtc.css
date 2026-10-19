@@ -1,0 +1,258 @@
+.vendor-terms-page {
+    min-height: 100vh;
+    padding: 28px 30px;
+    background: #f5f7fb;
+}
+
+.vendor-terms-header,
+.vendor-terms-heading,
+.vendor-terms-header-actions,
+.vendor-term-card,
+.vendor-term-badges,
+.vendor-term-actions {
+    display: flex;
+    align-items: center;
+}
+
+.vendor-terms-header {
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.vendor-terms-heading {
+    gap: 12px;
+}
+
+.vendor-terms-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 11px;
+    background: #e8efff;
+    color: #1d4ed8;
+    font-size: 17px;
+}
+
+.vendor-terms-heading h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 22px;
+}
+
+.vendor-terms-heading p {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.vendor-terms-header-actions {
+    gap: 12px;
+}
+
+.vendor-terms-count {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.vendor-terms-count i {
+    margin-right: 4px;
+}
+
+.vendor-terms-search {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: min(100%, 360px);
+    margin-bottom: 18px;
+    padding: 0 12px;
+    border: 1px solid #dbe2ea;
+    border-radius: 8px;
+    background: #fff;
+    color: #94a3b8;
+}
+
+.vendor-terms-search input {
+    width: 100%;
+    min-height: 40px;
+    border: 0;
+    outline: none;
+    color: #1e293b;
+    font-size: 12px;
+}
+
+.vendor-terms-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr));
+    gap: 14px;
+}
+
+.vendor-term-card {
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #1d4ed8;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 2px 7px rgba(15, 23, 42, .04);
+}
+
+.vendor-term-card-body {
+    min-width: 0;
+}
+
+.vendor-term-card h2 {
+    margin: 0 0 7px;
+    color: #1f2937;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.vendor-term-badges {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.vendor-term-scope,
+.vendor-term-default {
+    padding: 3px 7px;
+    border-radius: 99px;
+    background: #e8efff;
+    color: #1d4ed8;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.vendor-term-default {
+    background: #fef3c7;
+    color: #a16207;
+}
+
+.vendor-term-card p {
+    margin: 10px 0 0;
+    color: #475569;
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.vendor-term-actions {
+    flex: 0 0 auto;
+    gap: 5px;
+}
+
+.vendor-term-actions button {
+    display: grid;
+    width: 25px;
+    height: 25px;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+}
+
+.vendor-term-actions button:hover {
+    background: #f1f5f9;
+    color: #1d4ed8;
+}
+
+.vendor-term-actions button.delete:hover {
+    color: #b91c1c;
+}
+
+.vendor-terms-empty {
+    padding: 34px 16px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 9px;
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+}
+
+.vendor-terms-modal {
+    max-width: 460px;
+}
+
+.vendor-terms-form-fields {
+    display: grid;
+    gap: 12px;
+}
+
+.vendor-terms-form-fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vendor-terms-form-fields input,
+.vendor-terms-form-fields select,
+.vendor-terms-form-fields textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    font-weight: 400;
+}
+
+.vendor-terms-form-fields input,
+.vendor-terms-form-fields select {
+    min-height: 40px;
+}
+
+.vendor-terms-form-fields textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+.vendor-terms-form-fields input:focus,
+.vendor-terms-form-fields select:focus,
+.vendor-terms-form-fields textarea:focus {
+    outline: none;
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+.vendor-terms-default-check {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vendor-terms-default-check input {
+    margin: 0;
+    accent-color: #1d4ed8;
+}
+
+@media (max-width: 600px) {
+    .vendor-terms-page {
+        padding: 18px 16px;
+    }
+
+    .vendor-terms-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vendor-terms-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

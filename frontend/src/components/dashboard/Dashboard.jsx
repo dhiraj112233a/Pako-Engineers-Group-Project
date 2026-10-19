@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/Erp.css';
 import '../../styles/ErpExtras.css';
 import {
-  useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, INV_KEY, CUST_KEY, TARGET_KEY,
+  useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, INV_KEY, CUST_KEY, TARGET_KEY, SALES_TARGETS_KEY,
   balances, stockState, today, fyOf, fyLabel, fyIndex, salesByMonth, salesByCustomer,
 } from '../../store/erpstore';
 const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
@@ -75,16 +75,21 @@ export default function Dashboard() {
   const [moves] = useStore(MOVE_KEY, MOVE_SEED);
   const [invoices] = useStore(INV_KEY, []);
   const [customers] = useStore(CUST_KEY, []);
-  const [monthlyTarget, setMonthlyTarget] = useStore(TARGET_KEY, 2500000);
+  const [monthlyTarget] = useStore(TARGET_KEY, 2500000);
+  const [salesTargets] = useStore(SALES_TARGETS_KEY, []);
   const curFy = fyOf(today());
   const [fy, setFy] = useState(curFy);
   const years = [...new Set([curFy, ...invoices.map((i) => fyOf(i.date))])].sort((a, b) => b - a);
   // ---- everything below is derived from stored data ----
   const m = salesByMonth(invoices, fy);
   const prev = salesByMonth(invoices, fy - 1);
-  const TARGET = Array(12).fill(monthlyTarget);
+  const targetPlan = salesTargets.find((plan) => Number(plan.financialYear) === Number(fy));
+  const TARGET = targetPlan
+    ? Array.from({ length: 12 }, (_, index) => Number(targetPlan.months?.[index]) || 0)
+    : Array(12).fill(monthlyTarget);
   const cur = fy === curFy ? fyIndex(today()) : 11;
-  const yBasic = sum(m.basic), yGst = sum(m.gst), yTotal = sum(m.total), yTarget = sum(TARGET);
+  const yBasic = sum(m.basic), yGst = sum(m.gst), yTotal = sum(m.total);
+  const yTarget = targetPlan ? Number(targetPlan.annualTarget ?? sum(TARGET)) : sum(TARGET);
   const prevTotal = sum(prev.total);
   const pct = yTarget ? (yTotal / yTarget) * 100 : 0;
   const invCount = sum(m.count);
@@ -103,12 +108,7 @@ export default function Dashboard() {
     { label: 'Open Work Orders', value: openWo.length, note: overdue ? `${overdue} overdue` : 'None overdue', to: '/work-orders' },
     { label: 'Low / Out of Stock', value: lowItems, note: 'View stock', to: '/raw-material' },
   ];
-  const editTarget = () => {
-    const v = window.prompt('Monthly sales target (₹)', monthlyTarget);
-    if (v === null) return;
-    const n = Number(v);
-    if (n > 0) setMonthlyTarget(n);
-  };
+  const editTarget = () => navigate('/admin/sales-targets');
   return (
     <div className="erp-page">
       <div className="erp-head">
@@ -120,7 +120,7 @@ export default function Dashboard() {
           <select value={fy} onChange={(e) => setFy(Number(e.target.value))}>
             {years.map((y) => <option key={y} value={y}>FY {fyLabel(y)}</option>)}
           </select>
-          <button className="erp-btn ghost" onClick={editTarget}>Monthly target: {money(monthlyTarget)}</button>
+          <button className="erp-btn ghost" onClick={editTarget}>Manage sales targets</button>
           <button className="erp-btn" onClick={() => navigate('/sales-invoices')}>+ Add invoice</button>
         </div>
       </div>
