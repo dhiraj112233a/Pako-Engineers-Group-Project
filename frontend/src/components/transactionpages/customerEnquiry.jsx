@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import ErpTablePage from '../ErpTablePage';
 import { useStore, ENQ_KEY, CUST_KEY, fmtDate, today, nextEnqNo } from '../../store/erpstore';
 import '../../styles/CustomerEnquiry.css';
-
 const newItem = (id) => ({
   id,
   item: '',
@@ -13,7 +12,6 @@ const newItem = (id) => ({
   requiredBy: '',
   remarks: '',
 });
-
 const newDraft = () => ({
   customer: '',
   contact: '',
@@ -25,16 +23,13 @@ const newDraft = () => ({
   notes: '',
   items: [newItem(1)],
 });
-
 const priorityTone = { High: 'bad', Medium: 'warn', Low: 'good' };
-
 export default function CustomerEnquiry() {
   const [rows, setRows] = useStore(ENQ_KEY, []);
   const [customers] = useStore(CUST_KEY, []);
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(newDraft);
   const [error, setError] = useState('');
-
   useEffect(() => {
     if (!show) return undefined;
     const closeOnEscape = (event) => {
@@ -43,18 +38,15 @@ export default function CustomerEnquiry() {
     window.addEventListener('keydown', closeOnEscape);
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [show]);
-
   const openForm = () => {
     setDraft(newDraft());
     setError('');
     setShow(true);
   };
-
   const updateDraft = (key, value) => {
     setDraft((current) => ({ ...current, [key]: value }));
     setError('');
   };
-
   const updateItem = (id, key, value) => {
     setDraft((current) => ({
       ...current,
@@ -62,21 +54,18 @@ export default function CustomerEnquiry() {
     }));
     setError('');
   };
-
   const addItem = () => {
     setDraft((current) => ({
       ...current,
       items: [...current.items, newItem(Math.max(0, ...current.items.map((item) => item.id)) + 1)],
     }));
   };
-
   const removeItem = (id) => {
     setDraft((current) => ({
       ...current,
       items: current.items.length > 1 ? current.items.filter((item) => item.id !== id) : current.items,
     }));
   };
-
   const save = (event) => {
     event.preventDefault();
     if (!draft.customer.trim()) {
@@ -95,7 +84,6 @@ export default function CustomerEnquiry() {
       setError('Each item needs an item name and a quantity greater than zero. Target price must be zero or more.');
       return;
     }
-
     setRows((list) => [{
       id: Date.now(),
       enquiryNo: nextEnqNo(list),
@@ -117,13 +105,11 @@ export default function CustomerEnquiry() {
     }, ...list]);
     setShow(false);
   };
-
   const remove = (row) => {
     if (window.confirm(`Delete ${row.enquiryNo}?`)) {
       setRows((list) => list.filter((item) => item.id !== row.id));
     }
   };
-
   const customerChange = (value) => {
     const selected = customers.find((customer) => customer.name === value);
     setDraft((current) => ({
