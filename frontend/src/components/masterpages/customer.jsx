@@ -5,7 +5,6 @@ function Customer() {
 
   const [customers, setCustomers] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [name, setName] = useState('');
@@ -62,20 +61,15 @@ function Customer() {
 
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Customers</h1>
+
           <p className="page-description">
             Manage your customers
           </p>
         </div>
 
         <div className="master-buttons">
-
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Customers
-          </button>
 
           <button
             className="add-button"
@@ -132,131 +126,102 @@ function Customer() {
       </div>
 
 
-      {showTable && (
+      <div className="table-top">
 
-        <div className="popup-overlay">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search customer"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-          <div className="table-popup">
-
-            <div className="popup-table-header">
-
-              <div>
-                <h2>Customer List</h2>
-                <p>View and manage customers</p>
-              </div>
-
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-
-            </div>
+      </div>
 
 
-            <div className="table-top">
+      <div className="customer-table-container">
 
-              <h2>Customers</h2>
+        <table>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search customer"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer Name</th>
+              <th>Contact Person</th>
+              <th>Status</th>
+              <th>Value</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-            </div>
+          <tbody>
 
+            {filteredCustomers.length === 0 ? (
 
-            <div className="customer-table-container">
+              <tr>
+                <td colSpan="6" className="no-data">
+                  No customers found
+                </td>
+              </tr>
 
-              <table>
+            ) : (
 
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Customer Name</th>
-                    <th>Contact Person</th>
-                    <th>Status</th>
-                    <th>Value</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+              filteredCustomers.map((customer, index) => (
 
-                <tbody>
+                <tr key={customer.id}>
 
-                  {filteredCustomers.length === 0 ? (
+                  <td>{index + 1}</td>
 
-                    <tr>
-                      <td colSpan="6" className="no-data">
-                        No customers found
-                      </td>
-                    </tr>
+                  <td>{customer.name}</td>
 
-                  ) : (
+                  <td>
+                    {customer.contact || '—'}
+                  </td>
 
-                    filteredCustomers.map((customer, index) => (
+                  <td>
 
-                      <tr key={customer.id}>
+                    <span
+                      className={
+                        customer.status === 'Active'
+                          ? 'active-status'
+                          : customer.status === 'Pending'
+                            ? 'pending-status'
+                            : 'inactive-status'
+                      }
+                    >
+                      {customer.status}
+                    </span>
 
-                        <td>{index + 1}</td>
+                  </td>
 
-                        <td>{customer.name}</td>
+                  <td>
+                    {customer.value || '—'}
+                  </td>
 
-                        <td>{customer.contact || '—'}</td>
+                  <td>
 
-                        <td>
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteCustomer(customer.id)
+                      }
+                    >
+                      Delete
+                    </button>
 
-                          <span
-                            className={
-                              customer.status === 'Active'
-                                ? 'active-status'
-                                : customer.status === 'Pending'
-                                  ? 'pending-status'
-                                  : 'inactive-status'
-                            }
-                          >
-                            {customer.status}
-                          </span>
+                  </td>
 
-                        </td>
+                </tr>
 
-                        <td>
-                          {customer.value || '—'}
-                        </td>
+              ))
 
-                        <td>
+            )}
 
-                          <button
-                            className="delete-button"
-                            onClick={() =>
-                              deleteCustomer(customer.id)
-                            }
-                          >
-                            Delete
-                          </button>
+          </tbody>
 
-                        </td>
+        </table>
 
-                      </tr>
-
-                    ))
-
-                  )}
-
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
+      </div>
 
 
       {showForm && (

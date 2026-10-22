@@ -4,7 +4,6 @@ import "../../styles/Master.css";
 function Instruments() {
   const [instruments, setInstruments] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [instrumentName, setInstrumentName] = useState('');
@@ -33,6 +32,7 @@ function Instruments() {
     };
 
     setInstruments([...instruments, newInstrument]);
+
     setInstrumentName('');
     setInstrumentCode('');
     setRange('');
@@ -40,6 +40,7 @@ function Instruments() {
     setMake('');
     setCalibrationDate('');
     setStatus('Active');
+
     setShowForm(false);
   };
 
@@ -63,21 +64,18 @@ function Instruments() {
     <div className="customer-page">
 
       <div className="customer-header">
+
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Instruments</h1>
+
           <p className="page-description">
             Manage measuring instruments
           </p>
         </div>
 
         <div className="master-buttons">
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Instruments
-          </button>
 
           <button
             className="add-button"
@@ -85,10 +83,14 @@ function Instruments() {
           >
             + Add Instrument
           </button>
+
         </div>
+
       </div>
 
+
       <div className="summary-container">
+
         <div className="summary-box">
           <p>Total Instruments</p>
           <h2>{instruments.length}</h2>
@@ -115,110 +117,133 @@ function Instruments() {
             }
           </h2>
         </div>
+
       </div>
 
-      {showTable && (
-        <div className="popup-overlay">
-          <div className="table-popup">
 
-            <div className="popup-table-header">
-              <div>
-                <h2>Instrument List</h2>
-                <p>View and manage instruments</p>
-              </div>
+      <div className="table-top">
 
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-            </div>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search instrument"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-            <div className="table-top">
-              <h2>Instruments</h2>
+      </div>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search instrument"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
 
-            <div className="customer-table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Instrument Code</th>
-                    <th>Instrument Name</th>
-                    <th>Range</th>
-                    <th>Least Count</th>
-                    <th>Make</th>
-                    <th>Calibration Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+      <div className="customer-table-container">
 
-                <tbody>
-                  {filteredInstruments.length === 0 ? (
-                    <tr>
-                      <td colSpan="9" className="no-data">
-                        No instruments found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredInstruments.map((instrument, index) => (
-                      <tr key={instrument.id}>
-                        <td>{index + 1}</td>
-                        <td>{instrument.instrumentCode || '—'}</td>
-                        <td>{instrument.instrumentName}</td>
-                        <td>{instrument.range || '—'}</td>
-                        <td>{instrument.leastCount || '—'}</td>
-                        <td>{instrument.make || '—'}</td>
-                        <td>{instrument.calibrationDate || '—'}</td>
+        <table>
 
-                        <td>
-                          <span
-                            className={
-                              instrument.status === 'Active'
-                                ? 'active-status'
-                                : 'inactive-status'
-                            }
-                          >
-                            {instrument.status}
-                          </span>
-                        </td>
+          <thead>
 
-                        <td>
-                          <button
-                            className="delete-button"
-                            onClick={() =>
-                              deleteInstrument(instrument.id)
-                            }
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <tr>
+              <th>#</th>
+              <th>Instrument Code</th>
+              <th>Instrument Name</th>
+              <th>Range</th>
+              <th>Least Count</th>
+              <th>Make</th>
+              <th>Calibration Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
 
-          </div>
-        </div>
-      )}
+          </thead>
+
+          <tbody>
+
+            {filteredInstruments.length === 0 ? (
+
+              <tr>
+                <td colSpan="9" className="no-data">
+                  No instruments found
+                </td>
+              </tr>
+
+            ) : (
+
+              filteredInstruments.map((instrument, index) => (
+
+                <tr key={instrument.id}>
+
+                  <td>{index + 1}</td>
+
+                  <td>
+                    {instrument.instrumentCode || '—'}
+                  </td>
+
+                  <td>
+                    {instrument.instrumentName}
+                  </td>
+
+                  <td>
+                    {instrument.range || '—'}
+                  </td>
+
+                  <td>
+                    {instrument.leastCount || '—'}
+                  </td>
+
+                  <td>
+                    {instrument.make || '—'}
+                  </td>
+
+                  <td>
+                    {instrument.calibrationDate || '—'}
+                  </td>
+
+                  <td>
+
+                    <span
+                      className={
+                        instrument.status === 'Active'
+                          ? 'active-status'
+                          : 'inactive-status'
+                      }
+                    >
+                      {instrument.status}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteInstrument(instrument.id)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
 
       {showForm && (
+
         <div className="popup-overlay">
+
           <div className="customer-form">
 
             <div className="form-header">
+
               <div>
                 <h2>Add Instrument</h2>
                 <p>Enter instrument details</p>
@@ -230,68 +255,106 @@ function Instruments() {
               >
                 X
               </button>
+
             </div>
 
+
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Instrument Code</label>
+
                 <input
                   type="text"
                   value={instrumentCode}
-                  onChange={(e) => setInstrumentCode(e.target.value)}
+                  onChange={(e) =>
+                    setInstrumentCode(e.target.value)
+                  }
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Instrument Name *</label>
+
                 <input
                   type="text"
                   value={instrumentName}
-                  onChange={(e) => setInstrumentName(e.target.value)}
+                  onChange={(e) =>
+                    setInstrumentName(e.target.value)
+                  }
                 />
+
               </div>
+
             </div>
 
+
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Range</label>
+
                 <input
                   type="text"
                   value={range}
                   onChange={(e) => setRange(e.target.value)}
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Least Count</label>
+
                 <input
                   type="text"
                   value={leastCount}
-                  onChange={(e) => setLeastCount(e.target.value)}
+                  onChange={(e) =>
+                    setLeastCount(e.target.value)
+                  }
                 />
+
               </div>
+
             </div>
 
+
             <div className="form-group">
+
               <label>Make</label>
+
               <input
                 type="text"
                 value={make}
                 onChange={(e) => setMake(e.target.value)}
               />
+
             </div>
 
+
             <div className="form-group">
+
               <label>Calibration Date</label>
+
               <input
                 type="date"
                 value={calibrationDate}
-                onChange={(e) => setCalibrationDate(e.target.value)}
+                onChange={(e) =>
+                  setCalibrationDate(e.target.value)
+                }
               />
+
             </div>
 
+
             <div className="form-group">
+
               <label>Status</label>
+
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
@@ -299,9 +362,12 @@ function Instruments() {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+
             </div>
 
+
             <div className="form-buttons">
+
               <button
                 className="cancel-button"
                 onClick={() => setShowForm(false)}
@@ -315,10 +381,13 @@ function Instruments() {
               >
                 Create
               </button>
+
             </div>
 
           </div>
+
         </div>
+
       )}
 
     </div>
