@@ -32,8 +32,6 @@ export const PROCESS_PO_KEY = 'pako.processPurchaseOrders';
 export const DISPATCH_KEY = 'pako.dispatchChallans';
 export const CUST_KEY = 'pako.customers';
 export const TARGET_KEY = 'pako.monthlyTarget';
-<<<<<<< HEAD
-=======
 export const SALES_TARGETS_KEY = 'pako.salesTargets';
 export const GST_SLAB_KEY = 'pako.gstSlabs';
 export const VENDOR_TERMS_KEY = 'pako.vendorTerms';
@@ -64,7 +62,6 @@ export const GLOBAL_SETTINGS_DEFAULT = {
   },
 };
 
->>>>>>> dc1e438933b12b9bb562689a87a4f87c69db6857
 export const WO_SEED = [
   { id: 2, woNo: 'WO-0002', customer: 'NAMOKAR ENGINEERING', drawing: '26342 M3001/DLZ001', qty: 48, unit: 'NOS', done: 0, due: '2026-07-31', priority: 'Normal', approval: '—', status: 'Open', operations: [] },
 ];
