@@ -4,7 +4,6 @@ import "../../styles/Master.css";
 function Consumables() {
   const [consumables, setConsumables] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [name, setName] = useState('');
@@ -31,17 +30,21 @@ function Consumables() {
     };
 
     setConsumables([...consumables, newConsumable]);
+
     setName('');
     setCode('');
     setUnit('Nos');
     setPrice('');
     setStock('');
     setStatus('Active');
+
     setShowForm(false);
   };
 
   const deleteConsumable = (id) => {
-    setConsumables(consumables.filter((item) => item.id !== id));
+    setConsumables(
+      consumables.filter((item) => item.id !== id)
+    );
   };
 
   const filteredConsumables = consumables.filter(
@@ -56,18 +59,15 @@ function Consumables() {
       <div className="customer-header">
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Consumables</h1>
-          <p className="page-description">Manage consumable items</p>
+
+          <p className="page-description">
+            Manage consumable items
+          </p>
         </div>
 
         <div className="master-buttons">
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Consumables
-          </button>
-
           <button
             className="add-button"
             onClick={() => setShowForm(true)}
@@ -78,6 +78,7 @@ function Consumables() {
       </div>
 
       <div className="summary-container">
+
         <div className="summary-box">
           <p>Total Consumables</p>
           <h2>{consumables.length}</h2>
@@ -86,116 +87,137 @@ function Consumables() {
         <div className="summary-box">
           <p>Active</p>
           <h2>
-            {consumables.filter((item) => item.status === 'Active').length}
+            {
+              consumables.filter(
+                (item) => item.status === 'Active'
+              ).length
+            }
           </h2>
         </div>
 
         <div className="summary-box">
           <p>Inactive</p>
           <h2>
-            {consumables.filter((item) => item.status === 'Inactive').length}
+            {
+              consumables.filter(
+                (item) => item.status === 'Inactive'
+              ).length
+            }
           </h2>
         </div>
+
       </div>
 
-      {showTable && (
-        <div className="popup-overlay">
-          <div className="table-popup">
+      <div className="table-top">
 
-            <div className="popup-table-header">
-              <div>
-                <h2>Consumable List</h2>
-                <p>View and manage consumables</p>
-              </div>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-            </div>
+      </div>
 
-            <div className="table-top">
-              <h2>Consumables</h2>
+      <div className="customer-table-container">
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search consumable"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+        <table>
 
-            <div className="customer-table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Consumable Name</th>
-                    <th>Unit</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Code</th>
+              <th>Consumable Name</th>
+              <th>Unit</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-                <tbody>
-                  {filteredConsumables.length === 0 ? (
-                    <tr>
-                      <td colSpan="8" className="no-data">
-                        No consumables found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredConsumables.map((item, index) => (
-                      <tr key={item.id}>
-                        <td>{index + 1}</td>
-                        <td>{item.code || '—'}</td>
-                        <td>{item.name}</td>
-                        <td>{item.unit}</td>
-                        <td>₹{item.price || 0}</td>
-                        <td>{item.stock || 0}</td>
+          <tbody>
 
-                        <td>
-                          <span
-                            className={
-                              item.status === 'Active'
-                                ? 'active-status'
-                                : 'inactive-status'
-                            }
-                          >
-                            {item.status}
-                          </span>
-                        </td>
+            {filteredConsumables.length === 0 ? (
 
-                        <td>
-                          <button
-                            className="delete-button"
-                            onClick={() => deleteConsumable(item.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+              <tr>
+                <td colSpan="8" className="no-data">
+                  No consumables found
+                </td>
+              </tr>
 
-          </div>
-        </div>
-      )}
+            ) : (
+
+              filteredConsumables.map((item, index) => (
+
+                <tr key={item.id}>
+
+                  <td>{index + 1}</td>
+
+                  <td>
+                    {item.code || '—'}
+                  </td>
+
+                  <td>
+                    {item.name}
+                  </td>
+
+                  <td>
+                    {item.unit}
+                  </td>
+
+                  <td>
+                    ₹{item.price || 0}
+                  </td>
+
+                  <td>
+                    {item.stock || 0}
+                  </td>
+
+                  <td>
+                    <span
+                      className={
+                        item.status === 'Active'
+                          ? 'active-status'
+                          : 'inactive-status'
+                      }
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteConsumable(item.id)
+                      }
+                    >
+                      Delete
+                    </button>
+                  </td>
+
+                </tr>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
 
       {showForm && (
+
         <div className="popup-overlay">
+
           <div className="customer-form">
 
             <div className="form-header">
+
               <div>
                 <h2>Add Consumable</h2>
                 <p>Enter consumable details</p>
@@ -207,30 +229,41 @@ function Consumables() {
               >
                 X
               </button>
+
             </div>
 
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Code</label>
+
                 <input
                   type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Consumable Name *</label>
+
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
+
               </div>
+
             </div>
 
             <div className="form-group">
+
               <label>Unit</label>
+
               <select
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
@@ -240,30 +273,41 @@ function Consumables() {
                 <option value="Litre">Litre</option>
                 <option value="Meter">Meter</option>
               </select>
+
             </div>
 
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Price ₹</label>
+
                 <input
                   type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Stock</label>
+
                 <input
                   type="number"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                 />
+
               </div>
+
             </div>
 
             <div className="form-group">
+
               <label>Status</label>
+
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
@@ -271,9 +315,11 @@ function Consumables() {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+
             </div>
 
             <div className="form-buttons">
+
               <button
                 className="cancel-button"
                 onClick={() => setShowForm(false)}
@@ -287,10 +333,13 @@ function Consumables() {
               >
                 Create
               </button>
+
             </div>
 
           </div>
+
         </div>
+
       )}
 
     </div>
