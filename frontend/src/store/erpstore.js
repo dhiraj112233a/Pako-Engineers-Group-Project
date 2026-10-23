@@ -37,7 +37,6 @@ export const GST_SLAB_KEY = 'pako.gstSlabs';
 export const VENDOR_TERMS_KEY = 'pako.vendorTerms';
 export const GLOBAL_SETTINGS_KEY = 'pako.globalSettings';
 export const USERS_KEY = 'pako.users';
-
 export const GLOBAL_SETTINGS_DEFAULT = {
   numbering: {
     invoice: { prefix: 'INV-', next: 1 },

@@ -37,6 +37,7 @@ import SalesTargets from './components/setting/salestarget';
 import GlobalSettings from './components/setting/globalsetting';
 import UserManagement from './components/setting/usermanagement';
 import './App.css';
+import BackendConnectionTest from './components/BackendConnectionTest';
 function App() {
   return (
     <BrowserRouter>
@@ -46,6 +47,10 @@ function App() {
         </div>
         <main className="main-content">
           <Routes>
+            <Route
+              path="/backend-test"
+              element={<BackendConnectionTest />}
+            />
             <Route path="/" element={<Dashboard />} />
             <Route path="/customer" element={<Customer />} />
             <Route path="/vendors" element={<Vendors />} />
