@@ -4,7 +4,6 @@ import "../../styles/Master.css";
 function Machines() {
   const [machines, setMachines] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [machineName, setMachineName] = useState('');
@@ -31,42 +30,49 @@ function Machines() {
     };
 
     setMachines([...machines, newMachine]);
+
     setMachineName('');
     setMachineCode('');
     setMachineType('');
     setCapacity('');
     setRate('');
     setStatus('Active');
+
     setShowForm(false);
   };
 
   const deleteMachine = (id) => {
-    setMachines(machines.filter((machine) => machine.id !== id));
+    setMachines(
+      machines.filter((machine) => machine.id !== id)
+    );
   };
 
   const filteredMachines = machines.filter(
     (machine) =>
-      machine.machineName.toLowerCase().includes(search.toLowerCase()) ||
-      machine.machineCode.toLowerCase().includes(search.toLowerCase())
+      machine.machineName
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      machine.machineCode
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (
     <div className="customer-page">
 
       <div className="customer-header">
+
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Machines</h1>
-          <p className="page-description">Manage machine master</p>
+
+          <p className="page-description">
+            Manage machine master
+          </p>
         </div>
 
         <div className="master-buttons">
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Machines
-          </button>
 
           <button
             className="add-button"
@@ -74,10 +80,14 @@ function Machines() {
           >
             + Add Machine
           </button>
+
         </div>
+
       </div>
 
+
       <div className="summary-container">
+
         <div className="summary-box">
           <p>Total Machines</p>
           <h2>{machines.length}</h2>
@@ -86,116 +96,146 @@ function Machines() {
         <div className="summary-box">
           <p>Active</p>
           <h2>
-            {machines.filter((machine) => machine.status === 'Active').length}
+            {
+              machines.filter(
+                (machine) => machine.status === 'Active'
+              ).length
+            }
           </h2>
         </div>
 
         <div className="summary-box">
           <p>Inactive</p>
           <h2>
-            {machines.filter((machine) => machine.status === 'Inactive').length}
+            {
+              machines.filter(
+                (machine) => machine.status === 'Inactive'
+              ).length
+            }
           </h2>
         </div>
+
       </div>
 
-      {showTable && (
-        <div className="popup-overlay">
-          <div className="table-popup">
 
-            <div className="popup-table-header">
-              <div>
-                <h2>Machine List</h2>
-                <p>View and manage machines</p>
-              </div>
+      <div className="table-top">
 
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-            </div>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search machine"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-            <div className="table-top">
-              <h2>Machines</h2>
+      </div>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search machine"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
 
-            <div className="customer-table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Machine Code</th>
-                    <th>Machine Name</th>
-                    <th>Machine Type</th>
-                    <th>Capacity</th>
-                    <th>Rate</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+      <div className="customer-table-container">
 
-                <tbody>
-                  {filteredMachines.length === 0 ? (
-                    <tr>
-                      <td colSpan="8" className="no-data">
-                        No machines found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredMachines.map((machine, index) => (
-                      <tr key={machine.id}>
-                        <td>{index + 1}</td>
-                        <td>{machine.machineCode || '—'}</td>
-                        <td>{machine.machineName}</td>
-                        <td>{machine.machineType || '—'}</td>
-                        <td>{machine.capacity || '—'}</td>
-                        <td>₹{machine.rate || 0}</td>
+        <table>
 
-                        <td>
-                          <span
-                            className={
-                              machine.status === 'Active'
-                                ? 'active-status'
-                                : 'inactive-status'
-                            }
-                          >
-                            {machine.status}
-                          </span>
-                        </td>
+          <thead>
 
-                        <td>
-                          <button
-                            className="delete-button"
-                            onClick={() => deleteMachine(machine.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <tr>
+              <th>#</th>
+              <th>Machine Code</th>
+              <th>Machine Name</th>
+              <th>Machine Type</th>
+              <th>Capacity</th>
+              <th>Rate</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
 
-          </div>
-        </div>
-      )}
+          </thead>
+
+          <tbody>
+
+            {filteredMachines.length === 0 ? (
+
+              <tr>
+                <td colSpan="8" className="no-data">
+                  No machines found
+                </td>
+              </tr>
+
+            ) : (
+
+              filteredMachines.map((machine, index) => (
+
+                <tr key={machine.id}>
+
+                  <td>{index + 1}</td>
+
+                  <td>
+                    {machine.machineCode || '—'}
+                  </td>
+
+                  <td>
+                    {machine.machineName}
+                  </td>
+
+                  <td>
+                    {machine.machineType || '—'}
+                  </td>
+
+                  <td>
+                    {machine.capacity || '—'}
+                  </td>
+
+                  <td>
+                    ₹{machine.rate || 0}
+                  </td>
+
+                  <td>
+
+                    <span
+                      className={
+                        machine.status === 'Active'
+                          ? 'active-status'
+                          : 'inactive-status'
+                      }
+                    >
+                      {machine.status}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteMachine(machine.id)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
 
       {showForm && (
+
         <div className="popup-overlay">
+
           <div className="customer-form">
 
             <div className="form-header">
+
               <div>
                 <h2>Add Machine</h2>
                 <p>Enter machine details</p>
@@ -207,69 +247,110 @@ function Machines() {
               >
                 X
               </button>
+
             </div>
 
+
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Machine Code</label>
+
                 <input
                   type="text"
                   value={machineCode}
-                  onChange={(e) => setMachineCode(e.target.value)}
+                  onChange={(e) =>
+                    setMachineCode(e.target.value)
+                  }
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Machine Name *</label>
+
                 <input
                   type="text"
                   value={machineName}
-                  onChange={(e) => setMachineName(e.target.value)}
+                  onChange={(e) =>
+                    setMachineName(e.target.value)
+                  }
                 />
+
               </div>
+
             </div>
 
+
             <div className="form-group">
+
               <label>Machine Type</label>
+
               <input
                 type="text"
                 value={machineType}
-                onChange={(e) => setMachineType(e.target.value)}
+                onChange={(e) =>
+                  setMachineType(e.target.value)
+                }
               />
+
             </div>
 
+
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Capacity</label>
+
                 <input
                   type="text"
                   value={capacity}
-                  onChange={(e) => setCapacity(e.target.value)}
+                  onChange={(e) =>
+                    setCapacity(e.target.value)
+                  }
                 />
+
               </div>
 
               <div className="form-group">
+
                 <label>Rate ₹</label>
+
                 <input
                   type="number"
                   value={rate}
-                  onChange={(e) => setRate(e.target.value)}
+                  onChange={(e) =>
+                    setRate(e.target.value)
+                  }
                 />
+
               </div>
+
             </div>
 
+
             <div className="form-group">
+
               <label>Status</label>
+
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) =>
+                  setStatus(e.target.value)
+                }
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+
             </div>
 
+
             <div className="form-buttons">
+
               <button
                 className="cancel-button"
                 onClick={() => setShowForm(false)}
@@ -277,13 +358,19 @@ function Machines() {
                 Cancel
               </button>
 
-              <button className="save-button" onClick={addMachine}>
+              <button
+                className="save-button"
+                onClick={addMachine}
+              >
                 Create
               </button>
+
             </div>
 
           </div>
+
         </div>
+
       )}
 
     </div>

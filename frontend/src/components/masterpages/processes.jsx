@@ -5,7 +5,6 @@ function ProcessMaster() {
 
   const [processes, setProcesses] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [processCode, setProcessCode] = useState('');
@@ -65,20 +64,15 @@ function ProcessMaster() {
 
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Process Master</h1>
+
           <p className="page-description">
             Manage manufacturing processes
           </p>
         </div>
 
         <div className="master-buttons">
-
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Processes
-          </button>
 
           <button
             className="add-button"
@@ -124,128 +118,109 @@ function ProcessMaster() {
       </div>
 
 
-      {showTable && (
+      <div className="table-top">
 
-        <div className="popup-overlay">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search process"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-          <div className="table-popup">
-
-            <div className="popup-table-header">
-
-              <div>
-                <h2>Process List</h2>
-                <p>View and manage processes</p>
-              </div>
-
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-
-            </div>
+      </div>
 
 
-            <div className="table-top">
+      <div className="customer-table-container">
 
-              <h2>Processes</h2>
+        <table>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search process"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <thead>
 
-            </div>
+            <tr>
+              <th>#</th>
+              <th>Process Code</th>
+              <th>Process Name</th>
+              <th>Description</th>
+              <th>Rate</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
 
+          </thead>
 
-            <div className="customer-table-container">
+          <tbody>
 
-              <table>
+            {filteredProcesses.length === 0 ? (
 
-                <thead>
+              <tr>
+                <td colSpan="7" className="no-data">
+                  No processes found
+                </td>
+              </tr>
 
-                  <tr>
-                    <th>#</th>
-                    <th>Process Code</th>
-                    <th>Process Name</th>
-                    <th>Description</th>
-                    <th>Rate</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
+            ) : (
 
-                </thead>
+              filteredProcesses.map((process, index) => (
 
-                <tbody>
+                <tr key={process.id}>
 
-                  {filteredProcesses.length === 0 ? (
+                  <td>{index + 1}</td>
 
-                    <tr>
-                      <td colSpan="7" className="no-data">
-                        No processes found
-                      </td>
-                    </tr>
+                  <td>
+                    {process.processCode || '—'}
+                  </td>
 
-                  ) : (
+                  <td>
+                    {process.processName}
+                  </td>
 
-                    filteredProcesses.map((process, index) => (
+                  <td>
+                    {process.description || '—'}
+                  </td>
 
-                      <tr key={process.id}>
+                  <td>
+                    ₹{process.rate || 0}
+                  </td>
 
-                        <td>{index + 1}</td>
-                        <td>{process.processCode || '—'}</td>
-                        <td>{process.processName}</td>
-                        <td>{process.description || '—'}</td>
-                        <td>₹{process.rate || 0}</td>
+                  <td>
 
-                        <td>
+                    <span
+                      className={
+                        process.status === 'Active'
+                          ? 'active-status'
+                          : 'inactive-status'
+                      }
+                    >
+                      {process.status}
+                    </span>
 
-                          <span
-                            className={
-                              process.status === 'Active'
-                                ? 'active-status'
-                                : 'inactive-status'
-                            }
-                          >
-                            {process.status}
-                          </span>
+                  </td>
 
-                        </td>
+                  <td>
 
-                        <td>
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteProcess(process.id)
+                      }
+                    >
+                      Delete
+                    </button>
 
-                          <button
-                            className="delete-button"
-                            onClick={() =>
-                              deleteProcess(process.id)
-                            }
-                          >
-                            Delete
-                          </button>
+                  </td>
 
-                        </td>
+                </tr>
 
-                      </tr>
+              ))
 
-                    ))
+            )}
 
-                  )}
+          </tbody>
 
-                </tbody>
+        </table>
 
-              </table>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
+      </div>
 
 
       {showForm && (
@@ -323,7 +298,9 @@ function ProcessMaster() {
               <input
                 type="number"
                 value={rate}
-                onChange={(e) => setRate(e.target.value)}
+                onChange={(e) =>
+                  setRate(e.target.value)
+                }
               />
 
             </div>
@@ -335,11 +312,18 @@ function ProcessMaster() {
 
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) =>
+                  setStatus(e.target.value)
+                }
               >
 
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="Active">
+                  Active
+                </option>
+
+                <option value="Inactive">
+                  Inactive
+                </option>
 
               </select>
 

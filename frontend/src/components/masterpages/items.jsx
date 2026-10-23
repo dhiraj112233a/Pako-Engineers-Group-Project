@@ -5,7 +5,6 @@ function Items() {
 
   const [items, setItems] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [drawingNumber, setDrawingNumber] = useState('');
@@ -71,20 +70,15 @@ function Items() {
 
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Items</h1>
+
           <p className="page-description">
             Manage item master
           </p>
         </div>
 
         <div className="master-buttons">
-
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Items
-          </button>
 
           <button
             className="add-button"
@@ -141,117 +135,107 @@ function Items() {
       </div>
 
 
-      {showTable && (
+      <div className="table-top">
 
-        <div className="popup-overlay">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search item"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-          <div className="table-popup">
-
-            <div className="popup-table-header">
-
-              <div>
-                <h2>Item List</h2>
-                <p>View and manage items</p>
-              </div>
-
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-
-            </div>
+      </div>
 
 
-            <div className="table-top">
+      <div className="customer-table-container">
 
-              <h2>Items</h2>
+        <table>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search item"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <thead>
 
-            </div>
+            <tr>
+              <th>#</th>
+              <th>Drawing No.</th>
+              <th>Description</th>
+              <th>Old Drawing</th>
+              <th>Revision</th>
+              <th>HSN Code</th>
+              <th>Item Type</th>
+              <th>Basic Price</th>
+              <th>Action</th>
+            </tr>
 
+          </thead>
 
-            <div className="customer-table-container">
+          <tbody>
 
-              <table>
+            {filteredItems.length === 0 ? (
 
-                <thead>
+              <tr>
+                <td colSpan="9" className="no-data">
+                  No items found
+                </td>
+              </tr>
 
-                  <tr>
-                    <th>#</th>
-                    <th>Drawing No.</th>
-                    <th>Description</th>
-                    <th>Old Drawing</th>
-                    <th>Revision</th>
-                    <th>HSN Code</th>
-                    <th>Item Type</th>
-                    <th>Basic Price</th>
-                    <th>Action</th>
-                  </tr>
+            ) : (
 
-                </thead>
+              filteredItems.map((item, index) => (
 
-                <tbody>
+                <tr key={item.id}>
 
-                  {filteredItems.length === 0 ? (
+                  <td>{index + 1}</td>
 
-                    <tr>
-                      <td colSpan="9" className="no-data">
-                        No items found
-                      </td>
-                    </tr>
+                  <td>
+                    {item.drawingNumber}
+                  </td>
 
-                  ) : (
+                  <td>
+                    {item.description || '—'}
+                  </td>
 
-                    filteredItems.map((item, index) => (
+                  <td>
+                    {item.oldDrawing || '—'}
+                  </td>
 
-                      <tr key={item.id}>
+                  <td>
+                    {item.revision || '—'}
+                  </td>
 
-                        <td>{index + 1}</td>
-                        <td>{item.drawingNumber}</td>
-                        <td>{item.description || '—'}</td>
-                        <td>{item.oldDrawing || '—'}</td>
-                        <td>{item.revision || '—'}</td>
-                        <td>{item.hsnCode || '—'}</td>
-                        <td>{item.itemType}</td>
-                        <td>₹{item.basicPrice || 0}</td>
+                  <td>
+                    {item.hsnCode || '—'}
+                  </td>
 
-                        <td>
+                  <td>
+                    {item.itemType}
+                  </td>
 
-                          <button
-                            className="delete-button"
-                            onClick={() => deleteItem(item.id)}
-                          >
-                            Delete
-                          </button>
+                  <td>
+                    ₹{item.basicPrice || 0}
+                  </td>
 
-                        </td>
+                  <td>
 
-                      </tr>
+                    <button
+                      className="delete-button"
+                      onClick={() => deleteItem(item.id)}
+                    >
+                      Delete
+                    </button>
 
-                    ))
+                  </td>
 
-                  )}
+                </tr>
 
-                </tbody>
+              ))
 
-              </table>
+            )}
 
-            </div>
+          </tbody>
 
-          </div>
+        </table>
 
-        </div>
-
-      )}
+      </div>
 
 
       {showForm && (

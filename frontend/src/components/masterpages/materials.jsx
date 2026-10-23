@@ -4,7 +4,6 @@ import "../../styles/Master.css";
 function Materials() {
   const [materials, setMaterials] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState('');
 
   const [materialName, setMaterialName] = useState('');
@@ -31,43 +30,52 @@ function Materials() {
     };
 
     setMaterials([...materials, newMaterial]);
+
     setMaterialName('');
     setMaterialGroup('');
     setMaterialSpec('');
     setUnit('Kg');
     setRate('');
     setStatus('Active');
+
     setShowForm(false);
   };
 
   const deleteMaterial = (id) => {
-    setMaterials(materials.filter((material) => material.id !== id));
+    setMaterials(
+      materials.filter((material) => material.id !== id)
+    );
   };
 
   const filteredMaterials = materials.filter(
     (material) =>
-      material.materialName.toLowerCase().includes(search.toLowerCase()) ||
-      material.materialGroup.toLowerCase().includes(search.toLowerCase()) ||
-      material.materialSpec.toLowerCase().includes(search.toLowerCase())
+      material.materialName
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      material.materialGroup
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      material.materialSpec
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (
     <div className="customer-page">
 
       <div className="customer-header">
+
         <div>
           <p className="small-title">MASTER DATA</p>
+
           <h1>Materials</h1>
-          <p className="page-description">Manage material master</p>
+
+          <p className="page-description">
+            Manage material master
+          </p>
         </div>
 
         <div className="master-buttons">
-          <button
-            className="view-button"
-            onClick={() => setShowTable(true)}
-          >
-            View Materials
-          </button>
 
           <button
             className="add-button"
@@ -75,10 +83,14 @@ function Materials() {
           >
             + Add Material
           </button>
+
         </div>
+
       </div>
 
+
       <div className="summary-container">
+
         <div className="summary-box">
           <p>Total Materials</p>
           <h2>{materials.length}</h2>
@@ -87,116 +99,144 @@ function Materials() {
         <div className="summary-box">
           <p>Active</p>
           <h2>
-            {materials.filter((material) => material.status === 'Active').length}
+            {
+              materials.filter(
+                (material) => material.status === 'Active'
+              ).length
+            }
           </h2>
         </div>
 
         <div className="summary-box">
           <p>Inactive</p>
           <h2>
-            {materials.filter((material) => material.status === 'Inactive').length}
+            {
+              materials.filter(
+                (material) => material.status === 'Inactive'
+              ).length
+            }
           </h2>
         </div>
+
       </div>
 
-      {showTable && (
-        <div className="popup-overlay">
-          <div className="table-popup">
 
-            <div className="popup-table-header">
-              <div>
-                <h2>Material List</h2>
-                <p>View and manage materials</p>
-              </div>
+      <div className="table-top">
 
-              <button
-                className="close-button"
-                onClick={() => setShowTable(false)}
-              >
-                X
-              </button>
-            </div>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search material"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-            <div className="table-top">
-              <h2>Materials</h2>
+      </div>
 
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search material"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
 
-            <div className="customer-table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Material Name</th>
-                    <th>Material Group</th>
-                    <th>Material Spec</th>
-                    <th>Unit</th>
-                    <th>Rate</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+      <div className="customer-table-container">
 
-                <tbody>
-                  {filteredMaterials.length === 0 ? (
-                    <tr>
-                      <td colSpan="8" className="no-data">
-                        No materials found
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredMaterials.map((material, index) => (
-                      <tr key={material.id}>
-                        <td>{index + 1}</td>
-                        <td>{material.materialName}</td>
-                        <td>{material.materialGroup || '—'}</td>
-                        <td>{material.materialSpec || '—'}</td>
-                        <td>{material.unit}</td>
-                        <td>₹{material.rate || 0}</td>
+        <table>
 
-                        <td>
-                          <span
-                            className={
-                              material.status === 'Active'
-                                ? 'active-status'
-                                : 'inactive-status'
-                            }
-                          >
-                            {material.status}
-                          </span>
-                        </td>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Material Name</th>
+              <th>Material Group</th>
+              <th>Material Spec</th>
+              <th>Unit</th>
+              <th>Rate</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-                        <td>
-                          <button
-                            className="delete-button"
-                            onClick={() => deleteMaterial(material.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+          <tbody>
 
-          </div>
-        </div>
-      )}
+            {filteredMaterials.length === 0 ? (
+
+              <tr>
+                <td colSpan="8" className="no-data">
+                  No materials found
+                </td>
+              </tr>
+
+            ) : (
+
+              filteredMaterials.map((material, index) => (
+
+                <tr key={material.id}>
+
+                  <td>{index + 1}</td>
+
+                  <td>
+                    {material.materialName}
+                  </td>
+
+                  <td>
+                    {material.materialGroup || '—'}
+                  </td>
+
+                  <td>
+                    {material.materialSpec || '—'}
+                  </td>
+
+                  <td>
+                    {material.unit}
+                  </td>
+
+                  <td>
+                    ₹{material.rate || 0}
+                  </td>
+
+                  <td>
+
+                    <span
+                      className={
+                        material.status === 'Active'
+                          ? 'active-status'
+                          : 'inactive-status'
+                      }
+                    >
+                      {material.status}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      className="delete-button"
+                      onClick={() =>
+                        deleteMaterial(material.id)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
 
       {showForm && (
+
         <div className="popup-overlay">
+
           <div className="customer-form">
 
             <div className="form-header">
+
               <div>
                 <h2>Add Material</h2>
                 <p>Enter material details</p>
@@ -208,77 +248,140 @@ function Materials() {
               >
                 X
               </button>
+
             </div>
 
+
             <div className="form-group">
+
               <label>Material Name *</label>
+
               <input
                 type="text"
                 value={materialName}
-                onChange={(e) => setMaterialName(e.target.value)}
+                onChange={(e) =>
+                  setMaterialName(e.target.value)
+                }
               />
+
             </div>
 
+
             <div className="form-group">
+
               <label>Material Group</label>
+
               <select
                 value={materialGroup}
-                onChange={(e) => setMaterialGroup(e.target.value)}
+                onChange={(e) =>
+                  setMaterialGroup(e.target.value)
+                }
               >
-                <option value="">Select Material Group</option>
-                <option value="Steel">Steel</option>
-                <option value="Stainless Steel">Stainless Steel</option>
-                <option value="Aluminium">Aluminium</option>
-                <option value="Brass">Brass</option>
-                <option value="Cast Iron">Cast Iron</option>
+                <option value="">
+                  Select Material Group
+                </option>
+
+                <option value="Steel">
+                  Steel
+                </option>
+
+                <option value="Stainless Steel">
+                  Stainless Steel
+                </option>
+
+                <option value="Aluminium">
+                  Aluminium
+                </option>
+
+                <option value="Brass">
+                  Brass
+                </option>
+
+                <option value="Cast Iron">
+                  Cast Iron
+                </option>
               </select>
+
             </div>
 
+
             <div className="form-group">
+
               <label>Material Specification</label>
+
               <input
                 type="text"
                 value={materialSpec}
-                onChange={(e) => setMaterialSpec(e.target.value)}
+                onChange={(e) =>
+                  setMaterialSpec(e.target.value)
+                }
               />
+
             </div>
 
+
             <div className="form-row">
+
               <div className="form-group">
+
                 <label>Unit</label>
+
                 <select
                   value={unit}
-                  onChange={(e) => setUnit(e.target.value)}
+                  onChange={(e) =>
+                    setUnit(e.target.value)
+                  }
                 >
                   <option value="Kg">Kg</option>
                   <option value="Nos">Nos</option>
                   <option value="Meter">Meter</option>
                   <option value="Ton">Ton</option>
                 </select>
+
               </div>
 
+
               <div className="form-group">
+
                 <label>Rate ₹</label>
+
                 <input
                   type="number"
                   value={rate}
-                  onChange={(e) => setRate(e.target.value)}
+                  onChange={(e) =>
+                    setRate(e.target.value)
+                  }
                 />
+
               </div>
+
             </div>
+
 
             <div className="form-group">
+
               <label>Status</label>
+
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) =>
+                  setStatus(e.target.value)
+                }
               >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="Active">
+                  Active
+                </option>
+
+                <option value="Inactive">
+                  Inactive
+                </option>
               </select>
+
             </div>
 
+
             <div className="form-buttons">
+
               <button
                 className="cancel-button"
                 onClick={() => setShowForm(false)}
@@ -286,13 +389,19 @@ function Materials() {
                 Cancel
               </button>
 
-              <button className="save-button" onClick={addMaterial}>
+              <button
+                className="save-button"
+                onClick={addMaterial}
+              >
                 Create
               </button>
+
             </div>
 
           </div>
+
         </div>
+
       )}
 
     </div>
