@@ -1,9 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
-// ---- tiny localStorage store shared by Production, Stock, Sales and Dashboard ----
+import { fetchAllStore, saveStoreKey } from '../services/api';
+// ---- localStorage cache + Flask/MySQL sync, shared by Production, Stock, Sales and Dashboard ----
 const EVT = 'erp-store';
 const read = (k, init) => {
   try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : init; } catch { return init; }
 };
+const write = (k, v) => {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage full/blocked */ }
+};
+
+// Runs once when the app starts: MySQL is the source of truth.
+// - keys that exist in MySQL replace the local copy
+// - keys that exist only in this browser are uploaded (so old data is not lost)
+export async function syncWithServer() {
+  try {
+    const server = await fetchAllStore();
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('pako.') && !(k in server)) {
+        const v = read(k, undefined);
+        if (v !== undefined) saveStoreKey(k, v).catch(() => { });
+      }
+    }
+    Object.entries(server).forEach(([k, v]) => {
+      write(k, v);
+      window.dispatchEvent(new CustomEvent(EVT, { detail: k }));
+    });
+    return true;
+  } catch (err) {
+    console.warn('Backend not reachable, using local data only:', err);
+    return false;
+  }
+}
+
 export function useStore(key, initial) {
   const [val, setVal] = useState(() => read(key, initial));
   useEffect(() => {
@@ -14,9 +43,11 @@ export function useStore(key, initial) {
   const set = useCallback((next) => {
     const cur = read(key, initial);
     const v = typeof next === 'function' ? next(cur) : next;
-    try { localStorage.setItem(key, JSON.stringify(v)); } catch { /* storage full/blocked */ }
+    write(key, v);
     setVal(v);
     window.dispatchEvent(new CustomEvent(EVT, { detail: key }));
+    // save to MySQL through Flask (the page keeps working even if this fails)
+    saveStoreKey(key, v).catch((err) => console.warn(`Could not save ${key} to server:`, err));
   }, [key]);
   return [val, set];
 }
