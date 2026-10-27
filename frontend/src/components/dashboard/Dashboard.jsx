@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/Erp.css';
 import '../../styles/ErpExtras.css';
 import {
-  useStore, WO_KEY, WO_SEED, MOVE_KEY, MOVE_SEED, INV_KEY, CUST_KEY, TARGET_KEY, SALES_TARGETS_KEY,
-  balances, stockState, today, fyOf, fyLabel, fyIndex, salesByMonth, salesByCustomer,
+  useStore, INV_KEY, CUST_KEY, CPO_KEY, VPO_KEY, TARGET_KEY, SALES_TARGETS_KEY,
+  today, fyOf, fyLabel, fyIndex, salesByMonth, salesByCustomer,
 } from '../../store/erpstore';
 const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
 const COLORS = ['#1e3a8a', '#22d3ee', '#3b82f6', '#38bdf8', '#7c3aed', '#0d9488', '#2563eb', '#60a5fa', '#6d28d9', '#0891b2'];
@@ -29,7 +29,12 @@ function LineChart({ basic, gst, total, target }) {
   const pts = (a) => a.map((v, i) => `${x(i)},${y(v)}`).join(' ');
   return (
     <>
-      <svg viewBox={`0 0 ${W} ${H}`} className="erp-svg">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="erp-svg"
+        role="img"
+        aria-label="Monthly basic sales, GST, total sales and target comparison"
+      >
         {[0, 0.25, 0.5, 0.75, 1].map((t) => (
           <g key={t}>
             <line x1={P} x2={W - P} y1={H - P - t * (H - 2 * P)} y2={H - P - t * (H - 2 * P)} stroke="#e2e8f0" />
@@ -46,6 +51,17 @@ function LineChart({ basic, gst, total, target }) {
         {MONTHS.map((m, i) => (
           <g key={m}>
             <text x={x(i)} y={H - 10} fontSize="9" textAnchor="middle" fill="#94a3b8">{m}</text>
+            {[basic, gst, total, target].map((series, seriesIndex) => (
+              <circle
+                key={seriesIndex}
+                cx={x(i)}
+                cy={y(series[i])}
+                r="3"
+                fill={SERIES[seriesIndex][1]}
+                stroke="white"
+                strokeWidth="1.5"
+              />
+            ))}
             <circle cx={x(i)} cy={y(total[i])} r="8" fill="transparent">
               <title>{`${m}: ${full(total[i])} (target ${full(target[i])})`}</title>
             </circle>
@@ -59,22 +75,24 @@ function LineChart({ basic, gst, total, target }) {
   );
 }
 function Bars({ data }) {
-  if (!data.length) return <p className="erp-empty" style={{ padding: 16 }}>No sales in this period</p>;
+  if (!data.length) return <p className="erp-empty">No sales in this period</p>;
   const max = Math.max(...data.map((d) => d[1]), 1);
   return data.map(([name, v], i) => (
     <div className="erp-bar" key={name}>
       <span title={name}>{name.length > 16 ? `${name.slice(0, 15)}…` : name}</span>
-      <i style={{ width: `${(v / max) * 60}%`, background: COLORS[i % COLORS.length] }}></i>
+      <div className="erp-bar-track">
+        <i style={{ width: `${(v / max) * 100}%`, background: COLORS[i % COLORS.length] }}></i>
+      </div>
       <em>{money(v)}</em>
     </div>
   ));
 }
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [orders] = useStore(WO_KEY, WO_SEED);
-  const [moves] = useStore(MOVE_KEY, MOVE_SEED);
   const [invoices] = useStore(INV_KEY, []);
   const [customers] = useStore(CUST_KEY, []);
+  const [customerOrders] = useStore(CPO_KEY, []);
+  const [vendorOrders] = useStore(VPO_KEY, []);
   const [monthlyTarget] = useStore(TARGET_KEY, 2500000);
   const [salesTargets] = useStore(SALES_TARGETS_KEY, []);
   const curFy = fyOf(today());
@@ -93,20 +111,16 @@ export default function Dashboard() {
   const prevTotal = sum(prev.total);
   const pct = yTarget ? (yTotal / yTarget) * 100 : 0;
   const invCount = sum(m.count);
-  const openWo = orders.filter((w) => w.status !== 'Closed');
-  const overdue = openWo.filter((w) => w.due < today()).length;
-  const lowItems = [...balances(moves, 'Raw Material'), ...balances(moves, 'Finished Goods')]
-    .filter((b) => stockState(b) !== 'In stock').length;
   const billedCustomers = new Set(invoices.filter((i) => fyOf(i.date) === fy).map((i) => i.customer)).size;
   const activeCustomers = customers.filter((c) => c.status === 'Active').length;
+  const purchaseOrders = customerOrders.length + vendorOrders.length;
   const kpis = [
-    { label: 'Target Achievement', value: `${pct.toFixed(1)}%`, note: `Target: ${money(yTarget)}` },
-    { label: `Invoices (FY ${fyLabel(fy)})`, value: invCount, note: `This month: ${m.count[cur]}`, to: '/sales-invoices' },
-    { label: 'Customers Billed', value: billedCustomers },
-    { label: 'Active Customers', value: activeCustomers, note: 'From Master', to: '/customer' },
-    { label: 'Prev. FY Sales', value: prevTotal ? money(prevTotal) : '—' },
-    { label: 'Open Work Orders', value: openWo.length, note: overdue ? `${overdue} overdue` : 'None overdue', to: '/work-orders' },
-    { label: 'Low / Out of Stock', value: lowItems, note: 'View stock', to: '/raw-material' },
+    { label: 'Target Achievement', value: `${pct.toFixed(1)}%`, note: `Target ${money(yTarget)}`, icon: 'fa-bullseye', tone: 'blue' },
+    { label: 'Sales vs Target', value: pct >= 100 ? 'Ahead' : 'Behind', note: `${money(Math.abs(yTarget - yTotal))} ${pct >= 100 ? 'above' : 'remaining'}`, icon: 'fa-chart-line', tone: 'green', to: '/reports/sales' },
+    { label: 'Invoices', value: invCount, note: `This month ${m.count[cur]}`, icon: 'fa-file-invoice', tone: 'cyan', to: '/sales-invoices' },
+    { label: 'Active Customers', value: activeCustomers, note: `${billedCustomers} billed this FY`, icon: 'fa-users', tone: 'blue', to: '/customer' },
+    { label: 'Purchase Orders', value: purchaseOrders, note: 'Customer + vendor orders', icon: 'fa-cart-shopping', tone: 'purple', to: '/purchase-list' },
+    { label: 'Prev. FY Sales', value: prevTotal ? money(prevTotal) : '—', note: `FY ${fyLabel(fy - 1)}`, icon: 'fa-cube', tone: 'slate' },
   ];
   const editTarget = () => navigate('/admin/sales-targets');
   return (
@@ -114,35 +128,38 @@ export default function Dashboard() {
       <div className="erp-head">
         <div>
           <h1>Dashboard</h1>
-          <p>FY {fyLabel(fy)} overview · calculated live from your invoices, work orders and stock</p>
+          <p>FY {fyLabel(fy)} overview · live business performance</p>
         </div>
-        <div className="erp-tools" style={{ margin: 0 }}>
-          <select value={fy} onChange={(e) => setFy(Number(e.target.value))}>
-            {years.map((y) => <option key={y} value={y}>FY {fyLabel(y)}</option>)}
-          </select>
-          <button className="erp-btn ghost" onClick={editTarget}>Manage sales targets</button>
-          <button className="erp-btn" onClick={() => navigate('/sales-invoices')}>+ Add invoice</button>
+        <div className="erp-head-actions dashboard-actions">
+          <label className="dashboard-year-picker">
+            <span>Financial year</span>
+            <select aria-label="Dashboard financial year" value={fy} onChange={(e) => setFy(Number(e.target.value))}>
+              {years.map((y) => <option key={y} value={y}>FY {fyLabel(y)}</option>)}
+            </select>
+          </label>
+          <button type="button" className="erp-btn ghost" onClick={editTarget}>Manage targets</button>
+          <button type="button" className="erp-btn" onClick={() => navigate('/sales-invoices')}>+ Add invoice</button>
         </div>
       </div>
-      {invCount === 0 && (
-        <div className="erp-card" style={{ marginBottom: 14, background: '#eef2ff' }}>
-          <h3>No sales recorded for FY {fyLabel(fy)}</h3>
-          <p style={{ fontSize: 13, color: '#475569', margin: 0 }}>
-            Add invoices in Sales Invoices and the charts, totals and target tracking below fill in automatically.
-          </p>
-        </div>
-      )}
-      <div className="erp-grid two">
-        <div className="erp-card">
-          <h3>Yearly Sales <Badge v={delta(yTotal, prevTotal)} /></h3>
+      <div className="erp-grid two dashboard-sales-summary">
+        <div className="erp-card dashboard-sales-card">
+          <div className="dashboard-sales-heading">
+            <span className="dashboard-icon blue"><i className="fas fa-chart-line" aria-hidden="true" /></span>
+            <div><h2>Yearly Sales</h2><p>FY {fyLabel(fy)}</p></div>
+            <Badge v={delta(yTotal, prevTotal)} />
+          </div>
           <div className="erp-split">
             <div><small>Basic</small><b>{money(yBasic)}</b></div>
             <div><small>GST</small><b>{money(yGst)}</b></div>
             <div><small>Total</small><b>{money(yTotal)}</b></div>
           </div>
         </div>
-        <div className="erp-card">
-          <h3>Monthly Sales ({MONTHS[cur]}) <Badge v={cur > 0 ? delta(m.total[cur], m.total[cur - 1]) : null} /></h3>
+        <div className="erp-card dashboard-sales-card">
+          <div className="dashboard-sales-heading">
+            <span className="dashboard-icon cyan"><i className="fas fa-filter" aria-hidden="true" /></span>
+            <div><h2>Monthly Sales</h2><p>{MONTHS[cur]} · FY {fyLabel(fy)}</p></div>
+            <Badge v={cur > 0 ? delta(m.total[cur], m.total[cur - 1]) : null} />
+          </div>
           <div className="erp-split">
             <div><small>Basic</small><b>{money(m.basic[cur])}</b></div>
             <div><small>GST</small><b>{money(m.gst[cur])}</b></div>
@@ -150,27 +167,38 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="erp-grid">
-        {kpis.map((k) => (
-          <div
-            className={`erp-card ${k.to ? 'link' : ''}`} key={k.label}
-            onClick={k.to ? () => navigate(k.to) : undefined}
-          >
-            <b>{k.value}</b><small>{k.label}</small>{k.note && <em>{k.note}</em>}
-          </div>
-        ))}
+      <div className="erp-grid dashboard-kpis">
+        {kpis.map((k) => {
+          const Card = k.to ? 'button' : 'div';
+          return (
+            <Card
+              key={k.label}
+              type={k.to ? 'button' : undefined}
+              className={`erp-card ${k.to ? 'link' : ''}`}
+              onClick={k.to ? () => navigate(k.to) : undefined}
+              aria-label={k.to ? `${k.label}: ${k.value}` : undefined}
+            >
+              <span className={`dashboard-icon ${k.tone}`}><i className={`fas ${k.icon}`} aria-hidden="true" /></span>
+              <b>{k.value}</b><small>{k.label}</small>{k.note && <em>{k.note}</em>}
+            </Card>
+          );
+        })}
       </div>
       <div className="erp-grid two">
         <div className="erp-card">
-          <h3>Monthly Sales vs Target</h3>
+          <div className="dashboard-chart-heading">
+            <div><h2>Monthly Sales vs Target</h2><p>FY {fyLabel(fy)} · Basic, GST &amp; total</p></div>
+          </div>
           <LineChart basic={m.basic} gst={m.gst} total={m.total} target={TARGET} />
         </div>
         <div className="erp-card">
-          <h3>Customer-wise Sales — {MONTHS[cur]}</h3>
+          <div className="dashboard-chart-heading">
+            <div><h2>Customer-wise Sales — Monthly</h2><p>Top customers · {MONTHS[cur]} {fyLabel(fy)}</p></div>
+          </div>
           <Bars data={salesByCustomer(invoices, fy, cur)} />
         </div>
       </div>
-      <div className="erp-card" style={{ marginBottom: 18 }}>
+      <div className="erp-card dashboard-yearly-sales">
         <h3>Customer-wise Sales — Yearly</h3>
         <Bars data={salesByCustomer(invoices, fy)} />
       </div>
@@ -186,7 +214,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {MONTHS.map((mo, i) => {
-                const ach = m.total[i] ? Math.round((m.total[i] / TARGET[i]) * 100) : null;
+                const ach = TARGET[i] > 0 ? Math.round((m.total[i] / TARGET[i]) * 100) : null;
                 return (
                   <tr key={mo}>
                     <td>{mo}</td><td className="num">{m.count[i]}</td><td className="num">{full(m.basic[i])}</td>

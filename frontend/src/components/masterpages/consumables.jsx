@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { CONSUMABLES_KEY, useStore } from '../../store/erpstore';
 
 function Consumables() {
-  const [consumables, setConsumables] = useState([]);
+  const [consumables, setConsumables] = useStore(CONSUMABLES_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

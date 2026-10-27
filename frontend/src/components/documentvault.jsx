@@ -1,8 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/documentvault.css";
+import { deleteDocumentFile, getDocumentFile, saveDocumentFile } from "../services/documentFiles";
+
+const DOCUMENTS_KEY = "pakoLocal.documentMetadata";
+
+function readDocuments() {
+  try {
+    const stored = localStorage.getItem(DOCUMENTS_KEY);
+    const documents = stored ? JSON.parse(stored) : [];
+    if (!Array.isArray(documents)) throw new Error("Stored documents are not a list.");
+    return documents;
+  } catch (error) {
+    console.error("Could not read saved document details:", error);
+    return [];
+  }
+}
+
+function writeDocuments(documents) {
+  localStorage.setItem(DOCUMENTS_KEY, JSON.stringify(documents));
+}
 
 function DocumentVault() {
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState(readDocuments);
+  const [fileUrls, setFileUrls] = useState({});
+  const [unavailableFiles, setUnavailableFiles] = useState([]);
+  const [error, setError] = useState("");
   const [showUpload, setShowUpload] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -13,30 +35,80 @@ function DocumentVault() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("Active");
 
-  const uploadDocument = () => {
+  useEffect(() => {
+    let cancelled = false;
+    const createdUrls = [];
+
+    Promise.all(documents.map(async (document) => {
+      const file = await getDocumentFile(document.id);
+      if (!file) return [document.id, null];
+      const url = URL.createObjectURL(file);
+      createdUrls.push(url);
+      return [document.id, url];
+    }))
+      .then((entries) => {
+        if (cancelled) return;
+        setFileUrls(Object.fromEntries(entries.filter(([, url]) => url)));
+        setUnavailableFiles(entries.filter(([, url]) => !url).map(([id]) => id));
+      })
+      .catch((storageError) => {
+        if (cancelled) return;
+        console.error("Could not load saved document files:", storageError);
+        setError("Saved files could not be opened from this browser.");
+      });
+
+    return () => {
+      cancelled = true;
+      createdUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [documents]);
+
+  const uploadDocument = async () => {
     if (documentName.trim() === "") {
-      alert("Please enter document name");
+      setError("Please enter a document name.");
       return;
     }
 
     if (!file) {
-      alert("Please select a file");
+      setError("Please select a file.");
+      return;
+    }
+
+    const id = Date.now();
+    try {
+      await saveDocumentFile(id, file);
+    } catch (storageError) {
+      console.error("Could not store uploaded document:", storageError);
+      setError("The file could not be saved in this browser. Check available storage and try again.");
       return;
     }
 
     const newDocument = {
-      id: Date.now(),
-      documentName,
-      documentNumber,
+      id,
+      documentName: documentName.trim(),
+      documentNumber: documentNumber.trim(),
       category,
-      description,
+      description: description.trim(),
       fileName: file.name,
-      fileUrl: URL.createObjectURL(file),
+      fileType: file.type || "application/octet-stream",
       status,
-      uploadDate: new Date().toLocaleDateString()
+      uploadDate: new Date().toISOString().slice(0, 10)
     };
 
-    setDocuments([...documents, newDocument]);
+    const updatedDocuments = [...documents, newDocument];
+    try {
+      writeDocuments(updatedDocuments);
+    } catch (storageError) {
+      console.error("Could not save document details:", storageError);
+      try {
+        await deleteDocumentFile(id);
+      } catch (cleanupError) {
+        console.error("Could not remove the unsaved document file:", cleanupError);
+      }
+      setError("Document details could not be saved in this browser.");
+      return;
+    }
+    setDocuments(updatedDocuments);
 
     setDocumentName("");
     setDocumentNumber("");
@@ -44,21 +116,28 @@ function DocumentVault() {
     setDescription("");
     setFile(null);
     setStatus("Active");
+    setError("");
     setShowUpload(false);
   };
 
-  const deleteDocument = (id) => {
-    const documentToDelete = documents.find(
-      (document) => document.id === id
-    );
-
-    if (documentToDelete) {
-      URL.revokeObjectURL(documentToDelete.fileUrl);
+  const deleteDocument = async (id) => {
+    try {
+      const updatedDocuments = documents.filter((document) => document.id !== id);
+      writeDocuments(updatedDocuments);
+      await deleteDocumentFile(id);
+      setDocuments(updatedDocuments);
+    } catch (storageError) {
+      console.error("Could not delete stored document:", storageError);
+      try {
+        writeDocuments(documents);
+      } catch (rollbackError) {
+        console.error("Could not restore document details after a failed delete:", rollbackError);
+      }
+      setError("The file could not be deleted from this browser.");
+      return;
     }
 
-    setDocuments(
-      documents.filter((document) => document.id !== id)
-    );
+    setError("");
   };
 
   const filteredDocuments = documents.filter(
@@ -84,14 +163,13 @@ function DocumentVault() {
 
           <h1>Document Vault</h1>
 
-          <p className="vault-description">
-            Store and manage company documents
-          </p>
+          <p className="vault-description">Store and manage company documents</p>
         </div>
 
         <button
+          type="button"
           className="upload-document-button"
-          onClick={() => setShowUpload(true)}
+          onClick={() => { setError(""); setShowUpload(true); }}
         >
           + Upload Document
         </button>
@@ -150,14 +228,20 @@ function DocumentVault() {
           </div>
 
           <input
-            type="text"
+            type="search"
             className="vault-search"
             placeholder="Search documents..."
+            aria-label="Search documents"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
 
         </div>
+
+        <p className="vault-storage-note">
+          Files are stored in this browser and remain available after refresh on this device. They are not synced between devices.
+        </p>
+        {error && <p className="vault-error" role="alert">{error}</p>}
 
         <div className="vault-table-wrapper">
 
@@ -230,16 +314,23 @@ function DocumentVault() {
 
                       <div className="vault-actions">
 
-                        <a
-                          href={document.fileUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="view-document-button"
-                        >
-                          View
-                        </a>
+                        {fileUrls[document.id] ? (
+                          <a
+                            href={fileUrls[document.id]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="view-document-button"
+                          >
+                            View
+                          </a>
+                        ) : (
+                          <span className="vault-file-missing">
+                            {unavailableFiles.includes(document.id) ? "Unavailable" : "Loading"}
+                          </span>
+                        )}
 
                         <button
+                          type="button"
                           className="delete-document-button"
                           onClick={() =>
                             deleteDocument(document.id)

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { TOOLS_KEY, useStore } from '../../store/erpstore';
 
 function Tools() {
-  const [tools, setTools] = useState([]);
+  const [tools, setTools] = useStore(TOOLS_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

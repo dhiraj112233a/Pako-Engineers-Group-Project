@@ -1,62 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import "../styles/MenuDropdown.css";
 
-const MenuDropdown = ({ items }) => {
-  const navigate = useNavigate();
-
-  const handleItemClick = (label) => {
-    const routes = {
-      "Customers": "/customer",
-      "Vendors": "/vendors",
-      "Items": "/items",
-      "Materials": "/materials",
-      "Material Specs": "/material-specs",
-      "Material Groups": "/material-groups",
-      "Processes": "/processes",
-      "Tools": "/tools",
-      "Machines": "/machines",
-      "Instruments": "/instruments",
-      "Consumables": "/consumables",
-      "Bought-out Items": "/bought-out-items",
-      "Customer Enquiry": "/customer-enquiry",
-      "Quotation": "/quotation",
-      "Customer PO": "/customer-po",
-      "Purchase List": "/purchase-list",
-      "Vendor PO": "/vendor-po",
-      "Pending List": "/pending-list",
-      "Process PR": "/process-pr",
-      "Process PO": "/process-po",
-      "Dispatch": "/dispatch",
-      "Sales Invoice": "/sales-invoices",
-      "Work Orders": "/work-orders",
-      "Production Plan": "/production-plan",
-      "Production Status": "/production-status",
-      "Raw Material": "/raw-material",
-      "Finished Goods": "/finished-goods",
-      "Stock Management": "/stock-management",
-      "GST Settings": "/admin/gst-setting",
-      "Vendor T&C": "/admin/vendor-terms",
-      "Sales Targets": "/admin/sales-targets",
-      "Global Setting": "/admin/global-setting",
-      "User Management": "/admin/user-management"
-    };
-
-    if (routes[label]) {
-      navigate(routes[label]);
-    }
-  };
-
+const MenuDropdown = ({ items, activePath, onSelect }) => {
   return (
     <div className="menu-dropdown">
       <div className="dropdown-grid">
-        {items.map((item, index) => (
+        {items.map((item) => (
           <button
-            key={index}
-            className="dropdown-item"
-            onClick={() => handleItemClick(item.label)}
+            key={item.to}
+            type="button"
+            className={`dropdown-item ${activePath === item.to ? 'active' : ''}`}
+            onClick={() => onSelect(item.to)}
+            aria-current={activePath === item.to ? 'page' : undefined}
           >
-            <i className={`fas ${item.icon}`}></i>
+            <i className={`fas ${item.icon}`} aria-hidden="true"></i>
             <span>{item.label}</span>
           </button>
         ))}

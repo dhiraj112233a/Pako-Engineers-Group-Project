@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Customer from './components/masterpages/customer';
 import Vendors from './components/masterpages/vendors';
@@ -36,17 +36,32 @@ import VendorTerms from './components/setting/vendorandtc';
 import SalesTargets from './components/setting/salestarget';
 import GlobalSettings from './components/setting/globalsetting';
 import UserManagement from './components/setting/usermanagement';
+import Reports from './components/Reports';
 import './App.css';
 import BackendConnectionTest from './components/BackendConnectionTest';
-function App() {
+function AppContent() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const reportTitles = {
+      '/reports/sales': 'Sales Report',
+      '/reports/gst': 'GST Report',
+    };
+    const page = pathname.split('/').filter(Boolean).at(-1) || 'dashboard';
+    const title = reportTitles[pathname] || page.split('-').map((word) => {
+      if (['gst', 'po', 'pr'].includes(word)) return word.toUpperCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+    document.title = `${title} | PAKO ENGINEERS`;
+  }, [pathname]);
+
   return (
-    <BrowserRouter>
-      <div className="app-container">
-        <div className="navbar-wrapper">
-          <Navbar />
-        </div>
-        <main className="main-content">
-          <Routes>
+    <div className="app-container">
+      <div className="app-navbar">
+        <Navbar />
+      </div>
+      <main className="main-content">
+        <Routes>
             <Route
               path="/backend-test"
               element={<BackendConnectionTest />}
@@ -81,6 +96,8 @@ function App() {
             <Route path="/raw-material" element={<RawMaterial />} />
             <Route path="/finished-goods" element={<FinishedGoods />} />
             <Route path="/stock-management" element={<StockManagement />} />
+            <Route path="/reports/sales" element={<Reports type="sales" />} />
+            <Route path="/reports/gst" element={<Reports type="gst" />} />
             <Route path="/gst-setting" element={<GSTSettings />} />
             <Route path="/admin/gst-setting" element={<GSTSettings />} />
             <Route path="/admin/vendor-terms" element={<VendorTerms />} />
@@ -91,10 +108,18 @@ function App() {
             <Route path="/global-setting" element={<GlobalSettings />} />
             <Route path="/admin/user-management" element={<UserManagement />} />
             <Route path="/user-management" element={<UserManagement />} />
-          </Routes>
-        </main>
-      </div>
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
+
 export default App;

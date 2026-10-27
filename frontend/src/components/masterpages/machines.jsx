@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { MACHINES_KEY, useStore } from '../../store/erpstore';
 
 function Machines() {
-  const [machines, setMachines] = useState([]);
+  const [machines, setMachines] = useStore(MACHINES_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

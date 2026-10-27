@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { VENDORS_KEY, useStore } from '../../store/erpstore';
 
 function Vendors() {
-  const [vendors, setVendors] = useState([]);
+  const [vendors, setVendors] = useStore(VENDORS_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

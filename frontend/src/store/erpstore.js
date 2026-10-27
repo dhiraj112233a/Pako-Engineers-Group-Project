@@ -6,7 +6,11 @@ const read = (k, init) => {
   try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : init; } catch { return init; }
 };
 const write = (k, v) => {
-  try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage full/blocked */ }
+  try {
+    localStorage.setItem(k, JSON.stringify(v));
+  } catch (error) {
+    console.warn(`Could not save ${k} in browser storage:`, error);
+  }
 };
 
 // Runs once when the app starts: MySQL is the source of truth.
@@ -19,7 +23,11 @@ export async function syncWithServer() {
       const k = localStorage.key(i);
       if (k && k.startsWith('pako.') && !(k in server)) {
         const v = read(k, undefined);
-        if (v !== undefined) saveStoreKey(k, v).catch(() => { });
+        if (v !== undefined) {
+          saveStoreKey(k, v).catch((err) => {
+            console.warn(`Could not migrate ${k} to the server:`, err);
+          });
+        }
       }
     }
     Object.entries(server).forEach(([k, v]) => {
@@ -39,7 +47,7 @@ export function useStore(key, initial) {
     const h = (e) => { if (e.detail === key) setVal(read(key, initial)); };
     window.addEventListener(EVT, h);
     return () => window.removeEventListener(EVT, h);
-  }, [key]);
+  }, [key, initial]);
   const set = useCallback((next) => {
     const cur = read(key, initial);
     const v = typeof next === 'function' ? next(cur) : next;
@@ -48,7 +56,7 @@ export function useStore(key, initial) {
     window.dispatchEvent(new CustomEvent(EVT, { detail: key }));
     // save to MySQL through Flask (the page keeps working even if this fails)
     saveStoreKey(key, v).catch((err) => console.warn(`Could not save ${key} to server:`, err));
-  }, [key]);
+  }, [initial, key]);
   return [val, set];
 }
 export const WO_KEY = 'pako.workOrders';
@@ -68,6 +76,17 @@ export const GST_SLAB_KEY = 'pako.gstSlabs';
 export const VENDOR_TERMS_KEY = 'pako.vendorTerms';
 export const GLOBAL_SETTINGS_KEY = 'pako.globalSettings';
 export const USERS_KEY = 'pako.users';
+export const ITEMS_KEY = 'pako.items';
+export const VENDORS_KEY = 'pako.vendors';
+export const MATERIALS_KEY = 'pako.materials';
+export const MATERIAL_SPECS_KEY = 'pako.materialSpecs';
+export const MATERIAL_GROUPS_KEY = 'pako.materialGroups';
+export const PROCESSES_KEY = 'pako.processes';
+export const TOOLS_KEY = 'pako.tools';
+export const MACHINES_KEY = 'pako.machines';
+export const INSTRUMENTS_KEY = 'pako.instruments';
+export const CONSUMABLES_KEY = 'pako.consumables';
+export const BOUGHT_OUT_ITEMS_KEY = 'pako.boughtOutItems';
 export const GLOBAL_SETTINGS_DEFAULT = {
   numbering: {
     invoice: { prefix: 'INV-', next: 1 },

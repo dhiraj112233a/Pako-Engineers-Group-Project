@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { ITEMS_KEY, useStore } from '../../store/erpstore';
 
 function Items() {
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useStore(ITEMS_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { MATERIAL_SPECS_KEY, useStore } from '../../store/erpstore';
 
 function MaterialSpecs() {
-  const [specs, setSpecs] = useState([]);
+  const [specs, setSpecs] = useStore(MATERIAL_SPECS_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

@@ -9,7 +9,7 @@
   min-width: 380px;
   animation: slideDown 0.2s ease;
   z-index: 1001;
-  border: 1px solid #edf2f7;
+  border: 1px solid #e5eaf1;
 }
 
 @keyframes slideDown {
@@ -49,6 +49,11 @@
 .dropdown-item:hover {
   background: #f3f6fb;
   color: #0f172a;
+}
+
+.dropdown-item.active {
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .dropdown-item i {

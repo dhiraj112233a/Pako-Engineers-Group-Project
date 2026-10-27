@@ -1,33 +1,34 @@
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000"
+).replace(/\/$/, "");
+
+async function ensureSuccessful(response, fallbackMessage) {
+  if (response.ok) return;
+
+  let message = fallbackMessage;
+  if (response.headers.get("content-type")?.includes("application/json")) {
+    const result = await response.json();
+    if (typeof result.error === "string") message = result.error;
+  }
+  throw new Error(message);
+}
 
 export async function testBackend() {
   const response = await fetch(`${API_BASE_URL}/`);
-
-  if (!response.ok) {
-    throw new Error("Backend request failed");
-  }
-
+  await ensureSuccessful(response, "Backend request failed");
   return response.json();
 }
 
 export async function testDatabase() {
   const response = await fetch(`${API_BASE_URL}/api/test-db`);
-
-  if (!response.ok) {
-    throw new Error("Database request failed");
-  }
-
+  await ensureSuccessful(response, "Database request failed");
   return response.json();
 }
 
 // Load every saved key from MySQL -> { "pako.workOrders": [...], ... }
 export async function fetchAllStore() {
   const response = await fetch(`${API_BASE_URL}/api/store`);
-
-  if (!response.ok) {
-    throw new Error("Could not load data from server");
-  }
-
+  await ensureSuccessful(response, "Could not load data from server");
   const result = await response.json();
   return result.data || {};
 }
@@ -39,10 +40,6 @@ export async function saveStoreKey(key, value) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ value }),
   });
-
-  if (!response.ok) {
-    throw new Error(`Could not save ${key}`);
-  }
-
+  await ensureSuccessful(response, `Could not save ${key}`);
   return response.json();
 }

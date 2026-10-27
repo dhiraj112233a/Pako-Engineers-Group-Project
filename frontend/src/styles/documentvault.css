@@ -3,10 +3,12 @@
 }
 
 .vault-page {
-  min-height: 100vh;
-  background: #f5f7fb;
-  padding: 30px;
-  font-family: Arial, sans-serif;
+  min-height: calc(100vh - 132px);
+  max-width: 1680px;
+  margin: 0 auto;
+  background: #f8fafc;
+  padding: clamp(18px, 2.4vw, 36px);
+  font-family: inherit;
 }
 
 .vault-header {
@@ -132,6 +134,22 @@
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.vault-storage-note {
+  margin: -10px 0 14px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.vault-error {
+  margin: -4px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
 }
 
 .vault-table-wrapper {
@@ -262,6 +280,11 @@
 
 .delete-document-button:hover {
   background: #fecaca;
+}
+
+.vault-file-missing {
+  color: #64748b;
+  font-size: 12px;
 }
 
 .vault-overlay {
@@ -482,7 +505,8 @@
 
 @media (max-width: 700px) {
   .vault-page {
-    padding: 18px;
+    min-height: calc(100vh - 90px);
+    padding: 18px 14px;
   }
 
   .vault-header {

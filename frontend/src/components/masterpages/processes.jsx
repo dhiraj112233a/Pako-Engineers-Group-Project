@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { PROCESSES_KEY, useStore } from '../../store/erpstore';
 
 function ProcessMaster() {
 
-  const [processes, setProcesses] = useState([]);
+  const [processes, setProcesses] = useStore(PROCESSES_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 

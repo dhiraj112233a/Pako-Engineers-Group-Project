@@ -11,7 +11,7 @@ const cmp = (a, b) => {
 };
 // Shared layout for Production + Stock pages: header, stat cards, filters, sortable table.
 export default function ErpTablePage({
-  title, icon, subtitle, action, onAction, stats = [], columns, rows,
+  title, icon, subtitle, action, onAction, controls, stats = [], columns, rows,
   filters = [], lowOnly = false, empty = 'No records found',
 }) {
   const [q, setQ] = useState('');
@@ -36,7 +36,12 @@ export default function ErpTablePage({
           <h1><i className={`fas ${icon}`}></i>{title}</h1>
           <p>{subtitle}</p>
         </div>
-        {action && <button className="erp-btn" onClick={onAction}>+ {action}</button>}
+        {(controls || action) && (
+          <div className="erp-head-actions">
+            {controls}
+            {action && <button type="button" className="erp-btn" onClick={onAction}>+ {action}</button>}
+          </div>
+        )}
       </div>
 
       {stats.length > 0 && (
@@ -50,9 +55,20 @@ export default function ErpTablePage({
       )}
 
       <div className="erp-tools">
-        <input type="text" placeholder="Search..." value={q} onChange={(e) => setQ(e.target.value)} />
+        <input
+          type="search"
+          aria-label={`Search ${title.toLowerCase()}`}
+          placeholder={`Search ${title.toLowerCase()}...`}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
         {filters.map((f) => (
-          <select key={f.key} value={sel[f.key] || ''} onChange={(e) => setSel({ ...sel, [f.key]: e.target.value })}>
+          <select
+            key={f.key}
+            aria-label={f.all}
+            value={sel[f.key] || ''}
+            onChange={(e) => setSel({ ...sel, [f.key]: e.target.value })}
+          >
             <option value="">{f.all}</option>
             {f.options.map((o) => <option key={o}>{o}</option>)}
           </select>
@@ -61,19 +77,32 @@ export default function ErpTablePage({
           <label><input type="checkbox" checked={low} onChange={(e) => setLow(e.target.checked)} /> Low stock only</label>
         )}
         {filtersOn && (
-          <button className="erp-link-btn" onClick={() => { setQ(''); setSel({}); setLow(false); }}>Clear filters</button>
+          <button type="button" className="erp-link-btn" onClick={() => { setQ(''); setSel({}); setLow(false); }}>Clear filters</button>
         )}
       </div>
 
       <div className="erp-table-wrap">
-        <table className="erp-table">
+        <table className="erp-table" aria-label={`${title} records`}>
           <thead>
             <tr>
               {columns.map((c) => {
                 const can = c.label && c.sortable !== false;
                 return (
-                  <th key={c.key} className={`${c.num ? 'num' : ''} ${can ? 'sortable' : ''}`} onClick={can ? () => toggleSort(c.key) : undefined}>
-                    {c.label}{sort.key === c.key ? (sort.dir === 1 ? ' ▲' : ' ▼') : ''}
+                  <th
+                    key={c.key}
+                    className={`${c.num ? 'num' : ''} ${can ? 'sortable' : ''}`}
+                    aria-sort={can && sort.key === c.key
+                      ? (sort.dir === 1 ? 'ascending' : 'descending')
+                      : can ? 'none' : undefined}
+                  >
+                    {can ? (
+                      <button type="button" onClick={() => toggleSort(c.key)}>
+                        {c.label}
+                        <span aria-hidden="true">
+                          {sort.key === c.key ? (sort.dir === 1 ? ' ▲' : ' ▼') : ' ↕'}
+                        </span>
+                      </button>
+                    ) : c.label}
                   </th>
                 );
               })}

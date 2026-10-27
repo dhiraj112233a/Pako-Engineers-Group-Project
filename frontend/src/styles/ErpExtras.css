@@ -51,6 +51,391 @@
     cursor: pointer;
 }
 
+.dashboard-actions {
+    margin: 0;
+}
+
+.dashboard-empty-state {
+    margin-bottom: 16px;
+    background: #eff6ff;
+    border-color: #dbeafe;
+}
+
+.dashboard-empty-state h3 {
+    margin-bottom: 6px;
+}
+
+.dashboard-empty-state p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.dashboard-yearly-sales {
+    margin-bottom: 18px;
+}
+
+.dashboard-actions {
+    gap: 8px;
+}
+
+.dashboard-year-picker {
+    display: grid;
+    gap: 4px;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.dashboard-year-picker select {
+    min-width: 128px;
+    padding: 9px 30px 9px 11px;
+    border: 1px solid #dbe3ee;
+    border-radius: 9px;
+    background: #fff;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.dashboard-sales-summary {
+    align-items: stretch;
+}
+
+.dashboard-sales-card {
+    padding: 20px 22px;
+    border-color: #e7edf5;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.dashboard-sales-heading,
+.dashboard-chart-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.dashboard-sales-heading > div,
+.dashboard-chart-heading > div {
+    min-width: 0;
+    flex: 1;
+}
+
+.dashboard-sales-heading h2,
+.dashboard-chart-heading h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.dashboard-sales-heading p,
+.dashboard-chart-heading p {
+    margin: 3px 0 0;
+    color: #8491a4;
+    font-size: 11px;
+}
+
+.dashboard-sales-heading .erp-badge {
+    float: none;
+    white-space: nowrap;
+}
+
+.dashboard-icon {
+    display: inline-grid;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 15px;
+}
+
+.dashboard-icon.blue {
+    background: #eaf1ff;
+    color: #3867d6;
+}
+
+.dashboard-icon.cyan {
+    background: #e4f8fc;
+    color: #1596ad;
+}
+
+.dashboard-icon.green {
+    background: #e9f8ef;
+    color: #1b9b59;
+}
+
+.dashboard-icon.purple {
+    background: #f1eafe;
+    color: #8052c7;
+}
+
+.dashboard-icon.slate {
+    background: #edf1f6;
+    color: #64748b;
+}
+
+.dashboard-sales-card .erp-split {
+    margin-top: 20px;
+}
+
+.dashboard-sales-card .erp-split div {
+    padding: 11px 12px;
+    background: #f7f9fc;
+    border: 1px solid #eff2f7;
+}
+
+.dashboard-sales-card .erp-split b {
+    margin-top: 5px;
+    color: #182b47;
+    font-size: clamp(14px, 1.4vw, 18px);
+}
+
+.dashboard-kpis {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.dashboard-kpis .erp-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 38px;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    column-gap: 8px;
+    min-height: 120px;
+    padding: 16px;
+    text-align: left;
+}
+
+.dashboard-kpis .erp-card > b {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 0 5px;
+    overflow: hidden;
+    color: #172033;
+    font-size: clamp(18px, 1.7vw, 23px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-kpis .erp-card > small {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 10px;
+    letter-spacing: .25px;
+}
+
+.dashboard-kpis .erp-card > em {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 6px;
+    color: #8491a4;
+    font-size: 10px;
+}
+
+.dashboard-kpis .dashboard-icon {
+    grid-column: 2;
+    grid-row: 1;
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    font-size: 14px;
+}
+
+.dashboard-kpis .erp-card.link:hover {
+    border-color: #c9d8f6;
+}
+
+.dashboard-chart-heading {
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.dashboard-chart-heading h2 {
+    font-size: 14px;
+}
+
+.dashboard-chart-heading p {
+    font-size: 11px;
+}
+
+.dashboard-kpis + .erp-grid.two > .erp-card {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-svg {
+    display: block;
+    max-height: 290px;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-legend {
+    justify-content: center;
+    gap: 16px;
+    padding-top: 8px;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-bar {
+    display: grid;
+    grid-template-columns: minmax(76px, 110px) minmax(30px, 1fr) minmax(66px, auto);
+    gap: 9px;
+    margin: 12px 0;
+    font-size: 11px;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-bar span {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-bar-track {
+    height: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #edf1f6;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-bar i {
+    height: 100%;
+    border-radius: 999px;
+    min-width: 3px;
+}
+
+.dashboard-kpis + .erp-grid.two .erp-bar em {
+    margin: 0;
+    text-align: right;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+    }
+
+    .dashboard-year-picker {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-year-picker select {
+        width: 100%;
+    }
+
+    .dashboard-actions .erp-btn {
+        padding-inline: 9px;
+        font-size: 12px;
+    }
+
+    .dashboard-sales-card {
+        padding: 16px;
+    }
+
+    .dashboard-sales-card .erp-split {
+        gap: 6px;
+        margin-top: 15px;
+    }
+
+    .dashboard-sales-card .erp-split div {
+        padding: 9px 7px;
+    }
+
+    .dashboard-sales-card .erp-split b {
+        font-size: 13px;
+    }
+
+    .dashboard-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .dashboard-kpis .erp-card {
+        min-height: 112px;
+        padding: 13px;
+    }
+
+    .dashboard-kpis + .erp-grid.two .erp-bar {
+        grid-template-columns: minmax(70px, 90px) minmax(24px, 1fr) minmax(60px, auto);
+        gap: 7px;
+    }
+}
+
+.backend-test-result {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 720px;
+}
+
+.backend-test-result h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 16px;
+}
+
+.backend-test-result p {
+    margin: 6px 0 0;
+    color: #475569;
+    overflow-wrap: anywhere;
+}
+
+.backend-test-result pre {
+    margin: 12px 0 0;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #334155;
+    white-space: pre-wrap;
+}
+
+.backend-test-indicator {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.backend-test-indicator.connected {
+    background: #16a34a;
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.backend-test-indicator.disconnected {
+    background: #dc2626;
+    box-shadow: 0 0 0 4px #fee2e2;
+}
+
+.backend-test-indicator.checking {
+    background: #d97706;
+    box-shadow: 0 0 0 4px #fef3c7;
+}
+
+.backend-test-help {
+    max-width: 720px;
+    margin: 14px 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.erp-empty {
+    padding: 18px !important;
+}
+
 .erp-pill.red {
     background: #fee2e2;
     color: #b91c1c;
@@ -68,6 +453,38 @@
 
 .erp-table th.sortable:hover {
     color: #1d4ed8;
+}
+
+.erp-table th.sortable {
+    padding: 0;
+}
+
+.erp-table th.sortable > button {
+    width: 100%;
+    padding: 12px 14px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.erp-table th.sortable > button:focus-visible {
+    outline-offset: -3px;
+}
+
+.erp-card.link {
+    width: 100%;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    border: 1px solid #e8edf4;
 }
 
 .erp-count {
@@ -268,7 +685,4 @@
         grid-template-columns: 1fr;
     }
 
-    .erp-page {
-        padding: 16px;
-    }
 }

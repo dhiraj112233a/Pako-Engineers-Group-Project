@@ -1,99 +1,42 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import NavbarMenu from './NavbarMenu';
 import "../styles/Navbar.css";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
-  const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const menuItems = [
-    { label: 'Dashboard', icon: 'fa-th-large' },
-    { label: 'Document Vault', icon: 'fa-vault' },
-    { label: 'Master', icon: 'fa-database' },
-    { label: 'Transactions', icon: 'fa-exchange-alt' },
-    { label: 'Production', icon: 'fa-industry' },
-    { label: 'Stock', icon: 'fa-boxes' },
-    { label: 'Reports', icon: 'fa-chart-bar' },
-    { label: 'Settings', icon: 'fa-cog' }
-  ];
 
   return (
     <nav className="navbar-container">
       <div className="navbar-wrapper">
-        {/* Logo Section */}
-        <div className="logo-section">
+        <Link className="logo-section" to="/" aria-label="Pako Engineers dashboard">
           <div className="logo-icon">
-            <i className="fas fa-cog"></i>
+            <i className="fas fa-gear" aria-hidden="true"></i>
           </div>
           <div className="logo-text">
-            <h1>Welcome to PAKO ENGINEERS</h1>
-            <p>Admin Portal· Precision Shaft Manufacturing</p>
+            <span className="logo-title">PAKO ENGINEERS</span>
+            <span className="logo-subtitle">Precision Manufacturing ERP</span>
           </div>
-        </div>
+        </Link>
 
-        {/* Right Section */}
         <div className="navbar-right">
-          <button className="nav-icon-btn" title="Search">
-            <i className="fas fa-search"></i>
-            <span className="btn-label">Search</span>
-          </button>
-          <button className="nav-icon-btn" title="Tasks">
-            <i className="fas fa-tasks"></i>
-            <span className="btn-label">Tasks</span>
-          </button>
-          <button className="nav-icon-btn" title="Notifications">
-            <i className="fas fa-bell"></i>
-          </button>
-          <button className="nav-icon-btn" title="Messages">
-            <i className="fas fa-envelope"></i>
-          </button>
-          <button className="nav-icon-btn" title="User">
-            <i className="fas fa-user-circle"></i>
-          </button>
-          <button 
+          <button
             className="hamburger-menu"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            type="button"
+            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="primary-navigation"
+            onClick={() => setMobileMenuOpen((open) => !open)}
           >
-            <i className="fas fa-bars"></i>
+            <i className={`fas ${mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`} aria-hidden="true"></i>
           </button>
         </div>
       </div>
 
-      {/* Desktop Menu Bar */}
       <NavbarMenu
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
+        mobileMenuOpen={mobileMenuOpen}
+        onNavigate={() => setMobileMenuOpen(false)}
       />
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-menu">
-          {menuItems.map((item, index) => (
-            <button 
-              key={index}
-              className={`mobile-menu-item ${activeMenu === item.label ? 'active' : ''}`}
-              onClick={() => {
-                setActiveMenu(item.label);
-                setOpenDropdown(null);
-                setMobileMenuOpen(false);
-                if (item.label === 'Dashboard') {
-                  navigate('/');
-                } else if (item.label === 'Document Vault') {
-                  navigate('/document-vault');
-                }
-              }}
-            >
-              <i className={`fas ${item.icon}`}></i>
-              <span className="menu-label">{item.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
     </nav>
   );
 };

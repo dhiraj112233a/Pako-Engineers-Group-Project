@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import "../../styles/Master.css";
+import { BOUGHT_OUT_ITEMS_KEY, useStore } from '../../store/erpstore';
 
 function BoughtOutItems() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useStore(BOUGHT_OUT_ITEMS_KEY, []);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
 
