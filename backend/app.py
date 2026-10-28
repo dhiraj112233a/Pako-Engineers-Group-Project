@@ -1,14 +1,11 @@
 import json
 import os
 from contextlib import contextmanager
-
 import mysql.connector
 from dotenv import load_dotenv
 from flask import Flask, current_app, jsonify, request
 from flask_cors import CORS
-
 load_dotenv()
-
 app = Flask(__name__)
 allowed_origins = [
     origin.strip()
@@ -19,8 +16,6 @@ allowed_origins = [
     if origin.strip()
 ]
 CORS(app, origins=allowed_origins)
-
-
 @contextmanager
 def database_cursor(dictionary=False):
     required_settings = ("MYSQL_HOST", "MYSQL_USER", "MYSQL_DATABASE")
@@ -29,14 +24,12 @@ def database_cursor(dictionary=False):
         raise RuntimeError(
             "Missing MySQL settings: " + ", ".join(missing_settings)
         )
-
     try:
         port = int(os.getenv("MYSQL_PORT", "3306"))
     except ValueError as error:
         raise RuntimeError("MYSQL_PORT must be an integer") from error
     if not 1 <= port <= 65535:
         raise RuntimeError("MYSQL_PORT must be between 1 and 65535")
-
     connection = mysql.connector.connect(
         host=os.environ["MYSQL_HOST"],
         port=port,
@@ -63,25 +56,17 @@ def database_cursor(dictionary=False):
         if cursor is not None:
             cursor.close()
         connection.close()
-
-
 def database_error_response(message, error=None):
     if error is not None:
         current_app.logger.error("%s", error)
     return jsonify({"success": False, "error": message}), 503
-
-
 @app.errorhandler(400)
 @app.errorhandler(415)
 def handle_request_error(error):
     return jsonify({"success": False, "error": error.description}), error.code
-
-
 @app.get("/")
 def health():
     return jsonify({"success": True, "message": "Pako ERP API is running"})
-
-
 @app.get("/api/test-db")
 def test_database():
     try:
@@ -94,8 +79,6 @@ def test_database():
     except mysql.connector.Error:
         current_app.logger.exception("MySQL connection test failed")
         return database_error_response("Could not connect to MySQL")
-
-
 @app.get("/api/store")
 def fetch_store():
     try:
@@ -116,24 +99,19 @@ def fetch_store():
     except mysql.connector.Error:
         current_app.logger.exception("Could not load ERP data from MySQL")
         return database_error_response("Could not load data from MySQL")
-
-
 @app.put("/api/store/<key>")
 def save_store(key):
     if not key:
         return jsonify({"success": False, "error": "A store key is required"}), 400
-
     payload = request.get_json()
     if not isinstance(payload, dict) or "value" not in payload:
         return jsonify(
             {"success": False, "error": "Request JSON must contain a value"}
         ), 400
-
     try:
         serialized_value = json.dumps(payload["value"])
     except (TypeError, ValueError):
         return jsonify({"success": False, "error": "Value must be JSON serializable"}), 400
-
     try:
         with database_cursor() as (connection, cursor):
             cursor.execute(
@@ -151,7 +129,5 @@ def save_store(key):
     except mysql.connector.Error:
         current_app.logger.exception("Could not save ERP data to MySQL")
         return database_error_response("Could not save data to MySQL")
-
-
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=int(os.getenv("PORT", "5000")), debug=False)
